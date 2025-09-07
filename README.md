@@ -85,10 +85,9 @@ DS Diagram:
 
 ![DSD](Stage_1/DS_Diagram.png)
 
-We create a python script the that will generat al the data and records for the tables.
-Here is the python script:
+We create a python script that will generate all the data and records for the tables.
 
-See the main generator script: [`DataGenerator.py`](Stage_1/DataGenerator.py)
+See the generator script here: [`DataGenerator.py`](Stage_1/DataGenerator.py)
 
 We run the script, and here is the result:
 
