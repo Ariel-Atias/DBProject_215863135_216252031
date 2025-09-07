@@ -1,5 +1,7 @@
 # DBProject_215863135_216252031
 
+### Here will be the explenaitin of preplexity on the design...
+
 Here is the Json code of the tables:
 
 ```json
@@ -83,6 +85,11 @@ DS Diagram:
 
 ![DSD](Stage_1/DS_Diagram.png)
 
+We create a python script the that will generat al the data and records for the tables.
+Here is the python script:
+
+See the main generator script: [`DataGenerator.py`](Stage_1/DataGenerator.py)
+
 We run the script, and here is the result:
 
 ```console
@@ -141,3 +148,5 @@ Files created:
 ```
 
 We can see that the script generate us a total of **278,007 records**!
+
+### Here will be the script that dumps your PostgreSQL database’s schema and data...
