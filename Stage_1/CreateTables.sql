@@ -48,7 +48,7 @@ CREATE TABLE PaymentMethod
 CREATE TABLE Transaction
 (
   TransactionID INT NOT NULL,
-  Amount INT(1) NOT NULL,
+  Amount INT NOT NULL,
   Currency VARCHAR(10) NOT NULL,
   Status VARCHAR(50) NOT NULL,
   TransactionDate DATE NOT NULL,
