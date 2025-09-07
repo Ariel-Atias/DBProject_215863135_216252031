@@ -1,5 +1,90 @@
 # DBProject_215863135_216252031
 
+Here is the Json code of the tables:
+
+```json
+{
+  "entities": [
+    {
+      "name": "Customer",
+      "fields": [
+        "CustomerID (PK)",
+        "Name",
+        "Email",
+        "MinimalDetails",
+        "DateCreated"
+      ]
+    },
+    {
+      "name": "Transaction",
+      "fields": [
+        "TransactionID (PK)",
+        "Amount",
+        "Currency",
+        "Status",
+        "TransactionDate",
+        "SettlementDate",
+        "CustomerID (FK)",
+        "MerchantID (FK)",
+        "PaymentMethodID (FK)"
+      ]
+    },
+    {
+      "name": "Merchant",
+      "fields": [
+        "MerchantID (PK)",
+        "MerchantName",
+        "Address"
+      ]
+    },
+    {
+      "name": "PaymentMethod",
+      "fields": [
+        "PaymentMethodID (PK)",
+        "Type",
+        "Description",
+        "AccountID (FK)"
+      ]
+    },
+    {
+      "name": "Account",
+      "fields": [
+        "AccountID (PK)",
+        "BankName",
+        "AccountNumber",
+        "AccountType",
+        "ClearingHouseID (FK)"
+      ]
+    },
+    {
+      "name": "ClearingHouse",
+      "fields": [
+        "ClearingHouseID (PK)",
+        "Name",
+        "NetworkType"
+      ]
+    }
+  ],
+  "relationships": [
+    {"from": "Customer", "to": "Transaction", "type": "one-to-many", "name": "Performs"},
+    {"from": "Merchant", "to": "Transaction", "type": "one-to-many", "name": "Receives"},
+    {"from": "PaymentMethod", "to": "Transaction", "type": "one-to-many", "name": "UsedIn"},
+    {"from": "PaymentMethod", "to": "Account", "type": "many-to-one", "name": "LinkedTo"},
+    {"from": "ClearingHouse", "to": "Account", "type": "one-to-many", "name": "Clears"}
+  ]
+}
+```
+
+ER Diagram:
+
+![ERD](Stage_1/ER_Diagram.png)
+
+DS Diagram:
+
+![DSD](Stage_1/DS_Diagram.png)
+
+We run the script, and here is the result:
+
 ```console
 ryltys@MacBook-Pro-sl-ryl python scripts % python3 DataGenerator.py
 === PAYMENT CLEARING DATA GENERATOR ===
@@ -54,3 +139,5 @@ Files created:
 
  Ready to import into your PostgreSQL database!
 ```
+
+We can see that the script generate us a total of **278,007 records**!
