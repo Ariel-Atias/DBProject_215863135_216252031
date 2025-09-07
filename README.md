@@ -1,6 +1,6 @@
 # DBProject_215863135_216252031
 
-console```
+```console
 ryltys@MacBook-Pro-sl-ryl python scripts % python3 DataGenerator.py
 === PAYMENT CLEARING DATA GENERATOR ===
 Creating 200,000+ transaction records...
