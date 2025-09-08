@@ -1,0 +1,70 @@
+{
+  "entities": [
+    {
+      "name": "Customer",
+      "fields": [
+        "CustomerID (PK)",
+        "Name",
+        "Email",
+        "MinimalDetails",
+        "DateCreated"
+      ]
+    },
+    {
+      "name": "Transaction",
+      "fields": [
+        "TransactionID (PK)",
+        "Amount",
+        "Currency",
+        "Status",
+        "TransactionDate",
+        "SettlementDate",
+        "CustomerID (FK)",
+        "MerchantID (FK)",
+        "PaymentMethodID (FK)"
+      ]
+    },
+    {
+      "name": "Merchant",
+      "fields": [
+        "MerchantID (PK)",
+        "MerchantName",
+        "Address"
+      ]
+    },
+    {
+      "name": "PaymentMethod",
+      "fields": [
+        "PaymentMethodID (PK)",
+        "Type",
+        "Description",
+        "AccountID (FK)"
+      ]
+    },
+    {
+      "name": "Account",
+      "fields": [
+        "AccountID (PK)",
+        "BankName",
+        "AccountNumber",
+        "AccountType",
+        "ClearingHouseID (FK)"
+      ]
+    },
+    {
+      "name": "ClearingHouse",
+      "fields": [
+        "ClearingHouseID (PK)",
+        "Name",
+        "NetworkType"
+      ]
+    }
+  ],
+  "relationships": [
+    {"from": "Customer", "to": "Transaction", "type": "one-to-many", "name": "Performs"},
+    {"from": "Merchant", "to": "Transaction", "type": "one-to-many", "name": "Receives"},
+    {"from": "PaymentMethod", "to": "Transaction", "type": "one-to-many", "name": "UsedIn"},
+    {"from": "PaymentMethod", "to": "Account", "type": "many-to-one", "name": "LinkedTo"},
+    {"from": "ClearingHouse", "to": "Account", "type": "one-to-many", "name": "Clears"}
+  ]
+}
