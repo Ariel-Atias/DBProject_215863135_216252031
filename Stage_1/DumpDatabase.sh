@@ -80,6 +80,5 @@ else
     echo "Please check your database connection and credentials."
     exit 1
 fi
-
 echo ""
 echo "=== Dump process completed ==="
