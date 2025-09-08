@@ -128,16 +128,6 @@ We used **Python scripting** for data generation to ensure:
 - **Data consistency** - Valid foreign key relationships
 - **Scalability** - Ability to generate large datasets efficiently
 
-#### Data Generation Script
-```python
-# Key features of our DataGenerator.py:
-- Seed-based randomization for reproducible results
-- Realistic business names and addresses
-- Transaction amounts following real-world distribution
-- Proper date sequencing (settlement after transaction)
-- Currency and status distributions matching industry patterns
-```
-
 ### Generated Dataset Statistics
 
 | Entity | Records | Purpose |
