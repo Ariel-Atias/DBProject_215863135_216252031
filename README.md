@@ -1,10 +1,10 @@
-# Payment Clearing System Database - Stage 1
+# Payment Clearing System Database
 
 **Student IDs:** 215863135, 216252031
 
 ---
 
-## 📊 Stage 1 - Database Design and Population
+## 📊 Stage 1 - Database Design and Creation
 
 ### Project Overview
 
@@ -235,7 +235,8 @@ Here is an example of typical output after running the dump process:
 
 ![DumpDatabase.png](Stage_1/DumpDatabase.png)
 
-### Backup Process
+---
 
-...
+## 📊 Stage 2 - ...
 
+Backup here...
