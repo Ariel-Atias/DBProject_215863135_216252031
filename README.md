@@ -8,15 +8,15 @@
 
 ### Project Overview
 
-This project implements a comprehensive **Payment Clearing System** database designed to handle the complete lifecycle of financial transactions from initiation to settlement. The system supports multiple payment methods, clearing houses, and provides full transaction tracking capabilities.
+This project creates a Payment Clearing System database that manages the full process of financial transactions, from the moment they start until settlement. The system supports multiple payment methods, works with different clearing houses, and keeps complete transaction records.
 
 ### Why This Domain?
 
 Payment clearing systems are critical infrastructure in modern finance, handling billions of transactions daily. Our design addresses real-world challenges:
-- **Multi-network support** - Different payment types require different clearing mechanisms
-- **Regulatory compliance** - Full audit trail and settlement tracking
-- **Scalability** - Must handle high transaction volumes efficiently
-- **International operations** - Multi-currency and cross-border capabilities
+- **Multi-network support** - Different payment types use different clearing processes
+- **Compliance** - Full history and records for regulations
+- **Scalability** - Can manage very large numbers of transactions
+- **International support** - Works with different currencies and cross-border payments
 
 ---
 
@@ -24,109 +24,173 @@ Payment clearing systems are critical infrastructure in modern finance, handling
 
 ### Entity-Relationship Model
 
-Our system consists of **6 core entities** designed with proper normalization (3NF):
+The system has **6 entities** built using proper normalization (3NF):
 
 #### 1. **Customer** - Transaction Initiators
 ```
-CustomerID (PK, INT) - Unique identifier
-Name (VARCHAR) - Full customer name
-Email (VARCHAR) - Contact information
-MinimalDetails (VARCHAR) - Additional customer info
-DateCreated (DATE) - Account creation timestamp
+CustomerID (PK, INT) - Unique ID
+Name (VARCHAR) - Full name
+Email (VARCHAR) - Contact details
+MinimalDetails (VARCHAR) - Extra info
+DateCreated (DATE) - When account was created
 ```
-**Purpose:** Represents individuals or businesses initiating payments. The DateCreated field enables customer lifecycle analysis and fraud detection patterns.
+**Purpose:** Represents people or companies making payments. The creation date helps analyze customer activity and detect fraud.
 
 #### 2. **Transaction** - Core Business Process
 ```
-TransactionID (PK, INT) - Unique transaction identifier
-Amount (INT) - Transaction value in cents
-Currency (VARCHAR) - ISO currency code (USD, EUR, etc.)
-Status (VARCHAR) - Processing status
-TransactionDate (DATE) - When transaction was initiated
-SettlementDate (DATE) - When funds were cleared
+TransactionID (PK, INT) - Unique ID
+Amount (INT) - Value in cents
+Currency (VARCHAR) - Currency code (USD, EUR, etc.)
+Status (VARCHAR) - Transaction status
+TransactionDate (DATE) - When it started
+SettlementDate (DATE) - When it finished
 CustomerID (FK) - Links to customer
 MerchantID (FK) - Links to merchant
 PaymentMethodID (FK) - Links to payment method
 ```
-**Purpose:** Central entity tracking every payment. Dual date fields (TransactionDate/SettlementDate) are crucial for settlement timing analysis and regulatory reporting.
+**Purpose:** Records each transaction. Both dates are important to study settlement speed and for reports.
 
 #### 3. **Merchant** - Transaction Recipients
 ```
-MerchantID (PK, INT) - Unique merchant identifier
+MerchantID (PK, INT) - Unique ID
 MerchantName (VARCHAR) - Business name
-Address (VARCHAR) - Business location
+Address (VARCHAR) - Business address
 ```
-**Purpose:** Businesses receiving payments. Address information supports geographic analysis and risk assessment.
+**Purpose:** Companies that receive transactions. Their location helps analyze risks and regional activity.
 
 #### 4. **PaymentMethod** - Payment Instruments
 ```
-PaymentMethodID (PK, INT) - Unique method identifier
-Type (VARCHAR) - Payment type (Credit Card, ACH, Wire, etc.)
-Description (VARCHAR) - Detailed method description
-AccountID (FK) - Links to underlying account
+PaymentMethodID (PK, INT) - Unique ID
+Type (VARCHAR) - Payment type (Credit Card, ACH, etc.)
+Description (VARCHAR) - Details about the method
+AccountID (FK) - Connected account
 ```
-**Purpose:** Abstracts different payment mechanisms. Links to accounts enable routing through appropriate clearing networks.
+**Purpose:** Represents the type of payment. It connects to accounts for processing.
 
 #### 5. **Account** - Financial Accounts
 ```
-AccountID (PK, INT) - Unique account identifier
-BankName (VARCHAR) - Financial institution name
-AccountNumber (VARCHAR) - Account identifier
-AccountType (VARCHAR) - Account classification
-ClearingHouseID (FK) - Links to clearing network
+AccountID (PK, INT) - Unique ID
+BankName (VARCHAR) - Bank name
+AccountNumber (VARCHAR) - Account number
+AccountType (VARCHAR) - Type of account
+ClearingHouseID (FK) - Connected clearing house
 ```
-**Purpose:** Represents bank accounts and financial instruments. Connection to clearing houses enables proper transaction routing.
+**Purpose:** Represents financial accounts. The link to clearing houses makes routing possible.
 
 #### 6. **ClearingHouse** - Payment Networks
 ```
-ClearingHouseID (PK, INT) - Unique network identifier
+ClearingHouseID (PK, INT) - Unique ID
 Name (VARCHAR) - Network name (ACH, SWIFT, etc.)
-NetworkType (VARCHAR) - Network classification
+NetworkType (VARCHAR) - Type of network
 ```
-**Purpose:** Payment processing networks. Different transaction types require different clearing mechanisms (ACH for domestic, SWIFT for international, etc.).
+**Purpose:** Networks that process payments (ACH, SWIFT, etc.).
 
 ---
 
 ### Visual Schema Representation
 
-ER Diagram:
+#### ER Diagram:
 
 ![ERD](Stage_1/ER_Diagram.png)
 
 The ERD shows the logical relationships between entities:
-- **One-to-Many**: Customer → Transactions (customers can have multiple transactions)
-- **One-to-Many**: Merchant → Transactions (merchants receive multiple payments)
-- **One-to-Many**: PaymentMethod → Transactions (payment methods used in multiple transactions)
-- **Many-to-One**: PaymentMethod → Account (multiple payment methods can link to one account)
-- **One-to-Many**: ClearingHouse → Account (clearing houses manage multiple accounts)
+- **Customer → Transactions** : One-to-Many (customers can have multiple transactions)
+- **Merchant → Transactions** : One-to-Many (merchants receive multiple payments)
+- **PaymentMethod → Transactions** : One-to-Many (payment methods used in multiple transactions)
+- **PaymentMethod → Account** : Many-to-One (multiple payment methods can link to one account)
+- **ClearingHouse → Account** : One-to-Many (clearing houses manage multiple accounts)
 
-DS Diagram:
+#### DS Diagram:
 
 ![DSD](Stage_1/DS_Diagram.png)
-
-The DSD translates logical design into physical implementation with:
-- Specific data types and constraints
-- Primary and foreign key relationships
-- Index optimization points
 
 ---
 
 ## 📈 Data Generation Strategy
 
-### Why Realistic Data Matters
-A payment system requires realistic transaction patterns to:
+### Why Realistic Data?
+A payment system needs realistic data to:
 - Test performance under real-world loads
 - Validate business logic with edge cases
-- Enable meaningful analytics and reporting
-- Support compliance and audit requirements
+- Support analysis and reports
+- Meet audit and compliance needs
 
 ### Implementation Approach
 
-We used **Python scripting** for data generation to ensure:
-- **Realistic relationships** - Settlement dates after transaction dates
-- **Business logic** - Appropriate transaction amounts and frequencies
-- **Data consistency** - Valid foreign key relationships
-- **Scalability** - Ability to generate large datasets efficiently
+We used **Python scripts** to create the data and make sure that:
+- **Relationships are realistic** – Settlement dates always come after transaction dates  
+- **Business rules are followed** – Transaction amounts and frequencies make sense  
+- **Data is consistent** – All foreign key links are correct  
+- **It can scale** – Large datasets can be generated quickly and efficiently  
+
+We create the python script that will generate all the data and records for the tables.  
+See the generator script here: [DataGenerator.py](Stage_1/DataGenerator.py)
+
+We run the script with te following command:
+
+```bash
+python3 DataGenerator.py
+```
+
+**Output:**
+
+```
+=== PAYMENT CLEARING DATA GENERATOR ===
+Creating 200,000+ transaction records...
+
+Creating ClearingHouse data...
+✓ Created 7 ClearingHouse records
+Creating Account data...
+✓ Created 2000 Account records
+Creating PaymentMethod data...
+✓ Created 1000 PaymentMethod records
+Creating Customer data...
+  Generated 10000 customers...
+  Generated 20000 customers...
+  Generated 30000 customers...
+  Generated 40000 customers...
+  Generated 50000 customers...
+  Generated 60000 customers...
+✓ Created 60000 Customer records
+Creating Merchant data...
+  Generated 5000 merchants...
+  Generated 10000 merchants...
+  Generated 15000 merchants...
+✓ Created 15000 Merchant records
+Creating Transaction data - MAIN BUSINESS PROCESS...
+  Generated 25000 transactions...
+  Generated 50000 transactions...
+  Generated 75000 transactions...
+  Generated 100000 transactions...
+  Generated 125000 transactions...
+  Generated 150000 transactions...
+  Generated 175000 transactions...
+  Generated 200000 transactions...
+✓ Created 200000 Transaction records
+
+=== SUMMARY ===
+ClearingHouse: 7
+Account: 2,000
+PaymentMethod: 1,000
+Customer: 60,000
+Merchant: 15,000
+Transaction: 200,000 MAIN PROCESS
+TOTAL: 278,007 records
+
+Files created:
+• clearinghouse.csv
+• account.csv
+• paymentmethod.csv
+• customer.csv
+• merchant.csv
+• transaction.csv
+
+ Ready to import into your PostgreSQL database!
+```
+
+And here is the generated data file:
+
+![GeneratedFile](Stage_1/GeneratedFile.png)
 
 ### Generated Dataset Statistics
 
@@ -155,126 +219,23 @@ We used **Python scripting** for data generation to ensure:
 ## 🔧 Database Implementation
 
 ### SQL Schema Creation
-```sql
--- Example table creation with proper constraints
-CREATE TABLE Transaction
-(
-  TransactionID INT NOT NULL,
-  Amount INT NOT NULL,
-  Currency VARCHAR(10) NOT NULL,
-  Status VARCHAR(50) NOT NULL,
-  TransactionDate DATE NOT NULL,
-  SettlementDate DATE NOT NULL,
-  CustomerID INT NOT NULL,
-  MerchantID INT NOT NULL,
-  PaymentMethodID INT NOT NULL,
-  PRIMARY KEY (TransactionID),
-  FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID),
-  FOREIGN KEY (MerchantID) REFERENCES Merchant(MerchantID),
-  FOREIGN KEY (PaymentMethodID) REFERENCES PaymentMethod(PaymentMethodID)
-);
-```
 
-### Data Population Process
+The tables for the system were created using SQL scripts found here: [CreateTables.sql](Stage_1/CreateTables.sql)  
+This script contains all necessary constraints, keys, and relationships for the database.
 
-#### Step 1: Generate CSV Files
-```bash
-python3 DataGenerator.py
-```
-**Output:**
-```
-=== PAYMENT CLEARING DATA GENERATOR ===
-Creating 200,000+ transaction records...
+### Data Insertion
 
-✓ Created 7 ClearingHouse records
-✓ Created 2,000 Account records  
-✓ Created 1,000 PaymentMethod records
-✓ Created 60,000 Customer records
-✓ Created 15,000 Merchant records
-✓ Created 200,000 Transaction records
+After generating the data, the records were added to the tables using pgAdmin’s Import feature.
+This method directly imports the CSV files into the appropriate tables using pgAdmin's graphical interface.
 
-TOTAL: 278,007 records
-```
+### Database Dump
 
-#### Step 2: Database Import
-```sql
--- Import generated data
-COPY Customer FROM 'customer.csv' DELIMITER ',' CSV HEADER;
-COPY Merchant FROM 'merchant.csv' DELIMITER ',' CSV HEADER;
-COPY ClearingHouse FROM 'clearinghouse.csv' DELIMITER ',' CSV HEADER;
-COPY Account FROM 'account.csv' DELIMITER ',' CSV HEADER;
-COPY PaymentMethod FROM 'paymentmethod.csv' DELIMITER ',' CSV HEADER;
-COPY Transaction FROM 'transaction.csv' DELIMITER ',' CSV HEADER;
-```
+To back up the full database, we used the following dump script: [DumpDatabase.sh](Stage_1/DumpDatabase.sh)  
+Here is an example of typical output after running the dump process:
 
----
+![DumpDatabase.png](Stage_1/DumpDatabase.png)
 
-## 💾 Database Backup and Recovery
+### Backup Process
 
-### Database Dump Command
-```bash
-pg_dump -h localhost -U username -d payment_clearing_db > payment_clearing_backup.sql
-```
-
-### Dump Output Example
-```
--- PostgreSQL database dump
--- Database: payment_clearing_db
--- Dumped by pg_dump version 14.x
-
-SET statement_timeout = 0;
-SET lock_timeout = 0;
 ...
-
--- Table structures and data for all 6 tables
--- Complete schema with constraints and indexes
--- All 278,007 data records
-
--- Dump completed successfully
-```
-
----
-
-## 🎯 Business Use Cases Covered
-
-### Primary Transaction Flow
-1. **Customer initiates payment** to merchant
-2. **Payment method determines routing** through appropriate clearing house
-3. **Transaction recorded** with timestamps and status tracking
-4. **Settlement processing** through clearing network
-5. **Status updates** throughout the process
-
-### Analytical Capabilities
-- **Transaction volume analysis** by date, merchant, customer
-- **Settlement time tracking** (TransactionDate vs SettlementDate)
-- **Payment method performance** comparison
-- **Geographic transaction patterns** via merchant addresses
-- **Customer lifecycle analysis** using DateCreated fields
-
-### Regulatory Compliance
-- **Complete audit trail** for all transactions
-- **Multi-currency support** for international operations
-- **Status tracking** for regulatory reporting
-- **Date-based queries** for compliance periods
-
----
-
-## 📋 Project Files
-
-### Core Database Files
-- `CreateTables.sql` - Database schema creation
-- `DataGenerator.py` - Python data generation script
-- `JsonFile.json` - ERD structure in JSON format
-
-### Generated Data Files
-- `customer.csv` - Customer data (60,000 records)
-- `merchant.csv` - Merchant data (15,000 records)  
-- `transaction.csv` - Transaction data (200,000 records)
-- `clearinghouse.csv` - Clearing house data (7 records)
-- `account.csv` - Account data (2,000 records)
-- `paymentmethod.csv` - Payment method data (1,000 records)
-
-### Documentation
-- `README.md` - This comprehensive documentation
-- ER and DS diagrams as images
 
