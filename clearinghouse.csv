@@ -1,8 +1,0 @@
-ClearingHouseID,Name,NetworkType
-1,ACH Network,ACH
-2,SWIFT International,Wire Transfer
-3,FedWire,Federal Wire
-4,CHIPS,High Value
-5,TARGET2,European Payments
-6,Visa Network,Card Processing
-7,MasterCard Network,Card Processing
