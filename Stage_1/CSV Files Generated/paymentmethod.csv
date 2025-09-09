@@ -1,0 +1,1001 @@
+PaymentMethodID,Type,Description,AccountID
+1,Cash Payment,Cash processing,489
+2,ACH Transfer,Automated clearing house,797
+3,Credit Card,Visa/MasterCard/Amex processing,1624
+4,Cash Payment,Cash processing,1318
+5,Wire Transfer,Electronic wire transfer,1024
+6,Cash Payment,Cash processing,1977
+7,ACH Transfer,Automated clearing house,1980
+8,Credit Card,Visa/MasterCard/Amex processing,76
+9,Wire Transfer,Electronic wire transfer,115
+10,Wire Transfer,Electronic wire transfer,1614
+11,Digital Wallet,PayPal/Apple Pay/Google Pay,88
+12,ACH Transfer,Automated clearing house,243
+13,Debit Card,Direct debit transaction,1653
+14,Digital Wallet,PayPal/Apple Pay/Google Pay,1367
+15,Cash Payment,Cash processing,939
+16,Digital Wallet,PayPal/Apple Pay/Google Pay,1783
+17,Cash Payment,Cash processing,306
+18,Digital Wallet,PayPal/Apple Pay/Google Pay,1187
+19,Debit Card,Direct debit transaction,1895
+20,Credit Card,Visa/MasterCard/Amex processing,76
+21,Digital Wallet,PayPal/Apple Pay/Google Pay,290
+22,ACH Transfer,Automated clearing house,1340
+23,Credit Card,Visa/MasterCard/Amex processing,966
+24,Cash Payment,Cash processing,94
+25,Debit Card,Direct debit transaction,1437
+26,Digital Wallet,PayPal/Apple Pay/Google Pay,268
+27,Credit Card,Visa/MasterCard/Amex processing,353
+28,Digital Wallet,PayPal/Apple Pay/Google Pay,103
+29,Wire Transfer,Electronic wire transfer,1681
+30,Credit Card,Visa/MasterCard/Amex processing,935
+31,Cash Payment,Cash processing,350
+32,Cash Payment,Cash processing,131
+33,Credit Card,Visa/MasterCard/Amex processing,234
+34,ACH Transfer,Automated clearing house,1219
+35,Cash Payment,Cash processing,452
+36,Credit Card,Visa/MasterCard/Amex processing,1648
+37,Debit Card,Direct debit transaction,873
+38,Wire Transfer,Electronic wire transfer,1662
+39,Digital Wallet,PayPal/Apple Pay/Google Pay,1390
+40,ACH Transfer,Automated clearing house,665
+41,Credit Card,Visa/MasterCard/Amex processing,1999
+42,Digital Wallet,PayPal/Apple Pay/Google Pay,1180
+43,Cash Payment,Cash processing,282
+44,Wire Transfer,Electronic wire transfer,1714
+45,Debit Card,Direct debit transaction,1566
+46,Credit Card,Visa/MasterCard/Amex processing,1215
+47,Debit Card,Direct debit transaction,688
+48,Credit Card,Visa/MasterCard/Amex processing,248
+49,Wire Transfer,Electronic wire transfer,290
+50,ACH Transfer,Automated clearing house,345
+51,Digital Wallet,PayPal/Apple Pay/Google Pay,758
+52,Cash Payment,Cash processing,338
+53,ACH Transfer,Automated clearing house,499
+54,Cash Payment,Cash processing,84
+55,Debit Card,Direct debit transaction,205
+56,Digital Wallet,PayPal/Apple Pay/Google Pay,1255
+57,ACH Transfer,Automated clearing house,1593
+58,Debit Card,Direct debit transaction,33
+59,ACH Transfer,Automated clearing house,166
+60,Credit Card,Visa/MasterCard/Amex processing,15
+61,Debit Card,Direct debit transaction,1897
+62,Credit Card,Visa/MasterCard/Amex processing,1448
+63,Digital Wallet,PayPal/Apple Pay/Google Pay,1216
+64,Wire Transfer,Electronic wire transfer,853
+65,Digital Wallet,PayPal/Apple Pay/Google Pay,1654
+66,ACH Transfer,Automated clearing house,1418
+67,Debit Card,Direct debit transaction,423
+68,Debit Card,Direct debit transaction,1311
+69,Wire Transfer,Electronic wire transfer,1072
+70,ACH Transfer,Automated clearing house,844
+71,Debit Card,Direct debit transaction,1922
+72,Debit Card,Direct debit transaction,1251
+73,Digital Wallet,PayPal/Apple Pay/Google Pay,78
+74,Cash Payment,Cash processing,369
+75,Digital Wallet,PayPal/Apple Pay/Google Pay,1024
+76,Cash Payment,Cash processing,1947
+77,Credit Card,Visa/MasterCard/Amex processing,1285
+78,Wire Transfer,Electronic wire transfer,713
+79,ACH Transfer,Automated clearing house,10
+80,Cash Payment,Cash processing,483
+81,Debit Card,Direct debit transaction,241
+82,Cash Payment,Cash processing,196
+83,Cash Payment,Cash processing,742
+84,Cash Payment,Cash processing,1040
+85,Debit Card,Direct debit transaction,951
+86,Digital Wallet,PayPal/Apple Pay/Google Pay,1351
+87,Debit Card,Direct debit transaction,567
+88,Credit Card,Visa/MasterCard/Amex processing,397
+89,Credit Card,Visa/MasterCard/Amex processing,1632
+90,Debit Card,Direct debit transaction,1404
+91,ACH Transfer,Automated clearing house,1019
+92,Debit Card,Direct debit transaction,328
+93,Digital Wallet,PayPal/Apple Pay/Google Pay,1890
+94,Credit Card,Visa/MasterCard/Amex processing,111
+95,Digital Wallet,PayPal/Apple Pay/Google Pay,746
+96,Wire Transfer,Electronic wire transfer,430
+97,ACH Transfer,Automated clearing house,515
+98,Wire Transfer,Electronic wire transfer,1264
+99,ACH Transfer,Automated clearing house,89
+100,Credit Card,Visa/MasterCard/Amex processing,1517
+101,Credit Card,Visa/MasterCard/Amex processing,1895
+102,Cash Payment,Cash processing,361
+103,Debit Card,Direct debit transaction,1609
+104,Credit Card,Visa/MasterCard/Amex processing,994
+105,Cash Payment,Cash processing,238
+106,Credit Card,Visa/MasterCard/Amex processing,1834
+107,Debit Card,Direct debit transaction,1478
+108,ACH Transfer,Automated clearing house,1214
+109,Cash Payment,Cash processing,668
+110,ACH Transfer,Automated clearing house,408
+111,Digital Wallet,PayPal/Apple Pay/Google Pay,1387
+112,Wire Transfer,Electronic wire transfer,472
+113,Credit Card,Visa/MasterCard/Amex processing,668
+114,Debit Card,Direct debit transaction,201
+115,Debit Card,Direct debit transaction,1511
+116,ACH Transfer,Automated clearing house,1782
+117,Debit Card,Direct debit transaction,770
+118,Debit Card,Direct debit transaction,151
+119,ACH Transfer,Automated clearing house,1199
+120,ACH Transfer,Automated clearing house,112
+121,ACH Transfer,Automated clearing house,297
+122,Debit Card,Direct debit transaction,1901
+123,Cash Payment,Cash processing,932
+124,Debit Card,Direct debit transaction,794
+125,Wire Transfer,Electronic wire transfer,280
+126,ACH Transfer,Automated clearing house,1475
+127,Debit Card,Direct debit transaction,1295
+128,Wire Transfer,Electronic wire transfer,1998
+129,Wire Transfer,Electronic wire transfer,415
+130,Wire Transfer,Electronic wire transfer,261
+131,Credit Card,Visa/MasterCard/Amex processing,1418
+132,Cash Payment,Cash processing,123
+133,Wire Transfer,Electronic wire transfer,280
+134,Credit Card,Visa/MasterCard/Amex processing,1745
+135,ACH Transfer,Automated clearing house,940
+136,ACH Transfer,Automated clearing house,351
+137,Wire Transfer,Electronic wire transfer,451
+138,Wire Transfer,Electronic wire transfer,1237
+139,Debit Card,Direct debit transaction,1617
+140,Digital Wallet,PayPal/Apple Pay/Google Pay,1952
+141,Cash Payment,Cash processing,1855
+142,Debit Card,Direct debit transaction,1184
+143,Cash Payment,Cash processing,1752
+144,Debit Card,Direct debit transaction,178
+145,ACH Transfer,Automated clearing house,1756
+146,Cash Payment,Cash processing,1002
+147,Debit Card,Direct debit transaction,1212
+148,ACH Transfer,Automated clearing house,1715
+149,ACH Transfer,Automated clearing house,572
+150,Credit Card,Visa/MasterCard/Amex processing,1496
+151,ACH Transfer,Automated clearing house,1508
+152,Debit Card,Direct debit transaction,508
+153,Wire Transfer,Electronic wire transfer,890
+154,Cash Payment,Cash processing,456
+155,Cash Payment,Cash processing,1938
+156,Debit Card,Direct debit transaction,1872
+157,Cash Payment,Cash processing,1840
+158,Credit Card,Visa/MasterCard/Amex processing,856
+159,Credit Card,Visa/MasterCard/Amex processing,83
+160,ACH Transfer,Automated clearing house,1503
+161,Cash Payment,Cash processing,69
+162,ACH Transfer,Automated clearing house,1088
+163,ACH Transfer,Automated clearing house,982
+164,Digital Wallet,PayPal/Apple Pay/Google Pay,1683
+165,Credit Card,Visa/MasterCard/Amex processing,927
+166,ACH Transfer,Automated clearing house,493
+167,Credit Card,Visa/MasterCard/Amex processing,1144
+168,Credit Card,Visa/MasterCard/Amex processing,1420
+169,Digital Wallet,PayPal/Apple Pay/Google Pay,833
+170,Debit Card,Direct debit transaction,272
+171,Wire Transfer,Electronic wire transfer,606
+172,Debit Card,Direct debit transaction,1327
+173,Credit Card,Visa/MasterCard/Amex processing,33
+174,ACH Transfer,Automated clearing house,1371
+175,Wire Transfer,Electronic wire transfer,332
+176,Digital Wallet,PayPal/Apple Pay/Google Pay,941
+177,Cash Payment,Cash processing,1531
+178,Cash Payment,Cash processing,50
+179,ACH Transfer,Automated clearing house,950
+180,Debit Card,Direct debit transaction,1791
+181,Digital Wallet,PayPal/Apple Pay/Google Pay,831
+182,Debit Card,Direct debit transaction,1618
+183,Wire Transfer,Electronic wire transfer,1284
+184,ACH Transfer,Automated clearing house,1442
+185,Digital Wallet,PayPal/Apple Pay/Google Pay,3
+186,Digital Wallet,PayPal/Apple Pay/Google Pay,145
+187,ACH Transfer,Automated clearing house,1830
+188,Digital Wallet,PayPal/Apple Pay/Google Pay,682
+189,Cash Payment,Cash processing,67
+190,Wire Transfer,Electronic wire transfer,873
+191,Wire Transfer,Electronic wire transfer,1430
+192,Cash Payment,Cash processing,1111
+193,Cash Payment,Cash processing,1628
+194,Debit Card,Direct debit transaction,1614
+195,Digital Wallet,PayPal/Apple Pay/Google Pay,166
+196,Cash Payment,Cash processing,1804
+197,Wire Transfer,Electronic wire transfer,1507
+198,Credit Card,Visa/MasterCard/Amex processing,1055
+199,Digital Wallet,PayPal/Apple Pay/Google Pay,746
+200,Credit Card,Visa/MasterCard/Amex processing,228
+201,ACH Transfer,Automated clearing house,749
+202,ACH Transfer,Automated clearing house,1268
+203,Credit Card,Visa/MasterCard/Amex processing,749
+204,Wire Transfer,Electronic wire transfer,359
+205,Digital Wallet,PayPal/Apple Pay/Google Pay,1145
+206,Digital Wallet,PayPal/Apple Pay/Google Pay,138
+207,Cash Payment,Cash processing,1453
+208,Debit Card,Direct debit transaction,284
+209,Wire Transfer,Electronic wire transfer,489
+210,Cash Payment,Cash processing,233
+211,Digital Wallet,PayPal/Apple Pay/Google Pay,980
+212,Digital Wallet,PayPal/Apple Pay/Google Pay,1924
+213,Cash Payment,Cash processing,1785
+214,Digital Wallet,PayPal/Apple Pay/Google Pay,430
+215,Digital Wallet,PayPal/Apple Pay/Google Pay,1559
+216,Debit Card,Direct debit transaction,657
+217,Wire Transfer,Electronic wire transfer,1839
+218,Wire Transfer,Electronic wire transfer,1032
+219,Digital Wallet,PayPal/Apple Pay/Google Pay,867
+220,Wire Transfer,Electronic wire transfer,112
+221,Credit Card,Visa/MasterCard/Amex processing,764
+222,Wire Transfer,Electronic wire transfer,927
+223,ACH Transfer,Automated clearing house,1027
+224,Cash Payment,Cash processing,1699
+225,Credit Card,Visa/MasterCard/Amex processing,963
+226,Digital Wallet,PayPal/Apple Pay/Google Pay,1090
+227,Digital Wallet,PayPal/Apple Pay/Google Pay,1691
+228,Cash Payment,Cash processing,1843
+229,Wire Transfer,Electronic wire transfer,926
+230,Cash Payment,Cash processing,754
+231,Digital Wallet,PayPal/Apple Pay/Google Pay,1937
+232,Digital Wallet,PayPal/Apple Pay/Google Pay,1657
+233,Credit Card,Visa/MasterCard/Amex processing,386
+234,ACH Transfer,Automated clearing house,179
+235,Credit Card,Visa/MasterCard/Amex processing,801
+236,Debit Card,Direct debit transaction,591
+237,Credit Card,Visa/MasterCard/Amex processing,224
+238,Debit Card,Direct debit transaction,566
+239,Credit Card,Visa/MasterCard/Amex processing,1428
+240,Debit Card,Direct debit transaction,1017
+241,Debit Card,Direct debit transaction,1792
+242,Debit Card,Direct debit transaction,1067
+243,Digital Wallet,PayPal/Apple Pay/Google Pay,47
+244,Wire Transfer,Electronic wire transfer,854
+245,Digital Wallet,PayPal/Apple Pay/Google Pay,1109
+246,Debit Card,Direct debit transaction,971
+247,Wire Transfer,Electronic wire transfer,861
+248,ACH Transfer,Automated clearing house,1511
+249,Digital Wallet,PayPal/Apple Pay/Google Pay,44
+250,Wire Transfer,Electronic wire transfer,388
+251,Credit Card,Visa/MasterCard/Amex processing,46
+252,Debit Card,Direct debit transaction,1710
+253,Cash Payment,Cash processing,1321
+254,Wire Transfer,Electronic wire transfer,844
+255,Cash Payment,Cash processing,703
+256,Digital Wallet,PayPal/Apple Pay/Google Pay,1324
+257,Wire Transfer,Electronic wire transfer,996
+258,Cash Payment,Cash processing,1364
+259,Digital Wallet,PayPal/Apple Pay/Google Pay,1086
+260,Cash Payment,Cash processing,912
+261,ACH Transfer,Automated clearing house,623
+262,Cash Payment,Cash processing,271
+263,Wire Transfer,Electronic wire transfer,352
+264,Wire Transfer,Electronic wire transfer,465
+265,ACH Transfer,Automated clearing house,762
+266,Wire Transfer,Electronic wire transfer,1577
+267,Credit Card,Visa/MasterCard/Amex processing,304
+268,Wire Transfer,Electronic wire transfer,583
+269,ACH Transfer,Automated clearing house,1959
+270,Debit Card,Direct debit transaction,1267
+271,Debit Card,Direct debit transaction,1458
+272,Cash Payment,Cash processing,585
+273,Debit Card,Direct debit transaction,1994
+274,Debit Card,Direct debit transaction,1719
+275,Digital Wallet,PayPal/Apple Pay/Google Pay,1419
+276,Digital Wallet,PayPal/Apple Pay/Google Pay,1628
+277,Debit Card,Direct debit transaction,331
+278,Debit Card,Direct debit transaction,240
+279,Credit Card,Visa/MasterCard/Amex processing,649
+280,Cash Payment,Cash processing,260
+281,ACH Transfer,Automated clearing house,534
+282,Wire Transfer,Electronic wire transfer,378
+283,Debit Card,Direct debit transaction,1152
+284,Digital Wallet,PayPal/Apple Pay/Google Pay,72
+285,Digital Wallet,PayPal/Apple Pay/Google Pay,650
+286,Wire Transfer,Electronic wire transfer,303
+287,Wire Transfer,Electronic wire transfer,919
+288,Cash Payment,Cash processing,1998
+289,Debit Card,Direct debit transaction,1093
+290,Wire Transfer,Electronic wire transfer,249
+291,Credit Card,Visa/MasterCard/Amex processing,829
+292,ACH Transfer,Automated clearing house,1574
+293,Debit Card,Direct debit transaction,1942
+294,ACH Transfer,Automated clearing house,1901
+295,Wire Transfer,Electronic wire transfer,320
+296,Credit Card,Visa/MasterCard/Amex processing,1987
+297,Digital Wallet,PayPal/Apple Pay/Google Pay,1119
+298,Cash Payment,Cash processing,679
+299,Digital Wallet,PayPal/Apple Pay/Google Pay,1445
+300,Wire Transfer,Electronic wire transfer,971
+301,Wire Transfer,Electronic wire transfer,1986
+302,Cash Payment,Cash processing,1366
+303,Debit Card,Direct debit transaction,1638
+304,Cash Payment,Cash processing,1493
+305,ACH Transfer,Automated clearing house,694
+306,Digital Wallet,PayPal/Apple Pay/Google Pay,231
+307,Digital Wallet,PayPal/Apple Pay/Google Pay,981
+308,Credit Card,Visa/MasterCard/Amex processing,286
+309,Digital Wallet,PayPal/Apple Pay/Google Pay,1129
+310,Credit Card,Visa/MasterCard/Amex processing,631
+311,Credit Card,Visa/MasterCard/Amex processing,823
+312,Cash Payment,Cash processing,1723
+313,Debit Card,Direct debit transaction,914
+314,Wire Transfer,Electronic wire transfer,190
+315,Wire Transfer,Electronic wire transfer,113
+316,Cash Payment,Cash processing,1314
+317,Debit Card,Direct debit transaction,1195
+318,Cash Payment,Cash processing,455
+319,Wire Transfer,Electronic wire transfer,401
+320,Credit Card,Visa/MasterCard/Amex processing,172
+321,Cash Payment,Cash processing,1740
+322,ACH Transfer,Automated clearing house,1387
+323,Digital Wallet,PayPal/Apple Pay/Google Pay,1962
+324,Credit Card,Visa/MasterCard/Amex processing,1999
+325,Cash Payment,Cash processing,808
+326,Debit Card,Direct debit transaction,1005
+327,Wire Transfer,Electronic wire transfer,1236
+328,Cash Payment,Cash processing,1048
+329,Credit Card,Visa/MasterCard/Amex processing,1861
+330,Digital Wallet,PayPal/Apple Pay/Google Pay,740
+331,ACH Transfer,Automated clearing house,303
+332,Digital Wallet,PayPal/Apple Pay/Google Pay,1749
+333,ACH Transfer,Automated clearing house,758
+334,ACH Transfer,Automated clearing house,764
+335,Credit Card,Visa/MasterCard/Amex processing,583
+336,Wire Transfer,Electronic wire transfer,720
+337,Wire Transfer,Electronic wire transfer,913
+338,Cash Payment,Cash processing,180
+339,Debit Card,Direct debit transaction,1491
+340,ACH Transfer,Automated clearing house,1519
+341,ACH Transfer,Automated clearing house,1646
+342,ACH Transfer,Automated clearing house,592
+343,Debit Card,Direct debit transaction,1651
+344,Digital Wallet,PayPal/Apple Pay/Google Pay,1988
+345,ACH Transfer,Automated clearing house,1493
+346,ACH Transfer,Automated clearing house,286
+347,Cash Payment,Cash processing,1225
+348,Credit Card,Visa/MasterCard/Amex processing,295
+349,Debit Card,Direct debit transaction,622
+350,ACH Transfer,Automated clearing house,1777
+351,Cash Payment,Cash processing,687
+352,Credit Card,Visa/MasterCard/Amex processing,1912
+353,Cash Payment,Cash processing,1549
+354,ACH Transfer,Automated clearing house,182
+355,Credit Card,Visa/MasterCard/Amex processing,839
+356,Digital Wallet,PayPal/Apple Pay/Google Pay,1873
+357,Wire Transfer,Electronic wire transfer,849
+358,Debit Card,Direct debit transaction,1139
+359,ACH Transfer,Automated clearing house,1455
+360,Cash Payment,Cash processing,1547
+361,Debit Card,Direct debit transaction,409
+362,Debit Card,Direct debit transaction,1705
+363,ACH Transfer,Automated clearing house,593
+364,Cash Payment,Cash processing,1005
+365,Credit Card,Visa/MasterCard/Amex processing,1686
+366,Wire Transfer,Electronic wire transfer,1710
+367,Cash Payment,Cash processing,623
+368,ACH Transfer,Automated clearing house,1146
+369,Digital Wallet,PayPal/Apple Pay/Google Pay,950
+370,Debit Card,Direct debit transaction,55
+371,Credit Card,Visa/MasterCard/Amex processing,316
+372,Wire Transfer,Electronic wire transfer,615
+373,Digital Wallet,PayPal/Apple Pay/Google Pay,1709
+374,Digital Wallet,PayPal/Apple Pay/Google Pay,968
+375,Credit Card,Visa/MasterCard/Amex processing,1340
+376,Digital Wallet,PayPal/Apple Pay/Google Pay,1829
+377,Wire Transfer,Electronic wire transfer,855
+378,Debit Card,Direct debit transaction,1008
+379,Digital Wallet,PayPal/Apple Pay/Google Pay,1321
+380,Debit Card,Direct debit transaction,59
+381,Credit Card,Visa/MasterCard/Amex processing,1567
+382,Wire Transfer,Electronic wire transfer,1010
+383,Credit Card,Visa/MasterCard/Amex processing,1227
+384,Digital Wallet,PayPal/Apple Pay/Google Pay,741
+385,Cash Payment,Cash processing,985
+386,Cash Payment,Cash processing,894
+387,Wire Transfer,Electronic wire transfer,1287
+388,Digital Wallet,PayPal/Apple Pay/Google Pay,975
+389,Digital Wallet,PayPal/Apple Pay/Google Pay,1676
+390,Credit Card,Visa/MasterCard/Amex processing,765
+391,Cash Payment,Cash processing,1502
+392,Cash Payment,Cash processing,36
+393,Wire Transfer,Electronic wire transfer,334
+394,Cash Payment,Cash processing,120
+395,Debit Card,Direct debit transaction,655
+396,ACH Transfer,Automated clearing house,1799
+397,Digital Wallet,PayPal/Apple Pay/Google Pay,278
+398,Wire Transfer,Electronic wire transfer,335
+399,Credit Card,Visa/MasterCard/Amex processing,559
+400,Wire Transfer,Electronic wire transfer,860
+401,Digital Wallet,PayPal/Apple Pay/Google Pay,1868
+402,Wire Transfer,Electronic wire transfer,100
+403,Wire Transfer,Electronic wire transfer,598
+404,Cash Payment,Cash processing,1309
+405,Credit Card,Visa/MasterCard/Amex processing,1053
+406,Debit Card,Direct debit transaction,1570
+407,Digital Wallet,PayPal/Apple Pay/Google Pay,376
+408,Credit Card,Visa/MasterCard/Amex processing,1227
+409,Debit Card,Direct debit transaction,1114
+410,Wire Transfer,Electronic wire transfer,1787
+411,Wire Transfer,Electronic wire transfer,1694
+412,Digital Wallet,PayPal/Apple Pay/Google Pay,1639
+413,Wire Transfer,Electronic wire transfer,556
+414,Digital Wallet,PayPal/Apple Pay/Google Pay,1430
+415,Digital Wallet,PayPal/Apple Pay/Google Pay,743
+416,Credit Card,Visa/MasterCard/Amex processing,1095
+417,Cash Payment,Cash processing,721
+418,Debit Card,Direct debit transaction,27
+419,Debit Card,Direct debit transaction,1062
+420,Wire Transfer,Electronic wire transfer,764
+421,ACH Transfer,Automated clearing house,844
+422,Wire Transfer,Electronic wire transfer,1887
+423,Debit Card,Direct debit transaction,210
+424,Debit Card,Direct debit transaction,317
+425,Cash Payment,Cash processing,453
+426,Debit Card,Direct debit transaction,1629
+427,Cash Payment,Cash processing,1257
+428,Digital Wallet,PayPal/Apple Pay/Google Pay,1703
+429,Cash Payment,Cash processing,1733
+430,Cash Payment,Cash processing,1460
+431,Cash Payment,Cash processing,1439
+432,Credit Card,Visa/MasterCard/Amex processing,855
+433,ACH Transfer,Automated clearing house,1877
+434,Credit Card,Visa/MasterCard/Amex processing,239
+435,Debit Card,Direct debit transaction,1892
+436,Credit Card,Visa/MasterCard/Amex processing,983
+437,Wire Transfer,Electronic wire transfer,639
+438,Digital Wallet,PayPal/Apple Pay/Google Pay,743
+439,Debit Card,Direct debit transaction,1674
+440,ACH Transfer,Automated clearing house,1823
+441,Cash Payment,Cash processing,1072
+442,Wire Transfer,Electronic wire transfer,353
+443,Digital Wallet,PayPal/Apple Pay/Google Pay,624
+444,Credit Card,Visa/MasterCard/Amex processing,1525
+445,Credit Card,Visa/MasterCard/Amex processing,456
+446,Debit Card,Direct debit transaction,1755
+447,Digital Wallet,PayPal/Apple Pay/Google Pay,292
+448,Digital Wallet,PayPal/Apple Pay/Google Pay,465
+449,Wire Transfer,Electronic wire transfer,257
+450,Debit Card,Direct debit transaction,267
+451,Credit Card,Visa/MasterCard/Amex processing,871
+452,Digital Wallet,PayPal/Apple Pay/Google Pay,1563
+453,Credit Card,Visa/MasterCard/Amex processing,160
+454,Credit Card,Visa/MasterCard/Amex processing,1587
+455,ACH Transfer,Automated clearing house,1552
+456,ACH Transfer,Automated clearing house,88
+457,Debit Card,Direct debit transaction,221
+458,Credit Card,Visa/MasterCard/Amex processing,1625
+459,Digital Wallet,PayPal/Apple Pay/Google Pay,1052
+460,Cash Payment,Cash processing,122
+461,ACH Transfer,Automated clearing house,244
+462,Wire Transfer,Electronic wire transfer,89
+463,Credit Card,Visa/MasterCard/Amex processing,618
+464,Digital Wallet,PayPal/Apple Pay/Google Pay,22
+465,Credit Card,Visa/MasterCard/Amex processing,1603
+466,Credit Card,Visa/MasterCard/Amex processing,1885
+467,Cash Payment,Cash processing,421
+468,Cash Payment,Cash processing,1846
+469,Debit Card,Direct debit transaction,379
+470,Digital Wallet,PayPal/Apple Pay/Google Pay,720
+471,Credit Card,Visa/MasterCard/Amex processing,186
+472,Debit Card,Direct debit transaction,1733
+473,Digital Wallet,PayPal/Apple Pay/Google Pay,1929
+474,Wire Transfer,Electronic wire transfer,1944
+475,Cash Payment,Cash processing,713
+476,Wire Transfer,Electronic wire transfer,329
+477,Cash Payment,Cash processing,1600
+478,Digital Wallet,PayPal/Apple Pay/Google Pay,1256
+479,Debit Card,Direct debit transaction,1035
+480,Cash Payment,Cash processing,140
+481,Credit Card,Visa/MasterCard/Amex processing,1679
+482,Cash Payment,Cash processing,1564
+483,Credit Card,Visa/MasterCard/Amex processing,1084
+484,Debit Card,Direct debit transaction,1466
+485,Debit Card,Direct debit transaction,1975
+486,Wire Transfer,Electronic wire transfer,352
+487,Cash Payment,Cash processing,9
+488,Digital Wallet,PayPal/Apple Pay/Google Pay,203
+489,Debit Card,Direct debit transaction,1886
+490,Cash Payment,Cash processing,1744
+491,Digital Wallet,PayPal/Apple Pay/Google Pay,973
+492,Wire Transfer,Electronic wire transfer,1430
+493,Cash Payment,Cash processing,380
+494,ACH Transfer,Automated clearing house,1380
+495,Credit Card,Visa/MasterCard/Amex processing,371
+496,Wire Transfer,Electronic wire transfer,778
+497,ACH Transfer,Automated clearing house,439
+498,Cash Payment,Cash processing,467
+499,ACH Transfer,Automated clearing house,232
+500,Wire Transfer,Electronic wire transfer,254
+501,ACH Transfer,Automated clearing house,226
+502,Cash Payment,Cash processing,279
+503,ACH Transfer,Automated clearing house,1562
+504,Wire Transfer,Electronic wire transfer,1444
+505,Wire Transfer,Electronic wire transfer,1142
+506,Digital Wallet,PayPal/Apple Pay/Google Pay,84
+507,Credit Card,Visa/MasterCard/Amex processing,672
+508,ACH Transfer,Automated clearing house,237
+509,ACH Transfer,Automated clearing house,581
+510,ACH Transfer,Automated clearing house,1230
+511,Digital Wallet,PayPal/Apple Pay/Google Pay,639
+512,Digital Wallet,PayPal/Apple Pay/Google Pay,2000
+513,ACH Transfer,Automated clearing house,463
+514,Cash Payment,Cash processing,835
+515,Wire Transfer,Electronic wire transfer,1752
+516,ACH Transfer,Automated clearing house,387
+517,Credit Card,Visa/MasterCard/Amex processing,1833
+518,ACH Transfer,Automated clearing house,1924
+519,Digital Wallet,PayPal/Apple Pay/Google Pay,753
+520,Debit Card,Direct debit transaction,27
+521,Digital Wallet,PayPal/Apple Pay/Google Pay,1007
+522,Digital Wallet,PayPal/Apple Pay/Google Pay,216
+523,ACH Transfer,Automated clearing house,898
+524,Cash Payment,Cash processing,1349
+525,Digital Wallet,PayPal/Apple Pay/Google Pay,175
+526,Credit Card,Visa/MasterCard/Amex processing,294
+527,ACH Transfer,Automated clearing house,821
+528,Digital Wallet,PayPal/Apple Pay/Google Pay,1210
+529,Credit Card,Visa/MasterCard/Amex processing,1519
+530,Debit Card,Direct debit transaction,133
+531,Wire Transfer,Electronic wire transfer,1998
+532,Debit Card,Direct debit transaction,694
+533,Debit Card,Direct debit transaction,1219
+534,ACH Transfer,Automated clearing house,252
+535,Debit Card,Direct debit transaction,1717
+536,ACH Transfer,Automated clearing house,1486
+537,ACH Transfer,Automated clearing house,571
+538,Digital Wallet,PayPal/Apple Pay/Google Pay,1569
+539,Cash Payment,Cash processing,1216
+540,Wire Transfer,Electronic wire transfer,1549
+541,Digital Wallet,PayPal/Apple Pay/Google Pay,1932
+542,ACH Transfer,Automated clearing house,730
+543,ACH Transfer,Automated clearing house,1366
+544,Cash Payment,Cash processing,1946
+545,ACH Transfer,Automated clearing house,993
+546,Cash Payment,Cash processing,572
+547,Debit Card,Direct debit transaction,1573
+548,ACH Transfer,Automated clearing house,222
+549,Credit Card,Visa/MasterCard/Amex processing,514
+550,ACH Transfer,Automated clearing house,1019
+551,Debit Card,Direct debit transaction,1287
+552,Debit Card,Direct debit transaction,61
+553,Credit Card,Visa/MasterCard/Amex processing,1512
+554,Credit Card,Visa/MasterCard/Amex processing,1701
+555,Credit Card,Visa/MasterCard/Amex processing,1021
+556,Digital Wallet,PayPal/Apple Pay/Google Pay,55
+557,Debit Card,Direct debit transaction,784
+558,Cash Payment,Cash processing,1392
+559,Wire Transfer,Electronic wire transfer,313
+560,Wire Transfer,Electronic wire transfer,1274
+561,Cash Payment,Cash processing,198
+562,Credit Card,Visa/MasterCard/Amex processing,1354
+563,Cash Payment,Cash processing,1572
+564,ACH Transfer,Automated clearing house,1624
+565,ACH Transfer,Automated clearing house,414
+566,Wire Transfer,Electronic wire transfer,1356
+567,ACH Transfer,Automated clearing house,1005
+568,Cash Payment,Cash processing,536
+569,Cash Payment,Cash processing,704
+570,Cash Payment,Cash processing,1120
+571,Credit Card,Visa/MasterCard/Amex processing,1951
+572,Credit Card,Visa/MasterCard/Amex processing,882
+573,Credit Card,Visa/MasterCard/Amex processing,786
+574,ACH Transfer,Automated clearing house,645
+575,ACH Transfer,Automated clearing house,907
+576,ACH Transfer,Automated clearing house,74
+577,Credit Card,Visa/MasterCard/Amex processing,363
+578,Cash Payment,Cash processing,1351
+579,Wire Transfer,Electronic wire transfer,1812
+580,Digital Wallet,PayPal/Apple Pay/Google Pay,337
+581,ACH Transfer,Automated clearing house,883
+582,Debit Card,Direct debit transaction,640
+583,Digital Wallet,PayPal/Apple Pay/Google Pay,797
+584,ACH Transfer,Automated clearing house,1565
+585,Credit Card,Visa/MasterCard/Amex processing,1166
+586,Digital Wallet,PayPal/Apple Pay/Google Pay,1005
+587,Digital Wallet,PayPal/Apple Pay/Google Pay,1135
+588,Digital Wallet,PayPal/Apple Pay/Google Pay,1105
+589,Cash Payment,Cash processing,963
+590,ACH Transfer,Automated clearing house,1152
+591,Debit Card,Direct debit transaction,1038
+592,Credit Card,Visa/MasterCard/Amex processing,802
+593,Wire Transfer,Electronic wire transfer,1014
+594,Cash Payment,Cash processing,1989
+595,ACH Transfer,Automated clearing house,1264
+596,Digital Wallet,PayPal/Apple Pay/Google Pay,723
+597,Wire Transfer,Electronic wire transfer,657
+598,Credit Card,Visa/MasterCard/Amex processing,58
+599,Cash Payment,Cash processing,93
+600,Debit Card,Direct debit transaction,1715
+601,Wire Transfer,Electronic wire transfer,715
+602,Digital Wallet,PayPal/Apple Pay/Google Pay,1196
+603,Credit Card,Visa/MasterCard/Amex processing,1568
+604,Digital Wallet,PayPal/Apple Pay/Google Pay,699
+605,ACH Transfer,Automated clearing house,200
+606,ACH Transfer,Automated clearing house,707
+607,Wire Transfer,Electronic wire transfer,844
+608,Wire Transfer,Electronic wire transfer,116
+609,Digital Wallet,PayPal/Apple Pay/Google Pay,501
+610,Debit Card,Direct debit transaction,481
+611,Digital Wallet,PayPal/Apple Pay/Google Pay,640
+612,Cash Payment,Cash processing,174
+613,Digital Wallet,PayPal/Apple Pay/Google Pay,135
+614,Wire Transfer,Electronic wire transfer,235
+615,Wire Transfer,Electronic wire transfer,348
+616,Credit Card,Visa/MasterCard/Amex processing,1103
+617,Wire Transfer,Electronic wire transfer,77
+618,ACH Transfer,Automated clearing house,1348
+619,ACH Transfer,Automated clearing house,1164
+620,Cash Payment,Cash processing,1847
+621,ACH Transfer,Automated clearing house,547
+622,Credit Card,Visa/MasterCard/Amex processing,1426
+623,ACH Transfer,Automated clearing house,1205
+624,Credit Card,Visa/MasterCard/Amex processing,649
+625,ACH Transfer,Automated clearing house,1169
+626,ACH Transfer,Automated clearing house,661
+627,Cash Payment,Cash processing,201
+628,ACH Transfer,Automated clearing house,205
+629,Digital Wallet,PayPal/Apple Pay/Google Pay,1383
+630,Debit Card,Direct debit transaction,689
+631,ACH Transfer,Automated clearing house,1030
+632,Digital Wallet,PayPal/Apple Pay/Google Pay,696
+633,Debit Card,Direct debit transaction,1260
+634,Wire Transfer,Electronic wire transfer,745
+635,ACH Transfer,Automated clearing house,414
+636,ACH Transfer,Automated clearing house,1302
+637,Credit Card,Visa/MasterCard/Amex processing,1722
+638,Cash Payment,Cash processing,439
+639,Wire Transfer,Electronic wire transfer,544
+640,Credit Card,Visa/MasterCard/Amex processing,609
+641,Cash Payment,Cash processing,824
+642,Debit Card,Direct debit transaction,1280
+643,Digital Wallet,PayPal/Apple Pay/Google Pay,1962
+644,Credit Card,Visa/MasterCard/Amex processing,1470
+645,Cash Payment,Cash processing,195
+646,Cash Payment,Cash processing,690
+647,Wire Transfer,Electronic wire transfer,138
+648,Cash Payment,Cash processing,1641
+649,Cash Payment,Cash processing,974
+650,ACH Transfer,Automated clearing house,430
+651,Wire Transfer,Electronic wire transfer,1630
+652,Credit Card,Visa/MasterCard/Amex processing,1335
+653,Wire Transfer,Electronic wire transfer,1034
+654,Wire Transfer,Electronic wire transfer,887
+655,Digital Wallet,PayPal/Apple Pay/Google Pay,1106
+656,Wire Transfer,Electronic wire transfer,410
+657,ACH Transfer,Automated clearing house,824
+658,Wire Transfer,Electronic wire transfer,1280
+659,Cash Payment,Cash processing,929
+660,Digital Wallet,PayPal/Apple Pay/Google Pay,1564
+661,Cash Payment,Cash processing,370
+662,Credit Card,Visa/MasterCard/Amex processing,1286
+663,Digital Wallet,PayPal/Apple Pay/Google Pay,1058
+664,Debit Card,Direct debit transaction,1182
+665,ACH Transfer,Automated clearing house,437
+666,Digital Wallet,PayPal/Apple Pay/Google Pay,1971
+667,Digital Wallet,PayPal/Apple Pay/Google Pay,1922
+668,ACH Transfer,Automated clearing house,549
+669,Digital Wallet,PayPal/Apple Pay/Google Pay,1092
+670,Cash Payment,Cash processing,1747
+671,ACH Transfer,Automated clearing house,1915
+672,Cash Payment,Cash processing,1489
+673,Digital Wallet,PayPal/Apple Pay/Google Pay,123
+674,Cash Payment,Cash processing,411
+675,Wire Transfer,Electronic wire transfer,948
+676,Debit Card,Direct debit transaction,493
+677,Debit Card,Direct debit transaction,1529
+678,Digital Wallet,PayPal/Apple Pay/Google Pay,1568
+679,Wire Transfer,Electronic wire transfer,1729
+680,ACH Transfer,Automated clearing house,841
+681,Wire Transfer,Electronic wire transfer,1762
+682,Credit Card,Visa/MasterCard/Amex processing,1299
+683,Debit Card,Direct debit transaction,1733
+684,ACH Transfer,Automated clearing house,547
+685,Wire Transfer,Electronic wire transfer,1324
+686,Debit Card,Direct debit transaction,526
+687,Digital Wallet,PayPal/Apple Pay/Google Pay,1232
+688,Debit Card,Direct debit transaction,832
+689,Debit Card,Direct debit transaction,233
+690,Debit Card,Direct debit transaction,394
+691,Credit Card,Visa/MasterCard/Amex processing,503
+692,Wire Transfer,Electronic wire transfer,951
+693,ACH Transfer,Automated clearing house,1147
+694,ACH Transfer,Automated clearing house,865
+695,Digital Wallet,PayPal/Apple Pay/Google Pay,1855
+696,Credit Card,Visa/MasterCard/Amex processing,414
+697,Debit Card,Direct debit transaction,559
+698,Debit Card,Direct debit transaction,60
+699,Wire Transfer,Electronic wire transfer,1618
+700,Wire Transfer,Electronic wire transfer,1349
+701,Cash Payment,Cash processing,361
+702,Digital Wallet,PayPal/Apple Pay/Google Pay,1746
+703,Credit Card,Visa/MasterCard/Amex processing,1974
+704,Digital Wallet,PayPal/Apple Pay/Google Pay,996
+705,Credit Card,Visa/MasterCard/Amex processing,114
+706,Credit Card,Visa/MasterCard/Amex processing,643
+707,Cash Payment,Cash processing,611
+708,Credit Card,Visa/MasterCard/Amex processing,1845
+709,ACH Transfer,Automated clearing house,1837
+710,Wire Transfer,Electronic wire transfer,1376
+711,Digital Wallet,PayPal/Apple Pay/Google Pay,1814
+712,Credit Card,Visa/MasterCard/Amex processing,813
+713,Digital Wallet,PayPal/Apple Pay/Google Pay,1726
+714,Debit Card,Direct debit transaction,484
+715,Credit Card,Visa/MasterCard/Amex processing,1170
+716,Digital Wallet,PayPal/Apple Pay/Google Pay,1025
+717,Credit Card,Visa/MasterCard/Amex processing,1069
+718,Digital Wallet,PayPal/Apple Pay/Google Pay,1698
+719,Cash Payment,Cash processing,1945
+720,Cash Payment,Cash processing,516
+721,ACH Transfer,Automated clearing house,1812
+722,Credit Card,Visa/MasterCard/Amex processing,488
+723,Cash Payment,Cash processing,251
+724,Wire Transfer,Electronic wire transfer,675
+725,Cash Payment,Cash processing,1510
+726,ACH Transfer,Automated clearing house,1651
+727,Digital Wallet,PayPal/Apple Pay/Google Pay,1524
+728,Debit Card,Direct debit transaction,1916
+729,ACH Transfer,Automated clearing house,447
+730,Debit Card,Direct debit transaction,219
+731,Debit Card,Direct debit transaction,439
+732,Wire Transfer,Electronic wire transfer,901
+733,ACH Transfer,Automated clearing house,521
+734,Cash Payment,Cash processing,115
+735,ACH Transfer,Automated clearing house,1093
+736,Wire Transfer,Electronic wire transfer,1433
+737,Credit Card,Visa/MasterCard/Amex processing,649
+738,Cash Payment,Cash processing,868
+739,ACH Transfer,Automated clearing house,1399
+740,Debit Card,Direct debit transaction,1973
+741,Wire Transfer,Electronic wire transfer,1802
+742,Debit Card,Direct debit transaction,744
+743,ACH Transfer,Automated clearing house,1466
+744,Wire Transfer,Electronic wire transfer,1683
+745,Wire Transfer,Electronic wire transfer,44
+746,Digital Wallet,PayPal/Apple Pay/Google Pay,1981
+747,Cash Payment,Cash processing,72
+748,Digital Wallet,PayPal/Apple Pay/Google Pay,1357
+749,Credit Card,Visa/MasterCard/Amex processing,1415
+750,Digital Wallet,PayPal/Apple Pay/Google Pay,491
+751,Wire Transfer,Electronic wire transfer,1132
+752,ACH Transfer,Automated clearing house,634
+753,Digital Wallet,PayPal/Apple Pay/Google Pay,1963
+754,Digital Wallet,PayPal/Apple Pay/Google Pay,744
+755,Digital Wallet,PayPal/Apple Pay/Google Pay,250
+756,Cash Payment,Cash processing,1776
+757,Debit Card,Direct debit transaction,1757
+758,ACH Transfer,Automated clearing house,796
+759,Credit Card,Visa/MasterCard/Amex processing,1864
+760,ACH Transfer,Automated clearing house,1900
+761,Wire Transfer,Electronic wire transfer,617
+762,Credit Card,Visa/MasterCard/Amex processing,1918
+763,Debit Card,Direct debit transaction,610
+764,Debit Card,Direct debit transaction,1761
+765,Debit Card,Direct debit transaction,1876
+766,ACH Transfer,Automated clearing house,1294
+767,Wire Transfer,Electronic wire transfer,1802
+768,Digital Wallet,PayPal/Apple Pay/Google Pay,833
+769,Credit Card,Visa/MasterCard/Amex processing,562
+770,Credit Card,Visa/MasterCard/Amex processing,1686
+771,ACH Transfer,Automated clearing house,965
+772,Digital Wallet,PayPal/Apple Pay/Google Pay,846
+773,Wire Transfer,Electronic wire transfer,1470
+774,ACH Transfer,Automated clearing house,1796
+775,Credit Card,Visa/MasterCard/Amex processing,1689
+776,Debit Card,Direct debit transaction,1431
+777,Wire Transfer,Electronic wire transfer,1037
+778,Credit Card,Visa/MasterCard/Amex processing,721
+779,ACH Transfer,Automated clearing house,1234
+780,Digital Wallet,PayPal/Apple Pay/Google Pay,1666
+781,Cash Payment,Cash processing,1511
+782,Wire Transfer,Electronic wire transfer,929
+783,Digital Wallet,PayPal/Apple Pay/Google Pay,57
+784,Credit Card,Visa/MasterCard/Amex processing,1314
+785,Digital Wallet,PayPal/Apple Pay/Google Pay,377
+786,Digital Wallet,PayPal/Apple Pay/Google Pay,909
+787,Digital Wallet,PayPal/Apple Pay/Google Pay,279
+788,Credit Card,Visa/MasterCard/Amex processing,821
+789,Debit Card,Direct debit transaction,1287
+790,Wire Transfer,Electronic wire transfer,643
+791,Cash Payment,Cash processing,169
+792,Credit Card,Visa/MasterCard/Amex processing,324
+793,Debit Card,Direct debit transaction,1058
+794,Digital Wallet,PayPal/Apple Pay/Google Pay,1986
+795,Digital Wallet,PayPal/Apple Pay/Google Pay,1563
+796,Debit Card,Direct debit transaction,1735
+797,Cash Payment,Cash processing,1405
+798,ACH Transfer,Automated clearing house,1624
+799,Wire Transfer,Electronic wire transfer,925
+800,ACH Transfer,Automated clearing house,1789
+801,Digital Wallet,PayPal/Apple Pay/Google Pay,274
+802,Wire Transfer,Electronic wire transfer,356
+803,Digital Wallet,PayPal/Apple Pay/Google Pay,1215
+804,Wire Transfer,Electronic wire transfer,1638
+805,Wire Transfer,Electronic wire transfer,407
+806,Credit Card,Visa/MasterCard/Amex processing,849
+807,Wire Transfer,Electronic wire transfer,373
+808,ACH Transfer,Automated clearing house,1795
+809,ACH Transfer,Automated clearing house,1935
+810,Cash Payment,Cash processing,460
+811,Credit Card,Visa/MasterCard/Amex processing,1942
+812,Credit Card,Visa/MasterCard/Amex processing,1891
+813,Cash Payment,Cash processing,1326
+814,Cash Payment,Cash processing,1284
+815,Debit Card,Direct debit transaction,1858
+816,Credit Card,Visa/MasterCard/Amex processing,1996
+817,ACH Transfer,Automated clearing house,407
+818,Wire Transfer,Electronic wire transfer,1437
+819,Debit Card,Direct debit transaction,102
+820,ACH Transfer,Automated clearing house,1266
+821,ACH Transfer,Automated clearing house,1230
+822,Wire Transfer,Electronic wire transfer,306
+823,Credit Card,Visa/MasterCard/Amex processing,1963
+824,Wire Transfer,Electronic wire transfer,349
+825,Cash Payment,Cash processing,241
+826,Credit Card,Visa/MasterCard/Amex processing,1472
+827,Cash Payment,Cash processing,892
+828,ACH Transfer,Automated clearing house,1695
+829,Digital Wallet,PayPal/Apple Pay/Google Pay,1013
+830,Credit Card,Visa/MasterCard/Amex processing,460
+831,Digital Wallet,PayPal/Apple Pay/Google Pay,417
+832,Debit Card,Direct debit transaction,1938
+833,Wire Transfer,Electronic wire transfer,590
+834,Digital Wallet,PayPal/Apple Pay/Google Pay,1013
+835,ACH Transfer,Automated clearing house,267
+836,ACH Transfer,Automated clearing house,1754
+837,Debit Card,Direct debit transaction,1229
+838,Debit Card,Direct debit transaction,1688
+839,Wire Transfer,Electronic wire transfer,1489
+840,Digital Wallet,PayPal/Apple Pay/Google Pay,388
+841,ACH Transfer,Automated clearing house,370
+842,ACH Transfer,Automated clearing house,1623
+843,Debit Card,Direct debit transaction,59
+844,Wire Transfer,Electronic wire transfer,2000
+845,Wire Transfer,Electronic wire transfer,483
+846,Cash Payment,Cash processing,924
+847,Debit Card,Direct debit transaction,758
+848,Cash Payment,Cash processing,1402
+849,Digital Wallet,PayPal/Apple Pay/Google Pay,939
+850,Credit Card,Visa/MasterCard/Amex processing,22
+851,ACH Transfer,Automated clearing house,273
+852,Wire Transfer,Electronic wire transfer,1996
+853,Digital Wallet,PayPal/Apple Pay/Google Pay,815
+854,Digital Wallet,PayPal/Apple Pay/Google Pay,435
+855,Digital Wallet,PayPal/Apple Pay/Google Pay,786
+856,Digital Wallet,PayPal/Apple Pay/Google Pay,867
+857,Digital Wallet,PayPal/Apple Pay/Google Pay,1224
+858,Wire Transfer,Electronic wire transfer,150
+859,Credit Card,Visa/MasterCard/Amex processing,1141
+860,Credit Card,Visa/MasterCard/Amex processing,107
+861,Wire Transfer,Electronic wire transfer,1907
+862,Debit Card,Direct debit transaction,965
+863,Wire Transfer,Electronic wire transfer,1242
+864,Digital Wallet,PayPal/Apple Pay/Google Pay,1981
+865,Cash Payment,Cash processing,1454
+866,Digital Wallet,PayPal/Apple Pay/Google Pay,1659
+867,Credit Card,Visa/MasterCard/Amex processing,11
+868,Wire Transfer,Electronic wire transfer,1034
+869,Cash Payment,Cash processing,781
+870,Wire Transfer,Electronic wire transfer,809
+871,Digital Wallet,PayPal/Apple Pay/Google Pay,760
+872,Debit Card,Direct debit transaction,1983
+873,Cash Payment,Cash processing,85
+874,Cash Payment,Cash processing,368
+875,Wire Transfer,Electronic wire transfer,348
+876,Cash Payment,Cash processing,1010
+877,Wire Transfer,Electronic wire transfer,1798
+878,ACH Transfer,Automated clearing house,271
+879,Credit Card,Visa/MasterCard/Amex processing,650
+880,Digital Wallet,PayPal/Apple Pay/Google Pay,1087
+881,ACH Transfer,Automated clearing house,291
+882,Wire Transfer,Electronic wire transfer,240
+883,Wire Transfer,Electronic wire transfer,91
+884,Debit Card,Direct debit transaction,1023
+885,Wire Transfer,Electronic wire transfer,1532
+886,Wire Transfer,Electronic wire transfer,1897
+887,ACH Transfer,Automated clearing house,580
+888,Wire Transfer,Electronic wire transfer,1256
+889,Wire Transfer,Electronic wire transfer,1059
+890,Wire Transfer,Electronic wire transfer,893
+891,Debit Card,Direct debit transaction,647
+892,Digital Wallet,PayPal/Apple Pay/Google Pay,1007
+893,Debit Card,Direct debit transaction,1139
+894,Digital Wallet,PayPal/Apple Pay/Google Pay,1304
+895,ACH Transfer,Automated clearing house,109
+896,Debit Card,Direct debit transaction,305
+897,Credit Card,Visa/MasterCard/Amex processing,471
+898,Debit Card,Direct debit transaction,74
+899,ACH Transfer,Automated clearing house,533
+900,Debit Card,Direct debit transaction,1446
+901,ACH Transfer,Automated clearing house,894
+902,Credit Card,Visa/MasterCard/Amex processing,1834
+903,ACH Transfer,Automated clearing house,84
+904,ACH Transfer,Automated clearing house,731
+905,Digital Wallet,PayPal/Apple Pay/Google Pay,1149
+906,ACH Transfer,Automated clearing house,938
+907,ACH Transfer,Automated clearing house,231
+908,Digital Wallet,PayPal/Apple Pay/Google Pay,1776
+909,Debit Card,Direct debit transaction,254
+910,Wire Transfer,Electronic wire transfer,192
+911,Debit Card,Direct debit transaction,1779
+912,Wire Transfer,Electronic wire transfer,370
+913,Debit Card,Direct debit transaction,1536
+914,Cash Payment,Cash processing,1685
+915,Wire Transfer,Electronic wire transfer,1154
+916,Digital Wallet,PayPal/Apple Pay/Google Pay,1200
+917,Debit Card,Direct debit transaction,1196
+918,Credit Card,Visa/MasterCard/Amex processing,1078
+919,Cash Payment,Cash processing,370
+920,ACH Transfer,Automated clearing house,1886
+921,Credit Card,Visa/MasterCard/Amex processing,505
+922,ACH Transfer,Automated clearing house,1387
+923,Credit Card,Visa/MasterCard/Amex processing,1818
+924,Wire Transfer,Electronic wire transfer,54
+925,Wire Transfer,Electronic wire transfer,1396
+926,Digital Wallet,PayPal/Apple Pay/Google Pay,250
+927,ACH Transfer,Automated clearing house,766
+928,Cash Payment,Cash processing,1903
+929,Credit Card,Visa/MasterCard/Amex processing,1715
+930,Wire Transfer,Electronic wire transfer,315
+931,Credit Card,Visa/MasterCard/Amex processing,167
+932,ACH Transfer,Automated clearing house,1702
+933,Digital Wallet,PayPal/Apple Pay/Google Pay,1351
+934,ACH Transfer,Automated clearing house,930
+935,Digital Wallet,PayPal/Apple Pay/Google Pay,1957
+936,Wire Transfer,Electronic wire transfer,1217
+937,Digital Wallet,PayPal/Apple Pay/Google Pay,12
+938,Wire Transfer,Electronic wire transfer,1987
+939,Credit Card,Visa/MasterCard/Amex processing,1344
+940,Cash Payment,Cash processing,1948
+941,ACH Transfer,Automated clearing house,666
+942,Digital Wallet,PayPal/Apple Pay/Google Pay,1504
+943,Cash Payment,Cash processing,265
+944,Debit Card,Direct debit transaction,1768
+945,Credit Card,Visa/MasterCard/Amex processing,1642
+946,Digital Wallet,PayPal/Apple Pay/Google Pay,580
+947,Wire Transfer,Electronic wire transfer,1635
+948,Credit Card,Visa/MasterCard/Amex processing,1524
+949,Credit Card,Visa/MasterCard/Amex processing,1121
+950,Cash Payment,Cash processing,782
+951,Credit Card,Visa/MasterCard/Amex processing,817
+952,Wire Transfer,Electronic wire transfer,365
+953,Debit Card,Direct debit transaction,1977
+954,ACH Transfer,Automated clearing house,183
+955,Credit Card,Visa/MasterCard/Amex processing,1746
+956,Debit Card,Direct debit transaction,334
+957,ACH Transfer,Automated clearing house,1597
+958,ACH Transfer,Automated clearing house,584
+959,Digital Wallet,PayPal/Apple Pay/Google Pay,1542
+960,Digital Wallet,PayPal/Apple Pay/Google Pay,316
+961,Credit Card,Visa/MasterCard/Amex processing,612
+962,ACH Transfer,Automated clearing house,1641
+963,ACH Transfer,Automated clearing house,1508
+964,Wire Transfer,Electronic wire transfer,1851
+965,Digital Wallet,PayPal/Apple Pay/Google Pay,1236
+966,Debit Card,Direct debit transaction,736
+967,Digital Wallet,PayPal/Apple Pay/Google Pay,197
+968,Wire Transfer,Electronic wire transfer,1050
+969,Debit Card,Direct debit transaction,1003
+970,ACH Transfer,Automated clearing house,1814
+971,ACH Transfer,Automated clearing house,976
+972,Wire Transfer,Electronic wire transfer,1154
+973,Cash Payment,Cash processing,867
+974,Credit Card,Visa/MasterCard/Amex processing,1550
+975,ACH Transfer,Automated clearing house,1661
+976,Wire Transfer,Electronic wire transfer,1258
+977,Debit Card,Direct debit transaction,890
+978,Digital Wallet,PayPal/Apple Pay/Google Pay,873
+979,Credit Card,Visa/MasterCard/Amex processing,83
+980,Cash Payment,Cash processing,700
+981,ACH Transfer,Automated clearing house,1386
+982,Debit Card,Direct debit transaction,1327
+983,Digital Wallet,PayPal/Apple Pay/Google Pay,1462
+984,Debit Card,Direct debit transaction,1907
+985,ACH Transfer,Automated clearing house,1080
+986,Digital Wallet,PayPal/Apple Pay/Google Pay,1326
+987,Cash Payment,Cash processing,172
+988,Wire Transfer,Electronic wire transfer,959
+989,ACH Transfer,Automated clearing house,163
+990,ACH Transfer,Automated clearing house,616
+991,Debit Card,Direct debit transaction,262
+992,Digital Wallet,PayPal/Apple Pay/Google Pay,1850
+993,Wire Transfer,Electronic wire transfer,1724
+994,Debit Card,Direct debit transaction,1072
+995,ACH Transfer,Automated clearing house,606
+996,Cash Payment,Cash processing,98
+997,Cash Payment,Cash processing,157
+998,Credit Card,Visa/MasterCard/Amex processing,1052
+999,Credit Card,Visa/MasterCard/Amex processing,1046
+1000,ACH Transfer,Automated clearing house,846
