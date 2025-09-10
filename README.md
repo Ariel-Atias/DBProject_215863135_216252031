@@ -415,23 +415,27 @@ They provide flexibility for users to get specific information based on their ne
 
 **1. Show all transactions for a specific customer by name**
 - **Business Question:** "Show me all transactions for customer John Doe"
-- **Parameter:** Customer Name
+- **Parameter:** Customer Name (e.g., 'John Smith')
 - **Uses:** JOIN, ORDER BY
+- **Purpose:** Retrieves all transaction details for a given customer, including merchant and payment method, allowing focused analysis on individual customer behavior.
 
 **2. Show transactions within a date range and minimum amount**
 - **Business Question:** "Show me all transactions between two dates with amount above threshold"
-- **Parameters:** Start Date, End Date, Minimum Amount
-- **Uses:** JOIN, WHERE with date range, ORDER BY
+- **Parameters:** Start Date = '2024-01-01', End Date = '2024-12-31', Minimum Amount = 100
+- **Uses:** JOIN, WHERE with date range and minimum amount, ORDER BY
+- **Purpose:** Filters transactions to a specific period and threshold, useful for reporting and detecting significant transactions over time.
 
-**3. Merchant transaction summary for specific currency**
-- **Business Question:** "Give me transaction summary for merchant Amazon in USD currency"
-- **Parameters:** Merchant Name, Currency
+**3. Merchant transaction summary**
+- **Business Question:** "Give me transaction summary for merchant example 'Amazon' in 'USD'"
+- **Parameters:** Merchant Name = 'Amazon', Currency = 'USD'
 - **Uses:** JOIN, GROUP BY, SUM/AVG/MAX/MIN functions
+- **Purpose:** Aggregates all transactions for a merchant in a given currency, showing total, average, highest, and lowest transaction amounts. Useful for merchant performance analysis.
 
 **4. Payment methods usage by bank and account type**
-- **Business Question:** "Show payment method usage for specific bank and account type"
-- **Parameters:** Bank Name, Account Type
-- **Uses:** JOIN, GROUP BY, COUNT functions
+- **Business Question:** "Show payment method usage for bank example 'Bank Hapoalim' and 'Checking' accounts"
+- **Parameters:** Bank Name = 'Bank Hapoalim', Account Type = 'Checking'
+- **Uses:** JOIN, GROUP BY, COUNT/SUM functions
+- **Purpose:** Provides insights into payment method usage per bank and account type, supporting financial analysis and operational decisions.
 
 ### Execution Results:
 Insert screenshot/log here showing sample execution with parameters.
