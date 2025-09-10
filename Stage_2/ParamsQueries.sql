@@ -24,8 +24,8 @@ WHERE t.TransactionDate BETWEEN ? AND ? -- Parameters: Start Date, End Date
   AND t.Amount >= ? -- Parameter: Minimum Amount
 ORDER BY t.Amount DESC;
 
--- Query 3: Merchant transaction summary for specific currency
--- Business Question: "Give me transaction summary for merchant 'Amazon' in USD currency"
+-- Query 3: Merchant transaction summary
+-- Business Question: "Give me transaction summary for merchant example 'Amazon' in 'USD'"
 -- Parameters: Merchant Name, Currency
 SELECT m.MerchantName, m.Address,
        COUNT(t.TransactionID) AS TotalTransactions,
@@ -40,7 +40,7 @@ WHERE m.MerchantName = ? -- Parameter: Merchant Name (e.g., 'Amazon')
 GROUP BY m.MerchantID, m.MerchantName, m.Address;
 
 -- Query 4: Payment methods usage by bank and account type
--- Business Question: "Show payment method usage for specific bank and account type"
+-- Business Question: "Show payment method usage for bank example 'Bank Hapoalim' and 'Checking' accounts"
 -- Parameters: Bank Name, Account Type
 SELECT a.BankName, a.AccountType, pm.Type AS PaymentMethodType,
        COUNT(t.TransactionID) AS TransactionCount,
@@ -56,7 +56,7 @@ GROUP BY a.BankName, a.AccountType, pm.Type, ch.Name
 ORDER BY TransactionCount DESC;
 
 -- Example parameter values for testing:
--- Query 1: Customer Name = 'John Smith', 'Sarah Johnson', 'Mike Brown'
+-- Query 1: Customer Name = 'John Smith'
 -- Query 2: Start Date = '2024-01-01', End Date = '2024-12-31', Min Amount = 100
--- Query 3: Merchant Name = 'Amazon', 'Walmart', 'Target'; Currency = 'USD', 'EUR', 'ILS'
--- Query 4: Bank Name = 'Bank Hapoalim', 'Bank Leumi'; Account Type = 'Checking', 'Savings'
+-- Query 3: Merchant Name = 'Amazon'; Currency = 'USD'
+-- Query 4: Bank Name = 'Bank Hapoalim'; Account Type = 'Checking'
