@@ -534,8 +534,8 @@ Constraints ensure that data entering the system is valid and consistent, preven
 
 **1. Transaction amount cannot be negative**
 ```sql
-ALTER TABLE Transaction
-ADD CONSTRAINT chk_amount_positive CHECK (Amount >= 0);
+INSERT INTO Transaction (TransactionID, Amount, Currency, Status, TransactionDate, CustomerID, MerchantID, PaymentMethodID)
+VALUES ('TXN1000', -999.99, 'USD', 'Pending', CURRENT_DATE, 'CUST001', 'MERCH001', 'PAY001');
 ```
 **Why this constraint is essential:**
 Negative payments are illogical and could indicate errors in the payment system.
@@ -571,7 +571,7 @@ Insert screenshot here.
 **4. Customer email addresses must be unique**
 ```sql
 ALTER TABLE Customer
-ADD CONSTRAINT uk_customer_email UNIQUE (Email);
+ADD CONSTRAINT chk_name_long CHECK (LENGTH(Name) > 100);
 ```
 **Why this constraint is essential:**
 Prevents duplicate customer accounts and ensures proper customer identification.
