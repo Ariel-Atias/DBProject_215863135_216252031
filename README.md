@@ -237,14 +237,49 @@ Here is an example of typical output after running the dump process:
 
 ---
 
-## 📊 Stage 2 - ...
-
-Backup here...
+## 📊 Stage 2 - 
 
 # README – Part B (Queries, Parametrized Queries, Constraints)
 
 ## 🎯 Purpose of This Stage
 The second stage focuses on creating complex queries that simulate real-world system usage, as well as implementing constraints to ensure data quality. The goal is to demonstrate that the system can meet real business needs.
+
+## 📦 Database Backup
+
+### Stage 2 Backup Strategy
+
+After completing all queries and constraints implementation, we performed comprehensive database backups using multiple formats to ensure data safety and recovery capabilities.
+
+#### Backup Methods Used:
+
+**1. SQL Text-Based Backup (pg_dump)**
+We created a complete SQL backup file containing DROP, CREATE, and INSERT statements:
+- **Output file:** `backupSQL.sql`
+- **Log file:** `backupSQL.log`
+- **Command used:** `pg_dump --verbose --clean --create --insert`
+
+**2. PostgreSQL Custom Format Backup**
+We generated a binary backup file and tested the restore process:
+- **Backup file:** `backupPSQL.sql` 
+- **Log file:** `backupPSQL.log`
+- **Process:** Database cleared and restored using `pg_restore`
+
+**3. Performance Timing**
+All backup operations were timed using methods covered in class, with timing statistics recorded in the respective log files.
+
+#### Git Integration
+The backup files are managed using Git-LFS due to their large size, as shown in the upload process:
+
+![Git Backup Upload](screenshots/BACKUP2.jpeg)
+
+**Repository Contents:**
+- Backup scripts and log files stored in git repository
+- Large backup files managed with Git-LFS
+- Complete timing and performance metrics documented
+- All backup operations logged with detailed responses
+
+This comprehensive backup strategy ensures multiple recovery options and maintains complete audit trail of the backup process.
+
 
 ==================================================
 ## 1. SELECT / UPDATE / DELETE Queries (Queries.sql)
