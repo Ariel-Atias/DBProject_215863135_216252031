@@ -20,7 +20,7 @@ ADD CONSTRAINT chk_currency_values CHECK (Currency IN ('USD', 'EUR', 'ILS', 'GBP
 
 -- אילוץ: ייחודיות כתובת אימייל לקוחות
 ALTER TABLE Customer
-ADD CONSTRAINT uk_customer_email UNIQUE (Email);
+ADD CONSTRAINT chk_name_long CHECK (LENGTH(Name) > 100);
 
 -- ברירת מחדל לתאריך יצירת לקוח
 ALTER TABLE Customer
