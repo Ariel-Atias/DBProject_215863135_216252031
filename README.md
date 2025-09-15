@@ -530,65 +530,12 @@ Constraints ensure that data entering the system is valid and consistent, preven
 - `idx_transaction_currency` on Currency - speeds up currency-based filtering
 - `idx_customer_name` on Customer Name - accelerates customer searches
 
-### Constraints Added:
+FIRST & SECONED INDEX:
+![Screenshot](Stage_2/SCREENSHOTS2/CREATEINDEX12.jpeg)
 
-**1. Transaction amount cannot be negative**
-```sql
-INSERT INTO Transaction (TransactionID, Amount, Currency, Status, TransactionDate, CustomerID, MerchantID, PaymentMethodID)
-VALUES ('TXN1000', -999.99, 'USD', 'Pending', CURRENT_DATE, 'CUST001', 'MERCH001', 'PAY001');
-```
-**Why this constraint is essential:**
-Negative payments are illogical and could indicate errors in the payment system.
+THIRD INDEX:
+![Screenshot](Stage_2/CREATEINDEX21.jpeg)
 
-Insert screenshot here.
-
----
-
-**2. Transaction status must be from specific list**
-```sql
-ALTER TABLE Transaction
-ADD CONSTRAINT chk_status_values CHECK (Status IN ('Pending', 'Completed', 'Failed', 'Cancelled'));
-```
-**Why this constraint is essential:**
-Limiting statuses to defined values prevents typos and ensures consistency in reports.
-
-Insert screenshot here.
-
----
-
-**3. Currency must be from approved list**
-```sql
-ALTER TABLE Transaction
-ADD CONSTRAINT chk_currency_values CHECK (Currency IN ('USD', 'EUR', 'ILS', 'GBP'));
-```
-**Why this constraint is essential:**
-Ensures only supported currencies are used, preventing integration issues with payment processors.
-
-Insert screenshot here.
-
----
-
-**4. Customer email addresses must be unique**
-```sql
-ALTER TABLE Customer
-ADD CONSTRAINT chk_name_long CHECK (LENGTH(Name) > 100);
-```
-**Why this constraint is essential:**
-Prevents duplicate customer accounts and ensures proper customer identification.
-
-Insert screenshot here.
-
----
-
-**5. Default value for customer creation date**
-```sql
-ALTER TABLE Customer
-ALTER COLUMN DateCreated SET DEFAULT CURRENT_DATE;
-```
-**Why this default is essential:**
-Ensures every customer has a creation date for analytics and compliance tracking.
-
-Insert screenshot here.
 
 ### Constraint Violation Tests
 
@@ -600,7 +547,7 @@ Testing the constraints with invalid data:
 INSERT INTO Transaction (TransactionID, Amount, Currency, Status, TransactionDate, CustomerID, MerchantID, PaymentMethodID)
 VALUES ('TXN999', -100.00, 'USD', 'Pending', CURRENT_DATE, 'CUST001', 'MERCH001', 'PAY001');
 ```
-Insert error message screenshot here.
+![Screenshot](Stage_2/SCREENSHOTS2/ERROR11.jpeg)
 
 **Test 2: Try to insert invalid status (should fail)**
 ```sql
@@ -608,7 +555,7 @@ Insert error message screenshot here.
 INSERT INTO Transaction (TransactionID, Amount, Currency, Status, TransactionDate, CustomerID, MerchantID, PaymentMethodID)
 VALUES ('TXN998', 100.00, 'USD', 'Invalid Status', CURRENT_DATE, 'CUST001', 'MERCH001', 'PAY001');
 ```
-Insert error message screenshot here.
+![Screenshot](Stage_2/ERROR12.jpeg)
 
 **Test 3: Try to insert duplicate email (should fail)**
 ```sql
@@ -616,19 +563,30 @@ Insert error message screenshot here.
 INSERT INTO Customer (CustomerID, Name, Email, MinimalDetails, DateCreated) 
 VALUES ('CUST999', 'Test User', 'existing@email.com', 'Test Details', CURRENT_DATE);
 ```
-Insert error message screenshot here.
+![Screenshot](Stage_2/ERROR13.jpeg)
 
-### Performance Improvement Tests
-
-**Before and after index creation:**
-Using `EXPLAIN ANALYZE` to show performance improvements:
-
+**4. Customer email addresses must be unique**
 ```sql
--- Test TransactionDate index performance
-EXPLAIN ANALYZE SELECT * FROM Transaction 
-WHERE TransactionDate BETWEEN '2024-01-01' AND '2024-12-31';
+ALTER TABLE Customer
+ADD CONSTRAINT chk_name_long CHECK (LENGTH(Name) > 100);
 ```
-Insert timing comparison here (before/after index).
+**Why this constraint is essential:**
+Prevents duplicate customer accounts and ensures proper customer identification.
+
+![Screenshot](Stage_2/ERROR21.jpeg)
+
+
+---
+
+**5. Default value for customer creation date**
+```sql
+ALTER TABLE Customer
+ALTER COLUMN DateCreated SET DEFAULT CURRENT_DATE;
+```
+**Why this default is essential:**
+Ensures every customer has a creation date for analytics and compliance tracking.
+
+![Screenshot](Stage_2/SCREENSHOTS2/שגיאה22.jpeg)
 
 ==================================================
 ## 4. Files Structure
