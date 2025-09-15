@@ -639,10 +639,7 @@ Insert timing comparison here (before/after index).
 - **[Constraints.sql](Constraints.sql)** - Database constraints and indexes definitions
 
 ==================================================
-הנה קובץ README מלא לשלב 3 בפורמט Markdown גולמי, בדיוק לפי המבנה והסגנון של שלבים 1 ו-2:
 # Payment Clearing System Database - Stage 3
-
-**Student IDs:** 215863135, 216252031
 
 ---
 
@@ -686,22 +683,27 @@ Enterprise systems require sophisticated analytical capabilities that can correl
 **Business Question:** "What are the payment preferences of our customers across different merchants?"
 
 ```sql
-SELECT
+SELECT 
     c.Name AS customer_name,
     c.Email,
     pm.Type AS preferred_payment_type,
+    pm.Description AS payment_description,
     COUNT(t.TransactionID) AS usage_frequency,
     AVG(t.Amount) AS avg_transaction_amount,
     SUM(t.Amount) AS total_spent,
-    STRING_AGG(DISTINCT m.MerchantName, ', ') AS merchants_used
+    STRING_AGG(DISTINCT m.MerchantName, ', ' ORDER BY m.MerchantName) AS merchants_used,
+    COUNT(DISTINCT m.MerchantID) AS merchant_count,
+    MAX(t.TransactionDate) AS last_used_date
 FROM Customer c
 JOIN Transaction t ON c.CustomerID = t.CustomerID
 JOIN PaymentMethod pm ON t.PaymentMethodID = pm.PaymentMethodID
 JOIN Merchant m ON t.MerchantID = m.MerchantID
 WHERE t.Status = 'completed'
-AND t.TransactionDate >= CURRENT_DATE - INTERVAL '120 days'
-GROUP BY c.CustomerID, c.Name, c.Email, pm.PaymentMethodID, pm.Type
-ORDER BY usage_frequency DESC, total_spent DESC;
+    AND t.TransactionDate >= CURRENT_DATE - INTERVAL '120 days'
+GROUP BY c.CustomerID, c.Name, c.Email, pm.PaymentMethodID, pm.Type, pm.Description
+HAVING COUNT(t.TransactionID) >= 2
+ORDER BY usage_frequency DESC, total_spent DESC
+LIMIT 15;
 ```
 
 **Why this query is important:**
@@ -710,7 +712,8 @@ ORDER BY usage_frequency DESC, total_spent DESC;
 - Helps optimize payment method offerings based on usage patterns
 - Enables personalized customer service and loyalty programs
 
-Insert screenshot here
+![QUERY_1](Stage_3/Screenshots33/QUERY_1.png)
+![QUERY1_result](Stage_3/Screenshots33/QUERY1_result.png)
 
 ---
 
@@ -719,21 +722,31 @@ Insert screenshot here
 **Business Question:** "How do different clearing house networks perform for our merchants?"
 
 ```sql
-SELECT
+SELECT 
     m.MerchantName,
+    m.Address AS merchant_location,
     a.BankName,
+    a.AccountType,
     ch.Name AS clearing_house_name,
     ch.NetworkType,
     COUNT(t.TransactionID) AS total_transactions,
     SUM(CASE WHEN t.Status = 'completed' THEN t.Amount ELSE 0 END) AS successful_volume,
+    SUM(CASE WHEN t.Status = 'failed' THEN t.Amount ELSE 0 END) AS failed_volume,
     ROUND(AVG(EXTRACT(DAYS FROM (t.SettlementDate - t.TransactionDate))), 2) AS avg_settlement_days,
-    ROUND((COUNT(CASE WHEN t.Status = 'completed' THEN 1 END) * 100.0 / GREATEST(COUNT(t.TransactionID), 1)), 2) AS success_rate_percent
+    ROUND(
+        (COUNT(CASE WHEN t.Status = 'completed' THEN 1 END) * 100.0 / 
+         GREATEST(COUNT(t.TransactionID), 1)), 2
+    ) AS success_rate_percent,
+    COUNT(DISTINCT t.Currency) AS currencies_processed
 FROM Merchant m
 JOIN Transaction t ON m.MerchantID = t.MerchantID
 JOIN PaymentMethod pm ON t.PaymentMethodID = pm.PaymentMethodID
 JOIN Account a ON pm.AccountID = a.AccountID
 JOIN ClearingHouse ch ON a.ClearingHouseID = ch.ClearingHouseID
-GROUP BY m.MerchantID, m.MerchantName, a.AccountID, a.BankName, ch.ClearingHouseID, ch.Name, ch.NetworkType
+WHERE t.TransactionDate >= CURRENT_DATE - INTERVAL '90 days'
+GROUP BY m.MerchantID, m.MerchantName, m.Address, a.AccountID, a.BankName, 
+         a.AccountType, ch.ClearingHouseID, ch.Name, ch.NetworkType
+HAVING COUNT(t.TransactionID) > 1
 ORDER BY success_rate_percent DESC, successful_volume DESC;
 ```
 
@@ -743,7 +756,8 @@ ORDER BY success_rate_percent DESC, successful_volume DESC;
 - Identifies bottlenecks in payment processing workflows
 - Supports network optimization and cost reduction initiatives
 
-Insert screenshot here
+![QUERY_2](Stage_3/Screenshots33/QUERY2.png)
+![QUERY_2_result](Stage_3/Screenshots33/QUERY2_result.png)
 
 ---
 
@@ -766,6 +780,24 @@ AND Transaction.Currency NOT IN ('USD')
 AND ch.NetworkType IN ('SWIFT', 'SEPA')
 AND Transaction.Amount > 1000
 AND Transaction.Status = 'completed';
+
+-- Query to verify the update results
+SELECT 
+    t.Currency,
+    ch.NetworkType,
+    COUNT(t.TransactionID) AS total_transactions,
+    COUNT(CASE WHEN t.international_flag = TRUE THEN 1 END) AS flagged_international,
+    SUM(t.Amount) AS total_volume,
+    AVG(t.Amount) AS avg_amount,
+    STRING_AGG(DISTINCT m.MerchantName, ', ') AS involved_merchants
+FROM Transaction t
+JOIN PaymentMethod pm ON t.PaymentMethodID = pm.PaymentMethodID
+JOIN Account a ON pm.AccountID = a.AccountID
+JOIN ClearingHouse ch ON a.ClearingHouseID = ch.ClearingHouseID
+JOIN Merchant m ON t.MerchantID = m.MerchantID
+WHERE t.TransactionDate >= CURRENT_DATE - INTERVAL '60 days'
+GROUP BY t.Currency, ch.NetworkType
+ORDER BY total_volume DESC;
 ```
 
 **Why this query is important:**
@@ -774,13 +806,15 @@ AND Transaction.Status = 'completed';
 - Supports regulatory reporting and audit requirements
 - Enables automated risk assessment processes
 
-Insert screenshot here
+![QUERY_3_result](Stage_3/Screenshots33/QUERY3RESULT.png)
 
 ### Query Performance Analysis
 
 **Performance Timing Results:**
 
-Insert screenshot here
+![EXPLAIN ANALYZE1](Stage_3/Screenshots33/EXPLAIN_ANALYZE1.png)
+
+![EXPLAIN ANALYZE1](Stage_3/Screenshots33/EXPLAIN_ANALYZE2.png)
 
 **Performance Insights:**
 - Multi-table joins require optimized indexing strategies
@@ -824,7 +858,7 @@ GROUP BY c.CustomerID, c.Name, c.Email;
 - Automatically calculates customer tiers for service prioritization
 - Simplifies complex customer data access
 
-Insert screenshot here
+![view1](Stage_3/Screenshots33/VIEW_1.jpeg)
 
 ---
 
@@ -857,7 +891,7 @@ GROUP BY m.MerchantID, m.MerchantName;
 - Categorizes merchants by activity levels for targeted support
 - Provides key metrics for merchant success evaluation
 
-Insert screenshot here
+![view2](Stage_3/Screenshots33/VIEW_2.jpeg)
 
 ---
 
@@ -887,7 +921,7 @@ GROUP BY t.Currency, t.Status, DATE_TRUNC('month', t.TransactionDate), ch.Networ
 - Enables trend analysis and forecasting
 - Supports regulatory reporting and financial planning
 
-Insert screenshot here
+![view3](Stage_3/Screenshots33/view3.jpeg)
 
 ---
 
@@ -916,7 +950,7 @@ GROUP BY ch.ClearingHouseID, ch.Name, ch.NetworkType;
 - Enables proactive system performance management
 - Supports incident response and system optimization
 
-Insert screenshot here
+![view4](Stage_3/Screenshots33/view4.jpeg)
 
 ### View Manipulations
 
@@ -932,7 +966,7 @@ WHERE CustomerID IN (
 );
 ```
 
-Insert screenshot here
+![h](Stage_3/Screenshots33/update.jpeg)
 
 **INSERT new merchant:**
 ```sql
@@ -944,7 +978,7 @@ VALUES (
 );
 ```
 
-Insert screenshot here
+![he](Stage_3/Screenshots33/insert_merchant.jpeg)
 
 **DELETE old failed transactions:**
 ```sql
@@ -953,7 +987,7 @@ WHERE Status = 'failed'
 AND TransactionDate < CURRENT_DATE - INTERVAL '180 days';
 ```
 
-Insert screenshot here
+![heyh](Stage_3/Screenshots33/delete.png)
 
 ---
 
@@ -987,25 +1021,19 @@ GROUP BY t.Currency
 ORDER BY volume DESC;
 ```
 
-**Chart Creation Instructions:**
-1. Execute the query in pgAdmin
-2. Select "Data Output" tab
-3. Click chart/graph icon
-4. Choose "Pie Chart"
-5. Set "currency_name" as Labels
-6. Set "volume" as Values
-7. Title: "Transaction Volume Distribution by Currency (Last 90 Days)"
-
 **Business Value:**
 - Identifies dominant currencies for strategic planning
 - Reveals international market penetration
 - Supports currency exchange rate risk assessment
 
-Insert screenshot here
+![heyhgh](Stage_3/Screenshots33/pie.png)
+
+This pie chart shows the distribution of completed transaction volume for each currency in the last 90 days. Each segment represents the total volume processed in a specific currency, providing a clear view of which currencies are most actively used.
+In this dataset, the Euro stands out as the dominant currency, indicating that most transactions are conducted in EUR. This visualization helps the business understand currency trends, prioritize currency-specific strategies, and assess exposure to foreign currency risks.
 
 ---
 
-### Visualization 2: BAR GRAPH - Merchant Performance Comparison
+### Visualization 2: BAR GRAPH - Top 10 Merchant Transaction Volumes
 
 **Business Question:** "How do our top merchants perform in terms of transaction volume and success rates?"
 
@@ -1029,53 +1057,15 @@ ORDER BY performance_score DESC
 LIMIT 10;
 ```
 
-**Chart Creation Instructions:**
-1. Execute the query in pgAdmin
-2. Select "Data Output" tab
-3. Click chart/graph icon
-4. Choose "Bar Chart" (Vertical or Horizontal)
-5. Set "merchant" as X-axis
-6. Set "completed_volume" as Y-axis
-7. Title: "Top 10 Merchant Performance (Last 90 Days)"
-
 **Business Value:**
 - Identifies top-performing merchants for partnership strengthening
 - Reveals underperforming merchants requiring attention
 - Supports merchant onboarding and retention strategies
 
-Insert screenshot here
+![heyhghr](Stage_3/Screenshots33/bar.png)
 
-### Additional Visualization Queries
-
-**Time Series Analysis:**
-```sql
-SELECT
-    t.TransactionDate AS transaction_date,
-    COUNT(t.TransactionID) AS daily_transactions,
-    SUM(CASE WHEN t.Status = 'completed' THEN t.Amount ELSE 0 END) AS daily_volume
-FROM Transaction t
-WHERE t.TransactionDate >= CURRENT_DATE - INTERVAL '30 days'
-GROUP BY t.TransactionDate
-ORDER BY t.TransactionDate;
-```
-
-Insert screenshot here
-
-**Payment Method Distribution:**
-```sql
-SELECT
-    pm.Type AS payment_method,
-    t.Currency,
-    COUNT(t.TransactionID) AS transaction_count,
-    SUM(t.Amount) AS total_amount
-FROM PaymentMethod pm
-JOIN Transaction t ON pm.PaymentMethodID = t.PaymentMethodID
-WHERE t.Status = 'completed'
-GROUP BY pm.Type, t.Currency
-ORDER BY total_amount DESC;
-```
-
-Insert screenshot here
+This bar chart displays the completed transaction volume for the top 10 merchants over the past 90 days. Each bar represents a merchant, and its size reflects the total value of their completed transactions.
+With this visualization, it’s easy to identify which merchants contribute the most to overall system volume. This information can be used for partner management, identifying growth opportunities, and focusing commercial efforts on the highest-performing vendors.
 
 ---
 
@@ -1144,7 +1134,10 @@ calculate_customer_tier(c.CustomerID, 90)
 - Ensures consistent tier calculation across all queries
 - Enables easy modification of tier criteria
 
-Insert screenshot here
+![heyhghr](Stage_3/Screenshots33/func1.png)
+
+![heyhghr](Stage_3/Screenshots33/Testfunc1.png)
+
 
 ---
 
@@ -1186,7 +1179,8 @@ $$ LANGUAGE plpgsql;
 - Provides consistent success rate methodology
 - Supports dynamic time period analysis
 
-Insert screenshot here
+![heyhghr](Stage_3/Screenshots33/func2.png)
+
 
 ---
 
@@ -1229,7 +1223,10 @@ $$ LANGUAGE plpgsql;
 - Dynamic query generation based on parameters
 - Eliminates need for multiple similar functions
 
-Insert screenshot here
+![heyhghr](Stage_3/Screenshots33/func3.png)
+
+![heyhghr](Stage_3/Screenshots33/testfunc3.png)
+
 
 ---
 
@@ -1289,37 +1286,35 @@ $$ LANGUAGE plpgsql;
 - Provides comprehensive update statistics
 - Supports flexible business rules for transaction processing
 
-Insert screenshot here
+![heyhghr](Stage_3/Screenshots33/func4.png)
+
 
 ### Function Usage Examples
 
 **Optimized Customer Analysis:**
 ```sql
-SELECT
-    c.Name,
-    calculate_customer_tier(c.CustomerID, 90) as current_tier,
-    calculate_customer_tier(c.CustomerID, 365) as annual_tier
+SELECT c.CustomerID, c.Name, calculate_customer_tier(c.CustomerID, 90) as current_tier
 FROM Customer c
-WHERE calculate_customer_tier(c.CustomerID, 90) IN ('Premium', 'Platinum', 'Gold')
-ORDER BY c.Name;
+WHERE c.CustomerID IN (1,2,3,4,5);
 ```
 
 **Optimized Merchant Performance:**
 ```sql
 SELECT
+    m.MerchantID,
     m.MerchantName,
-    calculate_merchant_success_rate(m.MerchantID, 30) as monthly_success_rate,
-    calculate_merchant_success_rate(m.MerchantID, 90) as quarterly_success_rate
+    m.Address,
+    calculate_merchant_success_rate(m.MerchantID, 30) as monthly_success_rate
 FROM Merchant m
-WHERE calculate_merchant_success_rate(m.MerchantID, 30) >= 80.0
-ORDER BY calculate_merchant_success_rate(m.MerchantID, 30) DESC;
+WHERE m.MerchantID IN (1,2,3,4,5)
+ORDER BY m.MerchantID;
+```
+**Test settlement time analysis**
+
+```sql
+SELECT calculate_avg_settlement_days('currency', 'USD', 90) as usd_avg_settlement;
 ```
 
-### Performance Comparison
-
-**Function vs Inline Calculation:**
-
-Insert screenshot here
 
 **Performance Metrics:**
 - Query complexity reduction: 60-70%
@@ -1328,30 +1323,46 @@ Insert screenshot here
 
 ---
 
-## 📊 Performance Analysis
+**Performance Analysis**
+- We conducted performance analysis comparing function calls versus inline calculations:
 
-### Query Execution Times
+**Function vs Inline Calculation:**
 
-**Complex Query Performance:**
+```sql
+EXPLAIN ANALYZE
+SELECT 
+    CustomerID,
+    calculate_customer_tier(CustomerID) as tier_function
+FROM Customer
+LIMIT 20;
+Inline Calculation Performance Test:
+```
+![heyhghr](Stage_3/Screenshots33/inline.png)
 
-Insert screenshot here
+```sql
+EXPLAIN ANALYZE
+SELECT
+    c.CustomerID,
+    CASE 
+        WHEN COALESCE(SUM(CASE WHEN t.Status = 'completed' THEN t.Amount ELSE 0 END), 0) >= 10000 THEN 'Premium'
+        WHEN COALESCE(SUM(CASE WHEN t.Status = 'completed' THEN t.Amount ELSE 0 END), 0) >= 3000 THEN 'Gold'
+        ELSE 'Standard'
+    END as tier_inline
+FROM Customer c
+LEFT JOIN Transaction t ON c.CustomerID = t.CustomerID 
+    AND t.TransactionDate >= CURRENT_DATE - INTERVAL '365 days'
+GROUP BY c.CustomerID
+LIMIT 20;
+```
+![heyhghr](Stage_3/Screenshots33/inline2.png)
 
-**View Performance Analysis:**
+**Performance Results:**
 
-Insert screenshot here
+- Function approach: 3.65 seconds for 20 customers
 
-**Function Performance Comparison:**
+- Inline approach: 4.03 seconds for 20 customers
 
-Insert screenshot here
-
-### Database Statistics
-
-**After Stage 3 Implementation:**
-- Total Views Created: **4**
-- Total Functions Created: **4**
-- Total Additional Queries: **3**
-- Total Visualization Queries: **6+**
-- Performance Improvement: **15-25%**
+- Analysis: For small datasets, both approaches show similar performance. However, functions provide better maintainability and code reuse, while inline calculations - - may perform better on larger datasets due to reduced function call overhead.
 
 ---
 
