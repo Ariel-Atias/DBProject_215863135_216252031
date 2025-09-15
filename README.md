@@ -269,7 +269,8 @@ ORDER BY t.TransactionDate DESC;
 **Why this query is important:**
 Identifies high-value transactions for risk management and helps detect unusual spending patterns that might require attention.
 
-Insert screenshot here.
+![Screenshot](screenshots/SELECT1.jpeg)
+
 
 ---
 
@@ -283,7 +284,8 @@ ORDER BY avgAmount DESC;
 **Why this query is important:**
 Provides insights into transaction volume distribution per currency and helps in financial planning and currency exchange rate analysis.
 
-Insert screenshot here.
+![Screenshot](screenshots/SELECT2.jpeg)
+
 
 ---
 
@@ -299,7 +301,8 @@ HAVING SUM(t.Amount) > 1000;
 **Why this query is important:**
 Identifies high-value customers for loyalty programs and targeted marketing campaigns, helping improve customer retention.
 
-Insert screenshot here.
+![Screenshot](screenshots/SELECT3.jpeg)
+
 
 ---
 
@@ -314,7 +317,8 @@ HAVING COUNT(pm.PaymentMethodID) > 2;
 **Why this query is important:**
 Detects accounts with multiple payment methods, which is relevant for risk management and fraud prevention.
 
-Insert screenshot here.
+![Screenshot](screenshots/SELECT4.jpeg)
+
 
 ---
 
@@ -327,8 +331,9 @@ ORDER BY cnt DESC;
 ```
 **Why this query is important:**
 Provides a quick overview of transaction volume per currency, essential for business intelligence and market analysis.
+also showes us the data before the DELETE\UPDATE queris
 
-Insert screenshot here.
+![Screenshot](screenshots/PREDELETE.jpeg)
 
 ### Data Modification Operations
 
@@ -344,8 +349,12 @@ DELETE FROM Transaction WHERE Status = 'Cancelled';
 **Why this deletion is necessary:**
 Cancelled transactions clutter the database and can skew analytics. Removing them improves query performance and data accuracy.
 
-- Before: Insert screenshot here
-- After: Insert screenshot here
+DELETE:
+![Screenshot](screenshots/DELETE11.jpeg)
+
+RESULT:
+![Screenshot](screenshots/AFTERDELETE11.jpeg)
+
 
 ---
 
@@ -356,8 +365,12 @@ DELETE FROM Transaction WHERE Status = 'Failed';
 **Why this deletion is necessary:**
 Failed transactions from system errors should be cleaned up to avoid confusion in financial reports and maintain data integrity.
 
-- Before: Insert screenshot here
-- After: Insert screenshot here
+USE:
+![Screenshot](screenshots/DELETE21.jpeg)
+
+RESULT:
+![Screenshot](screenshots/AFTERDELETE21.jpeg)
+
 
 #### UPDATE Operations
 
@@ -371,8 +384,12 @@ UPDATE Transaction SET Status = 'Completed' WHERE Status = 'Pending';
 **Why this update is important:**
 Transactions that have been processed but still marked as "Pending" could cause unjustified service blocking for customers.
 
-- Before: Insert screenshot here
-- After: Insert screenshot here
+USE:
+![Screenshot](screenshots/UPDATE11.jpeg)
+
+RESULT:
+![Screenshot](screenshots/AFTERUPDATE11.jpeg)
+
 
 ---
 
@@ -383,8 +400,16 @@ UPDATE Transaction SET Currency = 'ILS' WHERE Currency = 'EUR';
 **Why this update is important:**
 Standardizing transactions to local currency simplifies financial reporting and reduces complexity in currency conversion calculations.
 
-- Before: Insert screenshot here
-- After: Insert screenshot here
+BEFORE:
+(we update a different table from the first screenshot...)
+![Screenshot](screenshots/PREUPDATE21.jpeg)
+
+USE:
+![Screenshot](screenshots/UPDATE21.jpeg)
+
+RESULT:
+![Screenshot](screenshots/AFTERUPDATE21.jpeg)
+
 
 ### Transaction Control
 
@@ -438,7 +463,19 @@ They provide flexibility for users to get specific information based on their ne
 - **Purpose:** Provides insights into payment method usage per bank and account type, supporting financial analysis and operational decisions.
 
 ### Execution Results:
-Insert screenshot/log here showing sample execution with parameters.
+
+1:
+![Screenshot](screenshots/PARAM1.jpeg)
+
+2:
+![Screenshot](screenshots/PARAM2.jpeg)
+
+3:
+![Screenshot](screenshots/PARAM3.jpeg)
+
+4:
+![Screenshot](screenshots/PARAM4.jpeg)
+
 
 ### Performance Timing:
 Each query was executed with `EXPLAIN ANALYZE` to measure performance:
