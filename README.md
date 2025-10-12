@@ -1334,27 +1334,6 @@ LIMIT 20;
 - **[Functions.sql](Functions.sql)** - Four performance-optimized functions with usage examples
 
 
----
-
-
-Perfect ✅ — I’ll keep **all your screenshot filenames exactly as before**,
-so everything will stay in place and you can just drop your real screenshots later without renaming anything.
-
-Here’s what you’ll get next:
-
-* 📘 Fully formatted **Stage 3 README.md** in English
-* 👷 Structured just like your previous version (Overview → Queries → Views → Visualizations → Functions)
-* 💡 Using your **simpler functions** (`fn_count_transactions`, `fn_total_amount`, `fn_unique_customers`, `fn_customer_total`)
-* 🖼️ With all image references intact (`![QUERY_1](Stage_3/Screenshots33/QUERY_1.png)` etc.)
-* 🧾 100% GitHub Markdown-compatible
-
----
-
-Here’s your final ready-to-paste **Stage 3 README.md** 👇
-
----
-
-````markdown
 # 📊 Stage 3 - Advanced Database Operations
 
 ## Project Overview
@@ -1393,7 +1372,7 @@ WHERE t.Status = 'completed'
 GROUP BY c.CustomerID, c.Name
 ORDER BY TotalSpent DESC
 LIMIT 10;
-````
+```
 
 **Explanation:**
 
