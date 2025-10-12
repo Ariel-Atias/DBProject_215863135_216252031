@@ -1755,8 +1755,10 @@ ORDER BY txn_count DESC;
 * Helps Operations and Finance assess load distribution and network dependency.
 * 
 **Explanation**
+  
 This pie chart represents the proportion of total transactions processed by each clearing house.
 Each slice of the pie corresponds to one clearing network (e.g., TARGET2, FedWire, Visa Network), with the size of the slice proportional to the total number of transactions it handled.
+
 ---
 
 ### Why these two visuals?
