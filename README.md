@@ -1457,94 +1457,231 @@ Useful for operational analysis of transaction routing and network load distribu
 
 ---
 
-## 👥 2. Views (Views.sql)
+הבנתי אותך מצוין 👌 — אתה רוצה שזה יהיה באמת **מעוצב כמו README אמיתי בגיטהאב**,
+עם קוד שמופיע בצורה מודגשת יפה (` ```sql ` וכו’) ועם כותרות Markdown ברורות.
 
-### View 1 – CustomerSummaryView
-
-```sql
-CREATE OR REPLACE VIEW CustomerSummaryView AS
-SELECT 
-    c.CustomerID,
-    c.Name AS CustomerName,
-    c.Email,
-    COUNT(t.TransactionID) AS TotalTransactions,
-    SUM(t.Amount) AS TotalSpent,
-    ROUND(AVG(t.Amount), 2) AS AvgTransaction
-FROM Customer c
-LEFT JOIN Transaction t ON c.CustomerID = t.CustomerID
-GROUP BY c.CustomerID, c.Name, c.Email;
-```
-
-**Purpose:** Simplifies access to customer financial data for support and analysis.
-**Use Case:** Quickly check how much each customer spent.
-
-![view1](Stage_3/Screenshots33/VIEW_1.jpeg)
+אז הנה הגרסה המעוצבת והמלאה —
+זו גרסה **מוכנה להדבקה ישירות ל־README.md שלך**, בדיוק כמו ש־GitHub מציג (עם הדגשות, בלוקים מסודרים ותמונות):
 
 ---
 
-### View 2 – MerchantSummaryView
+## 🧩 Stage 3 — Views and Data Insights
 
-```sql
-CREATE OR REPLACE VIEW MerchantSummaryView AS
-SELECT 
-    m.MerchantID,
-    m.MerchantName,
-    COUNT(t.TransactionID) AS TotalTransactions,
-    SUM(t.Amount) AS TotalRevenue
-FROM Merchant m
-LEFT JOIN Transaction t ON m.MerchantID = t.MerchantID
-GROUP BY m.MerchantID, m.MerchantName;
-```
+This section follows the analytical SQL queries and introduces a series of **views** designed for reusable insights and safe updates.
+Each view includes:
 
-**Purpose:** Allows quick performance checks for each merchant.
-**Use Case:** Used by the operations or relationship team to monitor merchant activity.
-
-![view2](Stage_3/Screenshots33/VIEW_2.jpeg)
+* ✅ **Creation** – the `CREATE OR REPLACE VIEW` definition
+* 🔍 **Usage** – example of reading from the view
+* 🛠️ **Update** – a real update that uses the view
 
 ---
 
-### View 3 – DailyTransactionSummaryView
+### **1️⃣ View: `v_recent_txn_30d` – Recent Transactions (Last 30 Days)**
+
+**Purpose:** Provides the latest transactions within the last 30 days relative to the newest transaction in the dataset, joining customer and merchant info.
+
+#### ✳️ Create
 
 ```sql
-CREATE OR REPLACE VIEW DailyTransactionSummaryView AS
-SELECT 
-    t.TransactionDate,
-    COUNT(t.TransactionID) AS TransactionCount,
-    SUM(t.Amount) AS TotalVolume
-FROM Transaction t
-WHERE t.Status = 'completed'
-GROUP BY t.TransactionDate
-ORDER BY t.TransactionDate DESC;
+CREATE OR REPLACE VIEW v_recent_txn_30d AS
+SELECT
+  t.transactionid,
+  t.transactiondate,
+  t.settlementdate,
+  t.amount,
+  t.currency,
+  t.status,
+  c.customerid,
+  c.name AS customer_name,
+  m.merchantid,
+  m.merchantname
+FROM transaction t
+JOIN customer  c ON c.customerid  = t.customerid
+JOIN merchant  m ON m.merchantid  = t.merchantid
+WHERE t.transactiondate >= (
+  SELECT MAX(transactiondate) FROM transaction
+) - INTERVAL '30 days';
 ```
 
-**Purpose:** Shows total transaction volume per day.
-**Use Case:** Used by analysts to monitor system activity trends.
+![CREATE\_v\_recent\_txn\_30d](Stage_3/Screenshots/v_recent_txn_30d_create.png)
 
-![view3](Stage_3/Screenshots33/view3.jpeg)
+#### 🔍 Usage
+
+```sql
+SELECT *
+FROM v_recent_txn_30d
+ORDER BY transactiondate DESC
+LIMIT 20;
+```
+
+![USE\_v\_recent\_txn\_30d](Stage_3/Screenshots/v_recent_txn_30d_select.png)
+
+#### 🛠️ Update using the View
+
+```sql
+UPDATE transaction t
+SET status = 'Cancelled'
+FROM v_recent_txn_30d v
+WHERE v.transactionid = t.transactionid
+  AND t.status = 'Pending'
+  AND v.transactiondate <= CURRENT_DATE - INTERVAL '7 days';
+```
+
+![UPDATE\_v\_recent\_txn\_30d](Stage_3/Screenshots/v_recent_txn_30d_update.png)
 
 ---
 
-### View 4 – ClearingHousePerformanceView
+### **2️⃣ View: `v_merchant_summary` – Merchant Totals**
+
+**Purpose:** Aggregates total number of transactions and total amount processed by each merchant.
+Shows all merchants, even those with no transactions.
+
+#### ✳️ Create
 
 ```sql
-CREATE OR REPLACE VIEW ClearingHousePerformanceView AS
-SELECT 
-    ch.Name AS ClearingHouse,
-    ch.NetworkType,
-    COUNT(t.TransactionID) AS TransactionsHandled,
-    SUM(t.Amount) AS TotalProcessed
-FROM ClearingHouse ch
-JOIN Account a ON ch.ClearingHouseID = a.ClearingHouseID
-JOIN PaymentMethod pm ON a.AccountID = pm.AccountID
-JOIN Transaction t ON pm.PaymentMethodID = t.PaymentMethodID
-WHERE t.Status = 'completed'
-GROUP BY ch.Name, ch.NetworkType;
+CREATE OR REPLACE VIEW v_merchant_summary AS
+SELECT
+  m.merchantid,
+  m.merchantname,
+  COUNT(t.transactionid) AS txn_count,
+  SUM(t.amount)          AS total_amount
+FROM merchant m
+LEFT JOIN transaction t ON t.merchantid = m.merchantid
+GROUP BY m.merchantid, m.merchantname;
 ```
 
-**Purpose:** Evaluates each clearing house by transaction load and volume.
-**Use Case:** Operations and finance teams can assess network efficiency.
+![CREATE\_v\_merchant\_summary](Stage_3/Screenshots/v_merchant_summary_create.png)
 
-![view4](Stage_3/Screenshots33/view4.jpeg)
+#### 🔍 Usage
+
+```sql
+SELECT merchantid, merchantname, txn_count, total_amount
+FROM v_merchant_summary
+ORDER BY total_amount DESC
+LIMIT 10;
+```
+
+![USE\_v\_merchant\_summary](Stage_3/Screenshots/v_merchant_summary_top10.png)
+
+#### 🛠️ Update using the View
+
+```sql
+UPDATE merchant m
+SET minimaldetails = COALESCE(m.minimaldetails, '') || ' [HIGH_VOLUME]'
+WHERE m.merchantid IN (
+  SELECT merchantid
+  FROM v_merchant_summary
+  WHERE total_amount > 1300000
+);
+```
+
+![UPDATE\_v\_merchant\_summary](Stage_3/Screenshots/update_merchant.png)
+
+---
+
+### **3️⃣ View: `v_paymentmethod_usage` – Payment Method Performance**
+
+**Purpose:** Summarizes usage frequency and total processed volume by each payment method.
+
+#### ✳️ Create
+
+```sql
+CREATE OR REPLACE VIEW v_paymentmethod_usage AS
+SELECT
+  pm.paymentmethodid,
+  pm.type AS payment_type,
+  COUNT(t.transactionid) AS txn_count,
+  SUM(t.amount)          AS total_amount
+FROM paymentmethod pm
+LEFT JOIN transaction t ON t.paymentmethodid = pm.paymentmethodid
+GROUP BY pm.paymentmethodid, pm.type;
+```
+
+![CREATE\_v\_paymentmethod\_usage](Stage_3/Screenshots/v_paymentmethod_usage_create.png)
+
+#### 🔍 Usage
+
+```sql
+SELECT paymentmethodid, payment_type, txn_count, total_amount
+FROM v_paymentmethod_usage
+ORDER BY txn_count DESC;
+```
+
+![USE\_v\_paymentmethod\_usage](Stage_3/Screenshots/v_paymentmethod_usage_select.png)
+
+#### 🛠️ Update using the View
+
+```sql
+UPDATE paymentmethod pm
+SET description = 'Low usage – review'
+WHERE pm.paymentmethodid IN (
+  SELECT paymentmethodid
+  FROM v_paymentmethod_usage
+  WHERE txn_count < 50
+);
+```
+
+![UPDATE\_v\_paymentmethod\_usage](Stage_3/Screenshots/update_paymentmethod.png)
+
+---
+
+### **4️⃣ View: `v_txn_status` – Transaction Status Control**
+
+**Purpose:** Provides visibility and control for allowed transaction statuses with built-in protection via `WITH CHECK OPTION`.
+
+#### ✳️ Create
+
+```sql
+CREATE OR REPLACE VIEW v_txn_status AS
+SELECT transactionid, status
+FROM transaction
+WHERE status IN ('Pending','Cleared','Settled','Failed','Cancelled')
+WITH CHECK OPTION;
+```
+
+![CREATE\_v\_txn\_status](Stage_3/Screenshots/v_txn_status_create.png)
+
+#### 🔍 Usage
+
+```sql
+SELECT *
+FROM v_txn_status
+ORDER BY transactionid DESC
+LIMIT 20;
+```
+
+![USE\_v\_txn\_status](Stage_3/Screenshots/v_txn_status_select.png)
+
+#### 🛠️ Update using the View
+
+```sql
+UPDATE v_txn_status
+SET status = 'Cancelled'
+WHERE transactionid = 100001;
+```
+
+![UPDATE\_v\_txn\_status](Stage_3/Screenshots/v_txn_status_update.png)
+
+---
+
+### 🧾 Additional Example: Update Clearing House
+
+```sql
+UPDATE clearinghouse
+SET name = 'ACH Network Intl'
+WHERE clearinghouseid = 1;
+```
+
+![UPDATE\_clearinghouse](Stage_3/Screenshots/update_clearinghouse.png)
+
+---
+
+### ✅ Summary of Stage 3 (Views Section)
+
+* Introduced **reusable analytical views** for transactions, merchants, methods, and statuses.
+* Demonstrated **real updates** that use or rely on those views.
+* Maintained **clean SQL syntax** and **readable GitHub formatting**.
+* Each view includes creation, usage, and update examples with screenshots for visual clarity.
 
 ---
 
