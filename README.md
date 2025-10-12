@@ -1685,46 +1685,85 @@ WHERE clearinghouseid = 1;
 
 ---
 
-## 📈 3. Visualizations (Visualizations.sql)
+## 📈 3. Visualizations (`Visualizations.sql`)
 
-### Visualization 1 – Pie Chart: Transaction Volume by Currency
+This section shows two simple visuals created directly in **pgAdmin** using the views you built:
 
-```sql
-SELECT
-    t.Currency,
-    SUM(t.Amount) AS TotalVolume
-FROM Transaction t
-WHERE t.Status = 'completed'
-GROUP BY t.Currency;
-```
+* `v_merchant_summary` → **Bar chart** of top merchants by total amount
+* `v_clearing_summary` → **Pie chart** of transactions by clearing house
 
-**Business Value:**
-Shows the share of each currency in total transactions.
-Helps visualize international activity and currency dominance.
-
-![pie](Stage_3/Screenshots33/pie.png)
+> Replace the image paths with your repo paths. I’ve used placeholders that match your project style.
 
 ---
 
-### Visualization 2 – Bar Chart: Top 10 Merchants by Revenue
+### Visualization A — **Top 10 Merchants by Total Amount** (Bar Chart)
+
+**Query**
 
 ```sql
-SELECT
-    m.MerchantName,
-    SUM(t.Amount) AS TotalRevenue
-FROM Merchant m
-JOIN Transaction t ON m.MerchantID = t.MerchantID
-WHERE t.Status = 'completed'
-GROUP BY m.MerchantName
-ORDER BY TotalRevenue DESC
+SELECT merchantname, total_amount
+FROM v_merchant_summary
+ORDER BY total_amount DESC
 LIMIT 10;
 ```
 
-**Business Value:**
-Highlights the most profitable merchants for business strategy.
-Useful for growth tracking and revenue concentration analysis.
+**Screenshot**
 
-![bar](Stage_3/Screenshots33/bar.png)
+![VIZ\_BAR\_TOP\_MERCHANTS](Stage_3/Screenshots33/viz_bar_top_merchants.png)
+
+**What it shows**
+
+* Ranks the top merchants by processed volume.
+* Useful for identifying key partners and prioritizing commercial focus.
+* Screenshot
+
+
+**Explanation**
+
+This bar chart displays the top 10 merchants ranked by their total transaction volume.
+The height of each bar represents the cumulative transaction amount processed by that merchant.
+For instance, Hotel Co clearly leads all other merchants with the highest total processed amount, followed by Retail Store Inc and Hotel Corp.
+
+---
+
+### Visualization B — **Transaction Share by Clearing House** (Pie Chart)
+
+**Query**
+
+```sql
+SELECT clearinghouse_name, txn_count
+FROM v_clearing_summary
+ORDER BY txn_count DESC;
+```
+
+**How to generate in pgAdmin**
+
+1. Run the query above.
+2. Open the **Graph Visualiser** tab.
+3. Set **Graph Type** → *Pie Chart*.
+4. **Label** → `clearinghouse_name`
+5. **Value** → `txn_count`
+6. Click **Generate**, then **Download** to save the image.
+
+**Screenshot**
+
+![VIZ\_PIE\_CLEARING\_HOUSES](Stage_3/Screenshots33/viz_pie_clearing_houses.png)
+
+**What it shows**
+
+* Displays the relative share of transactions handled by each clearing network.
+* Helps Operations and Finance assess load distribution and network dependency.
+* 
+**Explanation**
+This pie chart represents the proportion of total transactions processed by each clearing house.
+Each slice of the pie corresponds to one clearing network (e.g., TARGET2, FedWire, Visa Network), with the size of the slice proportional to the total number of transactions it handled.
+---
+
+### Why these two visuals?
+
+* **Different chart types** (bar + pie) as requested.
+* Both charts are powered by your new views, so they update automatically when data changes.
+* They are simple to explain in a demo and directly support merchant management and network monitoring use-cases.
 
 ---
 
