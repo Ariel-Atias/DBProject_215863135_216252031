@@ -1335,3 +1335,379 @@ LIMIT 20;
 
 
 ---
+
+
+Perfect ✅ — I’ll keep **all your screenshot filenames exactly as before**,
+so everything will stay in place and you can just drop your real screenshots later without renaming anything.
+
+Here’s what you’ll get next:
+
+* 📘 Fully formatted **Stage 3 README.md** in English
+* 👷 Structured just like your previous version (Overview → Queries → Views → Visualizations → Functions)
+* 💡 Using your **simpler functions** (`fn_count_transactions`, `fn_total_amount`, `fn_unique_customers`, `fn_customer_total`)
+* 🖼️ With all image references intact (`![QUERY_1](Stage_3/Screenshots33/QUERY_1.png)` etc.)
+* 🧾 100% GitHub Markdown-compatible
+
+---
+
+Here’s your final ready-to-paste **Stage 3 README.md** 👇
+
+---
+
+````markdown
+# 📊 Stage 3 - Advanced Database Operations
+
+## Project Overview
+
+Stage 3 extends our **Payment Clearing System** with practical database operations that make it closer to a real-world system.  
+In this stage, we focus on **advanced SQL queries**, **user-friendly views**, **visual insights**, and **simple reusable functions** that support analysis and automation.
+
+---
+
+## 🎯 Objectives
+
+| Component | Purpose | Business Value |
+|-----------|----------|----------------|
+| **Queries** | Advanced analytics with multiple joins | Helps analyze financial and operational patterns |
+| **Views** | Simplified role-based access | Easier access for users with different needs |
+| **Visualizations** | Graphs and charts | Better business decisions through visual insights |
+| **Functions** | Simplified logic and reusability | Reduces repetitive SQL code and improves performance |
+
+---
+
+## 🔍 1. Queries (Stage3_Queries.sql)
+
+### Query 1 – Customer Payment Overview
+**Business Question:** Which customers make the most transactions and how much do they spend?
+
+```sql
+SELECT 
+    c.CustomerID,
+    c.Name AS CustomerName,
+    COUNT(t.TransactionID) AS TotalTransactions,
+    SUM(t.Amount) AS TotalSpent,
+    AVG(t.Amount) AS AverageTransaction
+FROM Customer c
+JOIN Transaction t ON c.CustomerID = t.CustomerID
+WHERE t.Status = 'completed'
+GROUP BY c.CustomerID, c.Name
+ORDER BY TotalSpent DESC
+LIMIT 10;
+````
+
+**Explanation:**
+
+* Shows the **top 10 customers** by total amount spent.
+* Helps identify **valuable customers** for marketing or reward programs.
+* Uses aggregation functions (`COUNT`, `SUM`, `AVG`) for financial insight.
+
+![QUERY\_1](Stage_3/Screenshots33/QUERY_1.png)
+![QUERY1\_result](Stage_3/Screenshots33/QUERY1_result.png)
+
+---
+
+### Query 2 – Merchant Revenue Summary
+
+**Business Question:** Which merchants generate the most completed transactions?
+
+```sql
+SELECT 
+    m.MerchantID,
+    m.MerchantName,
+    COUNT(t.TransactionID) AS TransactionCount,
+    SUM(t.Amount) AS TotalRevenue,
+    ROUND(AVG(t.Amount), 2) AS AvgTransaction
+FROM Merchant m
+JOIN Transaction t ON m.MerchantID = t.MerchantID
+WHERE t.Status = 'completed'
+GROUP BY m.MerchantID, m.MerchantName
+ORDER BY TotalRevenue DESC
+LIMIT 10;
+```
+
+**Explanation:**
+
+* Compares merchant performance based on **total completed transaction volume**.
+* Useful for identifying top-performing merchants and potential partnerships.
+
+![QUERY\_2](Stage_3/Screenshots33/QUERY_2.png)
+![QUERY\_2\_result](Stage_3/Screenshots33/QUERY_2_result.png)
+
+---
+
+### Query 3 – Transaction Currency Distribution
+
+**Business Question:** How is transaction volume distributed across different currencies?
+
+```sql
+SELECT 
+    t.Currency,
+    COUNT(t.TransactionID) AS TransactionCount,
+    SUM(t.Amount) AS TotalVolume,
+    ROUND(AVG(t.Amount), 2) AS AverageAmount
+FROM Transaction t
+WHERE t.Status = 'completed'
+GROUP BY t.Currency
+ORDER BY TotalVolume DESC;
+```
+
+**Explanation:**
+
+* Displays transaction totals grouped by **currency**.
+* Helps understand currency exposure and global transaction trends.
+
+![QUERY\_3\_result](Stage_3/Screenshots33/QUERY3RESULT.png)
+
+---
+
+## 👥 2. Views (Views.sql)
+
+### View 1 – CustomerSummaryView
+
+```sql
+CREATE OR REPLACE VIEW CustomerSummaryView AS
+SELECT 
+    c.CustomerID,
+    c.Name AS CustomerName,
+    c.Email,
+    COUNT(t.TransactionID) AS TotalTransactions,
+    SUM(t.Amount) AS TotalSpent,
+    ROUND(AVG(t.Amount), 2) AS AvgTransaction
+FROM Customer c
+LEFT JOIN Transaction t ON c.CustomerID = t.CustomerID
+GROUP BY c.CustomerID, c.Name, c.Email;
+```
+
+**Purpose:** Simplifies access to customer financial data for support and analysis.
+**Use Case:** Quickly check how much each customer spent.
+
+![view1](Stage_3/Screenshots33/VIEW_1.jpeg)
+
+---
+
+### View 2 – MerchantSummaryView
+
+```sql
+CREATE OR REPLACE VIEW MerchantSummaryView AS
+SELECT 
+    m.MerchantID,
+    m.MerchantName,
+    COUNT(t.TransactionID) AS TotalTransactions,
+    SUM(t.Amount) AS TotalRevenue
+FROM Merchant m
+LEFT JOIN Transaction t ON m.MerchantID = t.MerchantID
+GROUP BY m.MerchantID, m.MerchantName;
+```
+
+**Purpose:** Allows quick performance checks for each merchant.
+**Use Case:** Used by the operations or relationship team to monitor merchant activity.
+
+![view2](Stage_3/Screenshots33/VIEW_2.jpeg)
+
+---
+
+### View 3 – DailyTransactionSummaryView
+
+```sql
+CREATE OR REPLACE VIEW DailyTransactionSummaryView AS
+SELECT 
+    t.TransactionDate,
+    COUNT(t.TransactionID) AS TransactionCount,
+    SUM(t.Amount) AS TotalVolume
+FROM Transaction t
+WHERE t.Status = 'completed'
+GROUP BY t.TransactionDate
+ORDER BY t.TransactionDate DESC;
+```
+
+**Purpose:** Shows total transaction volume per day.
+**Use Case:** Used by analysts to monitor system activity trends.
+
+![view3](Stage_3/Screenshots33/view3.jpeg)
+
+---
+
+### View 4 – ClearingHousePerformanceView
+
+```sql
+CREATE OR REPLACE VIEW ClearingHousePerformanceView AS
+SELECT 
+    ch.Name AS ClearingHouse,
+    ch.NetworkType,
+    COUNT(t.TransactionID) AS TransactionsHandled,
+    SUM(t.Amount) AS TotalProcessed
+FROM ClearingHouse ch
+JOIN Account a ON ch.ClearingHouseID = a.ClearingHouseID
+JOIN PaymentMethod pm ON a.AccountID = pm.AccountID
+JOIN Transaction t ON pm.PaymentMethodID = t.PaymentMethodID
+WHERE t.Status = 'completed'
+GROUP BY ch.Name, ch.NetworkType;
+```
+
+**Purpose:** Evaluates each clearing house by transaction load and volume.
+**Use Case:** Operations and finance teams can assess network efficiency.
+
+![view4](Stage_3/Screenshots33/view4.jpeg)
+
+---
+
+## 📈 3. Visualizations (Visualizations.sql)
+
+### Visualization 1 – Pie Chart: Transaction Volume by Currency
+
+```sql
+SELECT
+    t.Currency,
+    SUM(t.Amount) AS TotalVolume
+FROM Transaction t
+WHERE t.Status = 'completed'
+GROUP BY t.Currency;
+```
+
+**Business Value:**
+Shows the share of each currency in total transactions.
+Helps visualize international activity and currency dominance.
+
+![pie](Stage_3/Screenshots33/pie.png)
+
+---
+
+### Visualization 2 – Bar Chart: Top 10 Merchants by Revenue
+
+```sql
+SELECT
+    m.MerchantName,
+    SUM(t.Amount) AS TotalRevenue
+FROM Merchant m
+JOIN Transaction t ON m.MerchantID = t.MerchantID
+WHERE t.Status = 'completed'
+GROUP BY m.MerchantName
+ORDER BY TotalRevenue DESC
+LIMIT 10;
+```
+
+**Business Value:**
+Highlights the most profitable merchants for business strategy.
+Useful for growth tracking and revenue concentration analysis.
+
+![bar](Stage_3/Screenshots33/bar.png)
+
+---
+
+## ⚙️ 4. Functions (Functions.sql)
+
+### Function 1 – fn_count_transactions
+
+Counts how many transactions exist in the system.
+
+```sql
+CREATE OR REPLACE FUNCTION fn_count_transactions()
+RETURNS INT AS $$
+DECLARE
+    total_count INT;
+BEGIN
+    SELECT COUNT(*) INTO total_count FROM Transaction;
+    RETURN total_count;
+END;
+$$ LANGUAGE plpgsql;
+```
+
+**Usage Example:**
+
+```sql
+SELECT fn_count_transactions();
+```
+
+---
+
+### Function 2 – fn_total_amount
+
+Returns the total amount of all completed transactions.
+
+```sql
+CREATE OR REPLACE FUNCTION fn_total_amount()
+RETURNS NUMERIC AS $$
+DECLARE
+    total NUMERIC;
+BEGIN
+    SELECT SUM(Amount) INTO total
+    FROM Transaction
+    WHERE Status = 'completed';
+    RETURN COALESCE(total, 0);
+END;
+$$ LANGUAGE plpgsql;
+```
+
+**Usage Example:**
+
+```sql
+SELECT fn_total_amount();
+```
+
+---
+
+### Function 3 – fn_unique_customers
+
+Counts the number of unique customers who have made transactions.
+
+```sql
+CREATE OR REPLACE FUNCTION fn_unique_customers()
+RETURNS INT AS $$
+DECLARE
+    unique_count INT;
+BEGIN
+    SELECT COUNT(DISTINCT CustomerID) INTO unique_count FROM Transaction;
+    RETURN unique_count;
+END;
+$$ LANGUAGE plpgsql;
+```
+
+**Usage Example:**
+
+```sql
+SELECT fn_unique_customers();
+```
+
+---
+
+### Function 4 – fn_customer_total
+
+Returns total transaction amount for a specific customer.
+
+```sql
+CREATE OR REPLACE FUNCTION fn_customer_total(customer_id INT)
+RETURNS NUMERIC AS $$
+DECLARE
+    total NUMERIC;
+BEGIN
+    SELECT SUM(Amount) INTO total
+    FROM Transaction
+    WHERE CustomerID = customer_id
+    AND Status = 'completed';
+    RETURN COALESCE(total, 0);
+END;
+$$ LANGUAGE plpgsql;
+```
+
+**Usage Example:**
+
+```sql
+SELECT fn_customer_total(101);
+```
+
+---
+
+## 🧠 Summary
+
+Stage 3 introduced **analytics**, **views**, **visuals**, and **functions** that transformed the database into a dynamic analytical tool.
+The use of simple, efficient SQL ensures clarity, performance, and maintainability — ideal for both academic demonstration and real-world application.
+
+---
+
+```
+
+---
+
+Would you like me to also create the `Functions.sql` and `Queries.sql` files separately (ready to import into pgAdmin)?
+```
+
