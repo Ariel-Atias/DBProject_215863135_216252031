@@ -1356,30 +1356,35 @@ In this stage, we focus on **advanced SQL queries**, **user-friendly views**, **
 
 ## 🔍 1. Queries (Stage3_Queries.sql)
 
-### Query 1 – Customer Payment Overview
-**Business Question:** Which customers make the most transactions and how much do they spend?
+### Query 1 – Recent Transactions per Customer
+
+**Business Question:** Which customers made transactions during the last week, and what are their payment details?
 
 ```sql
-SELECT 
-    c.CustomerID,
-    c.Name AS CustomerName,
-    COUNT(t.TransactionID) AS TotalTransactions,
-    SUM(t.Amount) AS TotalSpent,
-    AVG(t.Amount) AS AverageTransaction
-FROM Customer c
-JOIN Transaction t ON c.CustomerID = t.CustomerID
-WHERE t.Status = 'completed'
-GROUP BY c.CustomerID, c.Name
-ORDER BY TotalSpent DESC
-LIMIT 10;
-```
+-- Q1: Recent transactions per customer (last 7 days relative to data)
+SELECT
+  c.customerid,
+  c.name AS customer_name,
+  t.transactionid,
+  t.amount,
+  t.currency,
+  t.status,
+  t.transactiondate,
+  m.merchantname
+FROM customer c
+JOIN transaction t ON t.customerid = c.customerid
+JOIN merchant m ON m.merchantid = t.merchantid
+WHERE t.transactiondate >= (
+    SELECT MAX(transactiondate) FROM transaction
+  ) - INTERVAL '7 days'
+ORDER BY c.customerid, t.transactiondate DESC;
+Explanation:
 
-**Explanation:**
+Displays all transactions made in the past 7 days relative to the most recent date in the dataset.
 
-* Shows the **top 10 customers** by total amount spent.
-* Helps identify **valuable customers** for marketing or reward programs.
-* Uses aggregation functions (`COUNT`, `SUM`, `AVG`) for financial insight.
+Useful for daily or weekly monitoring of transaction activity per customer.
 
+Helps track customer engagement and detect recent spikes or declines.
 ![QUERY\_1](Stage_3/Screenshots33/QUERY_1.png)
 ![QUERY1\_result](Stage_3/Screenshots33/QUERY1_result.png)
 
