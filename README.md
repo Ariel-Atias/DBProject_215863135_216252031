@@ -1378,6 +1378,7 @@ WHERE t.transactiondate >= (
     SELECT MAX(transactiondate) FROM transaction
   ) - INTERVAL '7 days'
 ORDER BY c.customerid, t.transactiondate DESC;
+```
 Explanation:
 
 Displays all transactions made in the past 7 days relative to the most recent date in the dataset.
@@ -1390,55 +1391,67 @@ Helps track customer engagement and detect recent spikes or declines.
 
 ---
 
-### Query 2 – Merchant Revenue Summary
+### Query 2 – Top-10 Merchants by Total Amount
 
-**Business Question:** Which merchants generate the most completed transactions?
+**Business Question:** Which merchants generated the highest total processed amount?
 
 ```sql
-SELECT 
-    m.MerchantID,
-    m.MerchantName,
-    COUNT(t.TransactionID) AS TransactionCount,
-    SUM(t.Amount) AS TotalRevenue,
-    ROUND(AVG(t.Amount), 2) AS AvgTransaction
-FROM Merchant m
-JOIN Transaction t ON m.MerchantID = t.MerchantID
-WHERE t.Status = 'completed'
-GROUP BY m.MerchantID, m.MerchantName
-ORDER BY TotalRevenue DESC
+-- Q2: Top-10 merchants by total amount
+SELECT
+  m.merchantid,
+  m.merchantname,
+  COUNT(*)        AS txn_count,
+  SUM(t.amount)   AS total_amount
+FROM merchant m
+JOIN transaction t
+  ON t.merchantid = m.merchantid
+GROUP BY m.merchantid, m.merchantname
+ORDER BY total_amount DESC
 LIMIT 10;
 ```
+Explanation:
 
-**Explanation:**
+Joins merchant with transaction.
 
-* Compares merchant performance based on **total completed transaction volume**.
-* Useful for identifying top-performing merchants and potential partnerships.
+Aggregates per merchant: number of transactions and total amount.
 
+Sorts by total_amount to surface the top contributors.
 ![QUERY\_2](Stage_3/Screenshots33/QUERY_2.png)
 ![QUERY\_2\_result](Stage_3/Screenshots33/QUERY_2_result.png)
 
 ---
 
-### Query 3 – Transaction Currency Distribution
+### Query 3 – Distribution by Clearing House
 
-**Business Question:** How is transaction volume distributed across different currencies?
+**Business Question:** How are transactions distributed across different clearing houses, and which clearing house processes the highest number and total amount of transactions?
 
 ```sql
-SELECT 
-    t.Currency,
-    COUNT(t.TransactionID) AS TransactionCount,
-    SUM(t.Amount) AS TotalVolume,
-    ROUND(AVG(t.Amount), 2) AS AverageAmount
-FROM Transaction t
-WHERE t.Status = 'completed'
-GROUP BY t.Currency
-ORDER BY TotalVolume DESC;
+-- Q3: Distribution by clearing house
+SELECT
+  ch.clearinghouseid,
+  ch.name AS clearing_house,
+  COUNT(t.transactionid) AS txn_count,
+  SUM(t.amount) AS total_amount
+FROM transaction t
+JOIN paymentmethod pm ON pm.paymentmethodid = t.paymentmethodid
+JOIN account a ON a.accountid = pm.accountid
+JOIN clearinghouse ch ON ch.clearinghouseid = a.clearinghouseid
+GROUP BY ch.clearinghouseid, ch.name
+ORDER BY txn_count DESC;
 ```
+Explanation:
 
-**Explanation:**
+Connects transaction, paymentmethod, account, and clearinghouse tables.
 
-* Displays transaction totals grouped by **currency**.
-* Helps understand currency exposure and global transaction trends.
+Aggregates transactions per clearing house, showing:
+
+txn_count: number of transactions processed.
+
+total_amount: total value processed.
+
+Ordered by the number of transactions (txn_count) to identify the most active clearing houses.
+
+Useful for operational analysis of transaction routing and network load distribution
 
 ![QUERY\_3\_result](Stage_3/Screenshots33/QUERY3RESULT.png)
 
