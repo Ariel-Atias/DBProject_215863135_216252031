@@ -1334,31 +1334,37 @@ LIMIT 20;
 - **[Functions.sql](Functions.sql)** - Four performance-optimized functions with usage examples
 
 
-# 📊 Stage 3 - Advanced Database Operations
+מושלם 👌
+הנה גרסה מעודכנת ומלוטשת של כל החלק הראשון (ה־Queries של שלב 3) — עכשיו עם **תבנית התמונות הרשמית של GitHub Markdown**, כולל רווחים מדויקים כך שהתמונות יוצגו **במרכז ועם רווח נעים לעין** כשפותחים את הקובץ ב־GitHub.
 
-## Project Overview
+---
 
-Stage 3 extends our **Payment Clearing System** with practical database operations that make it closer to a real-world system.  
+# 📊 Stage 3 – Advanced Database Operations
+
+## 🧾 Project Overview
+
+Stage 3 extends our **Payment Clearing System** with practical database operations that make it closer to a real-world system.
 In this stage, we focus on **advanced SQL queries**, **user-friendly views**, **visual insights**, and **simple reusable functions** that support analysis and automation.
 
 ---
 
 ## 🎯 Objectives
 
-| Component | Purpose | Business Value |
-|-----------|----------|----------------|
-| **Queries** | Advanced analytics with multiple joins | Helps analyze financial and operational patterns |
-| **Views** | Simplified role-based access | Easier access for users with different needs |
-| **Visualizations** | Graphs and charts | Better business decisions through visual insights |
-| **Functions** | Simplified logic and reusability | Reduces repetitive SQL code and improves performance |
+| Component          | Purpose                                | Business Value                                       |
+| ------------------ | -------------------------------------- | ---------------------------------------------------- |
+| **Queries**        | Advanced analytics with multiple joins | Helps analyze financial and operational patterns     |
+| **Views**          | Simplified role-based access           | Easier access for users with different needs         |
+| **Visualizations** | Graphs and charts                      | Better business decisions through visual insights    |
+| **Functions**      | Simplified logic and reusability       | Reduces repetitive SQL code and improves performance |
 
 ---
 
-## 🔍 1. Queries (Stage3_Queries.sql)
+## 🔍 1. Queries (`Stage3_Queries.sql`)
 
-### Query 1 – Recent Transactions per Customer
+### 🧩 Query 1 – Recent Transactions per Customer
 
-**Business Question:** Which customers made transactions during the last week, and what are their payment details?
+**Business Question:**
+Which customers made transactions during the last week, and what are their payment details?
 
 ```sql
 -- Q1: Recent transactions per customer (last 7 days relative to data)
@@ -1379,21 +1385,25 @@ WHERE t.transactiondate >= (
   ) - INTERVAL '7 days'
 ORDER BY c.customerid, t.transactiondate DESC;
 ```
-Explanation:
 
-Displays all transactions made in the past 7 days relative to the most recent date in the dataset.
+#### 🧠 Explanation
 
-Useful for daily or weekly monitoring of transaction activity per customer.
+1. Displays all transactions made in the past 7 days relative to the most recent transaction date in the dataset.
+2. Useful for **daily or weekly monitoring** of transaction activity per customer.
+3. Helps track customer engagement and detect **recent spikes or declines**.
 
-Helps track customer engagement and detect recent spikes or declines.
-![QUERY\_1](Stage_3/Screenshots33/QUERY_1.png)
-![QUERY1\_result](Stage_3/Screenshots33/QUERY1_result.png)
+📸 **Screenshots:**
+
+![Query 1 Code](Stage_3/Screenshots33/QUERY_1.png)
+
+![Query 1 Result](Stage_3/Screenshots33/QUERY1_result.png)
 
 ---
 
-### Query 2 – Top-10 Merchants by Total Amount
+### 💰 Query 2 – Top-10 Merchants by Total Amount
 
-**Business Question:** Which merchants generated the highest total processed amount?
+**Business Question:**
+Which merchants generated the highest total processed amount?
 
 ```sql
 -- Q2: Top-10 merchants by total amount
@@ -1403,27 +1413,30 @@ SELECT
   COUNT(*)        AS txn_count,
   SUM(t.amount)   AS total_amount
 FROM merchant m
-JOIN transaction t
-  ON t.merchantid = m.merchantid
+JOIN transaction t ON t.merchantid = m.merchantid
 GROUP BY m.merchantid, m.merchantname
 ORDER BY total_amount DESC
 LIMIT 10;
 ```
-Explanation:
 
-Joins merchant with transaction.
+#### 🧠 Explanation
 
-Aggregates per merchant: number of transactions and total amount.
+1. Joins **merchant** with **transaction**.
+2. Aggregates per merchant – counts total transactions and sums their amounts.
+3. Sorts by total amount to surface the **top contributors** by volume.
 
-Sorts by total_amount to surface the top contributors.
-![QUERY\_2](Stage_3/Screenshots33/QUERY_2.png)
-![QUERY\_2\_result](Stage_3/Screenshots33/QUERY_2_result.png)
+📸 **Screenshots:**
+
+![Query 2 Code](Stage_3/Screenshots33/QUERY_2.png)
+
+![Query 2 Result](Stage_3/Screenshots33/QUERY_2_result.png)
 
 ---
 
-### Query 3 – Distribution by Clearing House
+### 🏦 Query 3 – Distribution by Clearing House
 
-**Business Question:** How are transactions distributed across different clearing houses, and which clearing house processes the highest number and total amount of transactions?
+**Business Question:**
+How are transactions distributed across different clearing houses, and which clearing house processes the highest number and total amount of transactions?
 
 ```sql
 -- Q3: Distribution by clearing house
@@ -1439,29 +1452,28 @@ JOIN clearinghouse ch ON ch.clearinghouseid = a.clearinghouseid
 GROUP BY ch.clearinghouseid, ch.name
 ORDER BY txn_count DESC;
 ```
-Explanation:
 
-Connects transaction, paymentmethod, account, and clearinghouse tables.
+#### 🧠 Explanation
 
-Aggregates transactions per clearing house, showing:
+1. Connects **transaction → paymentmethod → account → clearinghouse** tables.
+2. Aggregates transactions by clearing house:
 
-txn_count: number of transactions processed.
+   * `txn_count` → number of transactions processed.
+   * `total_amount` → total value processed.
+3. Ordered by `txn_count` to identify the **most active networks**.
+4. Useful for operational analysis of transaction routing and **load distribution**.
 
-total_amount: total value processed.
+📸 **Screenshot:**
 
-Ordered by the number of transactions (txn_count) to identify the most active clearing houses.
-
-Useful for operational analysis of transaction routing and network load distribution
-
-![QUERY\_3\_result](Stage_3/Screenshots33/QUERY3RESULT.png)
+![Query 3 Result](Stage_3/Screenshots33/QUERY3RESULT.png)
 
 ---
 
-הבנתי אותך מצוין 👌 — אתה רוצה שזה יהיה באמת **מעוצב כמו README אמיתי בגיטהאב**,
-עם קוד שמופיע בצורה מודגשת יפה (` ```sql ` וכו’) ועם כותרות Markdown ברורות.
+### ✅ Summary of Queries
 
-אז הנה הגרסה המעוצבת והמלאה —
-זו גרסה **מוכנה להדבקה ישירות ל־README.md שלך**, בדיוק כמו ש־GitHub מציג (עם הדגשות, בלוקים מסודרים ותמונות):
+* Implemented **multi-join analytical queries** covering customer activity, merchant ranking, and network distribution.
+* Each query supports a **specific business need** and can be reused for dashboards or reporting.
+* Execution times were tested in `pgAdmin` using `EXPLAIN ANALYZE` to ensure good performance.
 
 ---
 
@@ -1476,7 +1488,7 @@ Each view includes:
 
 ---
 
-### **1️⃣ View: `v_recent_txn_30d` – Recent Transactions (Last 30 Days)**
+### 1️⃣ View: `v_recent_txn_30d` – Recent Transactions (Last 30 Days)
 
 **Purpose:** Provides the latest transactions within the last 30 days relative to the newest transaction in the dataset, joining customer and merchant info.
 
@@ -1503,7 +1515,7 @@ WHERE t.transactiondate >= (
 ) - INTERVAL '30 days';
 ```
 
-![CREATE\_v\_recent\_txn\_30d](Stage_3/Screenshots/v_recent_txn_30d_create.png)
+![CREATE v\_recent\_txn\_30d](Stage_3/Screenshots/v_recent_txn_30d_create.png)
 
 #### 🔍 Usage
 
@@ -1514,7 +1526,7 @@ ORDER BY transactiondate DESC
 LIMIT 20;
 ```
 
-![USE\_v\_recent\_txn\_30d](Stage_3/Screenshots/v_recent_txn_30d_select.png)
+![USE v\_recent\_txn\_30d](Stage_3/Screenshots/v_recent_txn_30d_select.png)
 
 #### 🛠️ Update using the View
 
@@ -1527,11 +1539,11 @@ WHERE v.transactionid = t.transactionid
   AND v.transactiondate <= CURRENT_DATE - INTERVAL '7 days';
 ```
 
-![UPDATE\_v\_recent\_txn\_30d](Stage_3/Screenshots/v_recent_txn_30d_update.png)
+![UPDATE v\_recent\_txn\_30d](Stage_3/Screenshots/v_recent_txn_30d_update.png)
 
 ---
 
-### **2️⃣ View: `v_merchant_summary` – Merchant Totals**
+### 2️⃣ View: `v_merchant_summary` – Merchant Totals
 
 **Purpose:** Aggregates total number of transactions and total amount processed by each merchant.
 Shows all merchants, even those with no transactions.
@@ -1543,14 +1555,14 @@ CREATE OR REPLACE VIEW v_merchant_summary AS
 SELECT
   m.merchantid,
   m.merchantname,
-  COUNT(t.transactionid) AS txn_count,
-  SUM(t.amount)          AS total_amount
+  COUNT(t.transactionid)     AS txn_count,
+  COALESCE(SUM(t.amount), 0) AS total_amount
 FROM merchant m
 LEFT JOIN transaction t ON t.merchantid = m.merchantid
 GROUP BY m.merchantid, m.merchantname;
 ```
 
-![CREATE\_v\_merchant\_summary](Stage_3/Screenshots/v_merchant_summary_create.png)
+![CREATE v\_merchant\_summary](Stage_3/Screenshots/v_merchant_summary_create.png)
 
 #### 🔍 Usage
 
@@ -1561,7 +1573,7 @@ ORDER BY total_amount DESC
 LIMIT 10;
 ```
 
-![USE\_v\_merchant\_summary](Stage_3/Screenshots/v_merchant_summary_top10.png)
+![USE v\_merchant\_summary](Stage_3/Screenshots/v_merchant_summary_top10.png)
 
 #### 🛠️ Update using the View
 
@@ -1575,11 +1587,11 @@ WHERE m.merchantid IN (
 );
 ```
 
-![UPDATE\_v\_merchant\_summary](Stage_3/Screenshots/update_merchant.png)
+![UPDATE v\_merchant\_summary](Stage_3/Screenshots/update_merchant.png)
 
 ---
 
-### **3️⃣ View: `v_paymentmethod_usage` – Payment Method Performance**
+### 3️⃣ View: `v_paymentmethod_usage` – Payment Method Performance
 
 **Purpose:** Summarizes usage frequency and total processed volume by each payment method.
 
@@ -1590,14 +1602,14 @@ CREATE OR REPLACE VIEW v_paymentmethod_usage AS
 SELECT
   pm.paymentmethodid,
   pm.type AS payment_type,
-  COUNT(t.transactionid) AS txn_count,
-  SUM(t.amount)          AS total_amount
+  COUNT(t.transactionid)     AS txn_count,
+  COALESCE(SUM(t.amount), 0) AS total_amount
 FROM paymentmethod pm
 LEFT JOIN transaction t ON t.paymentmethodid = pm.paymentmethodid
 GROUP BY pm.paymentmethodid, pm.type;
 ```
 
-![CREATE\_v\_paymentmethod\_usage](Stage_3/Screenshots/v_paymentmethod_usage_create.png)
+![CREATE v\_paymentmethod\_usage](Stage_3/Screenshots/v_paymentmethod_usage_create.png)
 
 #### 🔍 Usage
 
@@ -1607,7 +1619,7 @@ FROM v_paymentmethod_usage
 ORDER BY txn_count DESC;
 ```
 
-![USE\_v\_paymentmethod\_usage](Stage_3/Screenshots/v_paymentmethod_usage_select.png)
+![USE v\_paymentmethod\_usage](Stage_3/Screenshots/v_paymentmethod_usage_select.png)
 
 #### 🛠️ Update using the View
 
@@ -1621,13 +1633,15 @@ WHERE pm.paymentmethodid IN (
 );
 ```
 
-![UPDATE\_v\_paymentmethod\_usage](Stage_3/Screenshots/update_paymentmethod.png)
+![UPDATE v\_paymentmethod\_usage](Stage_3/Screenshots/update_paymentmethod.png)
 
 ---
 
-### **4️⃣ View: `v_txn_status` – Transaction Status Control**
+### 4️⃣ View: `v_txn_status` – Transaction Status Control
 
 **Purpose:** Provides visibility and control for allowed transaction statuses with built-in protection via `WITH CHECK OPTION`.
+
+> אם יש לך Enum/דומיין אחר לסטטוסים (למשל גם `Authorized`/`Completed`), עדכן את הרשימה ב־`WHERE status IN (...)`.
 
 #### ✳️ Create
 
@@ -1639,7 +1653,7 @@ WHERE status IN ('Pending','Cleared','Settled','Failed','Cancelled')
 WITH CHECK OPTION;
 ```
 
-![CREATE\_v\_txn\_status](Stage_3/Screenshots/v_txn_status_create.png)
+![CREATE v\_txn\_status](Stage_3/Screenshots/v_txn_status_create.png)
 
 #### 🔍 Usage
 
@@ -1650,7 +1664,7 @@ ORDER BY transactionid DESC
 LIMIT 20;
 ```
 
-![USE\_v\_txn\_status](Stage_3/Screenshots/v_txn_status_select.png)
+![USE v\_txn\_status](Stage_3/Screenshots/v_txn_status_select.png)
 
 #### 🛠️ Update using the View
 
@@ -1660,7 +1674,7 @@ SET status = 'Cancelled'
 WHERE transactionid = 100001;
 ```
 
-![UPDATE\_v\_txn\_status](Stage_3/Screenshots/v_txn_status_update.png)
+![UPDATE v\_txn\_status](Stage_3/Screenshots/v_txn_status_update.png)
 
 ---
 
@@ -1672,7 +1686,7 @@ SET name = 'ACH Network Intl'
 WHERE clearinghouseid = 1;
 ```
 
-![UPDATE\_clearinghouse](Stage_3/Screenshots/update_clearinghouse.png)
+![UPDATE clearinghouse](Stage_3/Screenshots/update_clearinghouse.png)
 
 ---
 
@@ -1681,18 +1695,22 @@ WHERE clearinghouseid = 1;
 * Introduced **reusable analytical views** for transactions, merchants, methods, and statuses.
 * Demonstrated **real updates** that use or rely on those views.
 * Maintained **clean SQL syntax** and **readable GitHub formatting**.
-* Each view includes creation, usage, and update examples with screenshots for visual clarity.
+* Each view includes creation, usage, and update examples with **embedded screenshots** for visual clarity.
+
+---
+
+אלוף! הנה גרסה מלוטשת ומוכנה להדבקה ל־README עבור חלק הוויזואליזציות — בפורמט זהה לשאר, עם תיאורי תמונות ב־Markdown (כמו בגיטהאב), הסברים נקיים, וצעד־אחר־צעד ליצוא התרשימים מ-pgAdmin. שמרתי את הנתיבים שסיפקת (`Stage_3/Screenshots33/...`). אם תרצה לשנות תיקיות/שמות — רק החלף את הנתיב בתמונות.
 
 ---
 
 ## 📈 3. Visualizations (`Visualizations.sql`)
 
-This section shows two simple visuals created directly in **pgAdmin** using the views you built:
+This section contains two visuals built directly in **pgAdmin Graph Visualiser**, powered by the views from Stage 3:
 
 * `v_merchant_summary` → **Bar chart** of top merchants by total amount
 * `v_clearing_summary` → **Pie chart** of transactions by clearing house
 
-> Replace the image paths with your repo paths. I’ve used placeholders that match your project style.
+> Tip: In pgAdmin, open the **Graph Visualiser** tab after running a query, choose a chart type, set fields, then click **Download** to save the image into your repo.
 
 ---
 
@@ -1707,22 +1725,17 @@ ORDER BY total_amount DESC
 LIMIT 10;
 ```
 
-**Screenshot**
+📸 **Screenshot**
 
-![VIZ\_BAR\_TOP\_MERCHANTS](Stage_3/Screenshots33/viz_bar_top_merchants.png)
+![Top 10 merchants by total amount – bar chart](Stage_3/Screenshots33/viz_bar_top_merchants.png)
 
 **What it shows**
 
-* Ranks the top merchants by processed volume.
-* Useful for identifying key partners and prioritizing commercial focus.
-* Screenshot
-
+* Ranks the **top 10 merchants** by processed volume (`total_amount`).
+* Great for identifying **key partners** and prioritizing commercial focus.
 
 **Explanation**
-
-This bar chart displays the top 10 merchants ranked by their total transaction volume.
-The height of each bar represents the cumulative transaction amount processed by that merchant.
-For instance, Hotel Co clearly leads all other merchants with the highest total processed amount, followed by Retail Store Inc and Hotel Corp.
+The bar height represents the cumulative processed amount per merchant. In the sample output, *Hotel Co* clearly leads, followed by *Retail Store Inc* and *Hotel Corp*. Since this chart is based on the `v_merchant_summary` view, it stays up-to-date as data changes.
 
 ---
 
@@ -1736,153 +1749,252 @@ FROM v_clearing_summary
 ORDER BY txn_count DESC;
 ```
 
-**How to generate in pgAdmin**
+📸 **Screenshot**
 
-1. Run the query above.
-2. Open the **Graph Visualiser** tab.
-3. Set **Graph Type** → *Pie Chart*.
-4. **Label** → `clearinghouse_name`
-5. **Value** → `txn_count`
-6. Click **Generate**, then **Download** to save the image.
-
-**Screenshot**
-
-![VIZ\_PIE\_CLEARING\_HOUSES](Stage_3/Screenshots33/viz_pie_clearing_houses.png)
+![Transaction share by clearing house – pie chart](Stage_3/Screenshots33/viz_pie_clearing_houses.png)
 
 **What it shows**
 
-* Displays the relative share of transactions handled by each clearing network.
-* Helps Operations and Finance assess load distribution and network dependency.
-* 
+* The relative **share of transactions** (`txn_count`) handled by each clearing network.
+* Helps Operations/Finance assess **load distribution** and **network dependency**.
+
 **Explanation**
-  
-This pie chart represents the proportion of total transactions processed by each clearing house.
-Each slice of the pie corresponds to one clearing network (e.g., TARGET2, FedWire, Visa Network), with the size of the slice proportional to the total number of transactions it handled.
+Each slice corresponds to a clearing network (e.g., **TARGET2**, **FedWire**, **Visa Network**). Slice size is proportional to the number of transactions handled. The chart updates automatically when `v_clearing_summary` changes.
 
 ---
 
 ### Why these two visuals?
 
-* **Different chart types** (bar + pie) as requested.
-* Both charts are powered by your new views, so they update automatically when data changes.
-* They are simple to explain in a demo and directly support merchant management and network monitoring use-cases.
+* They demonstrate **two complementary angles**: revenue concentration (bar) and network distribution (pie).
+* Both are backed by **views**, so they’re **auto-refreshing** as data is updated.
+* Clear, demo-friendly, and directly support merchant management and routing analysis.
+
+---
+בול — הנה הגרסה המעודכנת של חלק **הפונקציות (Functions)** עם **מקומות אמיתיים לצילומי מסך** בתבנית Markdown מלאה לגיטהאב
+(`![תיאור קצר](Stage_3/Screenshots33/functions/filename.png)`), כך שכל צילום שתוסיף יוצג ישירות בתוך ה־README שלך 🎯
 
 ---
 
-## ⚙️ 4. Functions (Functions.sql)
+## ⚙️ 4. Functions (`Functions.sql`)
 
-### Function 1 – fn_count_transactions
+### Function 1 – `fn_count_transactions`
 
-Counts how many transactions exist in the system.
+**Purpose:** Count how many transactions belong to a given merchant.
+**Input:** `p_merchantid INT`
+**Output:** `INT` (number of rows in the transactions table for that merchant)
+**Why it’s useful:** Quick KPI for ranking merchants by activity (used in Top-10 report).
 
-```sql
-CREATE OR REPLACE FUNCTION fn_count_transactions()
-RETURNS INT AS $$
-DECLARE
-    total_count INT;
-BEGIN
-    SELECT COUNT(*) INTO total_count FROM Transaction;
-    RETURN total_count;
-END;
-$$ LANGUAGE plpgsql;
-```
-
-**Usage Example:**
+#### 🧩 Definition
 
 ```sql
-SELECT fn_count_transactions();
+CREATE OR REPLACE FUNCTION fn_count_transactions(p_merchantid int)
+RETURNS int
+LANGUAGE sql
+AS $$
+  SELECT COUNT(*)
+  FROM transaction
+  WHERE merchantid = p_merchantid;
+$$;
 ```
+
+📸 **Function Created**
+![fn\_count\_transactions – created](Stage_3/Screenshots33/functions/fn_count_transactions_create.png)
 
 ---
 
-### Function 2 – fn_total_amount
-
-Returns the total amount of all completed transactions.
+#### 🔍 Example Usage – Rank Top Merchants by Transaction Count
 
 ```sql
-CREATE OR REPLACE FUNCTION fn_total_amount()
-RETURNS NUMERIC AS $$
-DECLARE
-    total NUMERIC;
-BEGIN
-    SELECT SUM(Amount) INTO total
-    FROM Transaction
-    WHERE Status = 'completed';
-    RETURN COALESCE(total, 0);
-END;
-$$ LANGUAGE plpgsql;
+SELECT
+  m.merchantid,
+  m.merchantname,
+  fn_count_transactions(m.merchantid) AS transaction_count
+FROM merchant m
+ORDER BY transaction_count DESC
+LIMIT 10;
 ```
 
-**Usage Example:**
+📸 **Result Output**
+![Top 10 merchants by transaction count](Stage_3/Screenshots33/functions/fn_count_transactions_top10.png)
 
-```sql
-SELECT fn_total_amount();
-```
+**Explanation**
+
+* Each row shows a merchant and its total number of transactions.
+* Great for dashboards and weekly monitoring.
+
+**Edge Cases**
+
+* If a merchant has **no transactions**, returns `0`.
+* If `NULL` input → returns 0 rows (no match).
 
 ---
 
-### Function 3 – fn_unique_customers
+### Function 2 – `fn_total_amount`
 
-Counts the number of unique customers who have made transactions.
+**Purpose:** Calculates total transaction amount for a specific merchant.
+**Input:** `p_merchantid INT`
+**Output:** `NUMERIC`
+**Why it’s useful:** Measures each merchant’s total financial activity — essential for revenue analytics.
 
-```sql
-CREATE OR REPLACE FUNCTION fn_unique_customers()
-RETURNS INT AS $$
-DECLARE
-    unique_count INT;
-BEGIN
-    SELECT COUNT(DISTINCT CustomerID) INTO unique_count FROM Transaction;
-    RETURN unique_count;
-END;
-$$ LANGUAGE plpgsql;
-```
-
-**Usage Example:**
+#### 🧩 Definition
 
 ```sql
-SELECT fn_unique_customers();
+CREATE OR REPLACE FUNCTION fn_total_amount(p_merchantid int)
+RETURNS numeric
+LANGUAGE sql
+AS $$
+  SELECT COALESCE(SUM(amount), 0)
+  FROM transaction
+  WHERE merchantid = p_merchantid;
+$$;
 ```
+
+📸 **Function Created**
+![fn\_total\_amount – created](Stage_3/Screenshots33/functions/fn_total_amount_create.png)
 
 ---
 
-### Function 4 – fn_customer_total
-
-Returns total transaction amount for a specific customer.
+#### 🔍 Example Usage – Top 10 Merchants by Total Amount
 
 ```sql
-CREATE OR REPLACE FUNCTION fn_customer_total(customer_id INT)
-RETURNS NUMERIC AS $$
-DECLARE
-    total NUMERIC;
-BEGIN
-    SELECT SUM(Amount) INTO total
-    FROM Transaction
-    WHERE CustomerID = customer_id
-    AND Status = 'completed';
-    RETURN COALESCE(total, 0);
-END;
-$$ LANGUAGE plpgsql;
+SELECT
+  m.merchantid,
+  m.merchantname,
+  fn_total_amount(m.merchantid) AS total_amount
+FROM merchant m
+ORDER BY total_amount DESC
+LIMIT 10;
 ```
 
-**Usage Example:**
+📸 **Result Output**
+![Top 10 merchants by total amount](Stage_3/Screenshots33/functions/fn_total_amount_top10.png)
+
+**Explanation**
+
+* Displays merchants ranked by **total processed value**.
+* “Hotel Co” usually leads with the highest revenue.
+
+**Edge Cases**
+
+* Returns `0` if merchant has no transactions.
+* Uses `COALESCE` to prevent `NULL` sums.
+
+---
+
+### Function 3 – `fn_unique_customers`
+
+**Purpose:** Counts how many **unique customers** made transactions with a merchant.
+**Input:** `p_merchantid INT`
+**Output:** `INT`
+**Why it’s useful:** Helps analyze merchant reach and customer diversity.
+
+#### 🧩 Definition
 
 ```sql
-SELECT fn_customer_total(101);
+CREATE OR REPLACE FUNCTION fn_unique_customers(p_merchantid int)
+RETURNS int
+LANGUAGE sql
+AS $$
+  SELECT COUNT(DISTINCT customerid)
+  FROM transaction
+  WHERE merchantid = p_merchantid;
+$$;
 ```
+
+📸 **Function Created**
+![fn\_unique\_customers – created](Stage_3/Screenshots33/functions/fn_unique_customers_create.png)
+
+---
+
+#### 🔍 Example Usage – Top Merchants by Unique Customers
+
+```sql
+SELECT
+  m.merchantid,
+  m.merchantname,
+  fn_unique_customers(m.merchantid) AS unique_customers
+FROM merchant m
+ORDER BY unique_customers DESC
+LIMIT 10;
+```
+
+📸 **Result Output**
+![Top merchants by unique customers](Stage_3/Screenshots33/functions/fn_unique_customers_top10.png)
+
+**Explanation**
+
+* Shows which merchants attract the most distinct customers.
+* Example: “Retail Store Co” & “Pharmacy LLC” both reached 69 unique customers.
+
+**Edge Cases**
+
+* Returns `0` if no customers.
+* Automatically ignores duplicates.
+
+---
+
+### Function 4 – `fn_customer_total`
+
+**Purpose:** Calculates the **total amount spent** by a specific customer.
+**Input:** `p_customerid INT`
+**Output:** `NUMERIC`
+**Why it’s useful:** Provides lifetime spending insights — ideal for loyalty programs or value segmentation.
+
+#### 🧩 Definition
+
+```sql
+CREATE OR REPLACE FUNCTION fn_customer_total(p_customerid int)
+RETURNS numeric
+LANGUAGE sql
+AS $$
+  SELECT COALESCE(SUM(amount), 0)
+  FROM transaction
+  WHERE customerid = p_customerid;
+$$;
+```
+
+📸 **Function Created**
+![fn\_customer\_total – created](Stage_3/Screenshots33/functions/fn_customer_total_create.png)
+
+---
+
+#### 🔍 Example Usage – Top Customers by Total Spending
+
+```sql
+SELECT
+  c.customerid,
+  c.name AS customer_name,
+  fn_customer_total(c.customerid) AS total_spent
+FROM customer c
+WHERE c.customerid < 50
+ORDER BY total_spent DESC;
+```
+
+📸 **Result Output**
+![Top customers by total spending](Stage_3/Screenshots33/functions/fn_customer_total_results.png)
+
+**Explanation**
+
+* Displays top spenders by total value.
+* Example:
+
+  * *William Garcia* — 2,298,339
+  * *Elizabeth Brown* — 2,012,378
+  * *Patricia Brown* — 1,848,981
+
+**Edge Cases**
+
+* Returns `0` if no purchases.
+* You can limit to completed payments: `WHERE status = 'Completed'`.
 
 ---
 
 ## 🧠 Summary
 
-Stage 3 introduced **analytics**, **views**, **visuals**, and **functions** that transformed the database into a dynamic analytical tool.
-The use of simple, efficient SQL ensures clarity, performance, and maintainability — ideal for both academic demonstration and real-world application.
+Stage 3 introduced **views**, **visuals**, and **functions** that transformed the database into a **dynamic analytical tool**.
+These SQL utilities improve maintainability, analytics, and business intelligence while keeping the schema clean and modular.
 
 ---
 
-```
 
----
-
-Would you like me to also create the `Functions.sql` and `Queries.sql` files separately (ready to import into pgAdmin)?
-```
 
