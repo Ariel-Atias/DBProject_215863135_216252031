@@ -1750,12 +1750,6 @@ These SQL utilities improve maintainability, analytics, and business intelligenc
 
 ---
 
-
-Excellent — you’re totally right.
-Here’s your **complete Stage 4 README (final version)**, now **fully enriched with clear English explanations** for *every single query*, written at a presentation level that’s perfect for oral defense.
-
----
-
 # 🧩 Stage 4 — Integrated Database Architecture and Advanced Views
 
 ## 🎯 Overview
@@ -1789,6 +1783,7 @@ CREATE USER MAPPING FOR postgres
 SERVER airline_server
 OPTIONS (user 'postgres', password 'your_password');
 ```
+![](Stage_4/screenshots44/int1.jpeg)
 
 ### Step 2 — Import Remote Schema
 
@@ -1810,7 +1805,9 @@ ORDER BY 1, 2;
 ```
 
 🖼️ *Screenshot — airline_fdw tables appear beside local ones.*
-
+![](Stage_4/screenshots44/tableintegration.jpeg)
+![](Stage_4/screenshots44/int2.jpeg)
+![](Stage_4/screenshots44/int3.jpeg)
 ---
 
 ## 👥 View 1 — `v_customer_flight_payments`
@@ -1840,7 +1837,7 @@ JOIN airline_fdw.ticket_pricing tp ON tp.ticket_id = l.ticket_id;
 ```
 
 🖼️ *Screenshot — view created successfully.*
-
+![](Stage_4/screenshots44/v1stage4.jpeg)
 ---
 
 ### 🔍 Query 1 — Show Top Payments
@@ -1857,7 +1854,7 @@ Displays the 10 highest-value transactions across both systems, showing the cust
 Used by managers for revenue review.
 
 🖼️ *Screenshot — query results grid.*
-
+![](Stage_4/screenshots44/sv1stage4.jpeg)
 ---
 
 ### 🧾 DML Example — Price Adjustment for High-Value Customers
@@ -1882,7 +1879,7 @@ Simulates a $5 increase for tickets bought by premium customers spending ≥ 10 
 `ROLLBACK` keeps the database unchanged after testing.
 
 🖼️ *Screenshot — update + rollback confirmation.*
-
+![](Stage_4/screenshots44/uv1stage4.jpeg)
 ---
 
 ## 🧾 View 2 — `v_event_sales`
@@ -1908,7 +1905,7 @@ GROUP BY tp.event_id;
 ```
 
 🖼️ *Screenshot — view created successfully.*
-
+![](Stage_4/screenshots44/v2stage4.jpeg)
 ---
 
 ### 🔍 Query 1 — Top Performing Events
@@ -1925,7 +1922,7 @@ Lists the 10 best-performing flight events sorted by total sales amount and tran
 Used by marketing to identify profitable routes.
 
 🖼️ *Screenshot — result grid.*
-
+![](Stage_4/screenshots44/sv2stage4.jpeg)
 ---
 
 ### 🧾 DML Example — Discount for Underperforming Events
@@ -1951,7 +1948,7 @@ This mirrors a real-life marketing campaign for improving sales.
 `ROLLBACK` used for safe simulation.
 
 🖼️ *Screenshot — rows_affected + rollback.*
-
+![](Stage_4/screenshots44/uv2stage4.jpeg)
 ---
 
 ### ⚠️ Invalid Operation Test
@@ -1965,7 +1962,7 @@ Throws an error because `v_event_sales` is an aggregated view (`GROUP BY`).
 This demonstrates PostgreSQL’s built-in data-integrity protection.
 
 🖼️ *Screenshot — error message.*
-
+![](Stage_4/screenshots44/error.jpeg)
 ---
 
 ## 🔗 Integration Summary
@@ -1979,9 +1976,6 @@ We can now:
 
 ✅ Result:
 **Cross-database joins · Analytics views · Safe transactions · Modular architecture**
-
-🖼️ *Screenshots — FDW test, imported tables, view creations, query outputs, rollback demo.*
-
 ---
 
 # 📎 Stage 4 — Extended Queries & Performance Timing
@@ -2006,7 +2000,38 @@ ORDER BY amount DESC LIMIT 25;
 Helps Customer Support detect high-value payments that cleared successfully.
 Useful for fraud monitoring and VIP analytics.
 🖼️ *A1 results + EXPLAIN.*
+![](Stage_4/screenshots44/s4p2-v1s1.jpeg)
 
+---
+
+### ⚙️ Performance Analysis — A1 Query (EXPLAIN ANALYZE)
+
+```sql
+EXPLAIN ANALYZE
+SELECT
+  customerid, customer_name, transactionid, amount, currency, status,
+  ticket_id, event_id, ticket_price, ticket_tax
+FROM v_customer_flight_payments
+WHERE status IN ('Settled','Cleared')
+  AND amount >= 10000
+ORDER BY amount DESC
+LIMIT 25;
+```
+
+**Explanation:**
+This execution plan shows how PostgreSQL processes the **A1 high-value settled/cleared payments query**.
+Key insights:
+
+* **Nested Loop** joins were used to merge data from local and FDW tables efficiently.
+* **Index Scan** on `transaction` and `customer` ensures minimal lookup time.
+* **Foreign Scan** on `ticket_pricing` confirms data retrieval through the FDW connection.
+* Sorting by `amount DESC` is handled with a **quicksort algorithm**, which is efficient for small-to-medium result sets.
+* The **total execution time (~80 ms)** shows strong performance considering the cross-database integration.
+
+This demonstrates that the FDW integration performs smoothly and maintains good query speed even when combining remote and local data.
+
+📸 **Screenshot:**
+![EXPLAIN ANALYZE – A1 performance analysis](Stage_4/screenshots44/EAv1s1.jpeg)
 ---
 
 ### **A2 — Normalize Failed → Cancelled**
@@ -2032,6 +2057,39 @@ ROLLBACK;
 This cleans up data by standardizing failure states.
 It runs inside a transaction block, rolled back for demo.
 🖼️ *A2 rows affected + EXPLAIN.*
+![](Stage_4/screenshots44/s2v1-1.jpeg)
+![](Stage_4/screenshots44/s2v1-2.jpeg)
+
+---
+
+### ⚙️ Performance Analysis — A2 Query (EXPLAIN ANALYZE)
+
+```sql
+EXPLAIN ANALYZE
+UPDATE transaction t
+SET status = 'Cancelled'
+WHERE t.transactionid IN (
+  SELECT transactionid
+  FROM v_customer_flight_payments
+  WHERE status = 'Failed'
+);
+```
+
+**Explanation:**
+This execution plan measures the runtime and efficiency of the **A2 data normalization query**, which updates failed transactions to a consistent “Cancelled” status.
+
+Key observations:
+
+* The optimizer uses a **Nested Loop + Hash Join** to efficiently match transactions from the local `transaction` table with the `v_customer_flight_payments` view.
+* **Index Scans** on both `transaction` and `customer` tables ensure minimal lookup overhead.
+* The **Foreign Scan** on `ticket_pricing` confirms smooth data fetching through the FDW connection.
+* The **total execution time (~85 ms)** shows high efficiency even when updating a subset of data joined across local and remote tables.
+* The **planning time (~1 ms)** indicates that PostgreSQL efficiently analyzed query cost and execution paths before running the update.
+
+This confirms that normalization tasks through the integrated FDW schema are both **consistent** and **performant**, even under cross-database operations.
+
+📸 **Screenshot:**
+![EXPLAIN ANALYZE – A2 performance analysis](Stage_4/screenshots44/EA-v1s2.jpeg)
 
 ---
 
@@ -2050,8 +2108,46 @@ ORDER BY avg_ticket_price DESC, txn_count ASC LIMIT 20;
 ```
 
 **Explanation:**
+
 Supports marketing analysis — identifies routes with low sales but high prices, signaling a need to reprice.
-🖼️ *B1 results + EXPLAIN.*
+🖼️ *B1 results*
+
+![](Stage_4/screenshots44/p2-v2s1.jpeg)
+---
+
+### ⚙️ Performance Analysis — **B1 Query** (EXPLAIN ANALYZE)
+
+```sql
+EXPLAIN ANALYZE
+SELECT
+  event_id, txn_count, unique_customers, total_payment_amount,
+  avg_ticket_price, avg_tax
+FROM v_event_sales
+WHERE txn_count < 50
+  AND avg_ticket_price > 150
+ORDER BY avg_ticket_price DESC, txn_count ASC
+LIMIT 20;
+```
+
+**What this measures**
+This plan benchmarks the “Underperforming but Expensive Events” query that filters `v_event_sales` for events with **low sales (< 50 txns)** but **high avg. price (> 150)** and then ranks them.
+
+**Key takeaways from the plan (what you see in pgAdmin):**
+
+* **GroupAggregate** on `event_id` comes from the view’s `GROUP BY`; PostgreSQL aggregates first, then applies the filter and sort.
+* **Hash Join** between local tables (`transaction`, `flight_payment_link`) and the remote FDW table (`airline_fdw.ticket_pricing`) efficiently matches `ticket_id`.
+* **Foreign Scan** on `ticket_pricing` confirms data is streamed from the airline DB over FDW without materializing the whole table locally.
+* **Top-N Heapsort** / **Quicksort** appear because we only return the **top 20** rows after ordering by `avg_ticket_price` and `txn_count`.
+* Planning and execution times in your run (example in the screenshot):
+
+  * **Planning Time ~0.49 ms** – fast plan creation.
+  * **Execution Time ~75 ms** – responsive even with cross-database joins/aggregation.
+
+**Why it matters**
+Marketing can quickly pinpoint overpriced routes that underperform, with excellent runtime despite pulling data across databases.
+
+📸 **Screenshot:**
+![EXPLAIN ANALYZE – B1 performance analysis](Stage_4/screenshots44/p2-EA-v2s1.jpeg)
 
 ---
 
@@ -2080,17 +2176,60 @@ ROLLBACK;
 Applies a 10 % discount to selected events through the FDW (remote) table, demonstrating cross-database updates.
 `ROLLBACK` prevents permanent changes.
 🖼️ *B2 results + EXPLAIN.*
+![](Stage_4/screenshots44/v2s2-1.jpeg)
+![](Stage_4/screenshots44/v2s2-1.jpeg)
 
 ---
+### ⚙️ Performance Analysis — **B2 Update via FDW** (EXPLAIN ANALYZE)
+
+```sql
+EXPLAIN ANALYZE
+UPDATE airline_fdw.ticket_pricing tp
+SET price = ROUND(price * 0.90, 2)
+WHERE tp.event_id IN (
+  SELECT event_id
+  FROM v_event_sales
+  WHERE txn_count < 50
+    AND avg_ticket_price > 150
+);
+```
+
+**What this measures**
+Benchmarks the **targeted 10% discount** that updates prices **on the remote FDW table** (`airline_fdw.ticket_pricing`) for events detected by the aggregated view `v_event_sales` as *low volume & high price*.
+
+**How PostgreSQL executes it (what you see in the plan):**
+
+* **Subquery Scan on `v_event_sales`**: the planner evaluates the view, which aggregates by `event_id`.
+* **GroupAggregate**: produces `txn_count` and `avg_ticket_price` per event from local tables joined to FDW rows.
+* **Filter**: keeps only events where `txn_count < 50` **and** `avg_ticket_price > 150`.
+* **Hash Join**: matches qualifying event IDs back to the remote `ticket_pricing`.
+* **Foreign Scan** on `ticket_pricing`: confirms the write will target rows **in the remote airline DB** through FDW.
+* **Update**: applies `ROUND(price*0.90, 2)` only to the matched remote rows.
+
+**Why it matters**
+Shows that we can **compute business logic locally** (on the view), then **push data changes to the remote system** safely and efficiently. It’s a realistic cross-system campaign (dynamic discounting) driven by analytics.
+
+**Timing (from your run)**
+The example plan in the screenshot shows approximately:
+
+* **Planning Time ~0.43 ms**
+* **Execution Time ~188.65 ms**
+
+> Copy your exact numbers from the **Messages** tab (“Planning Time … / Execution Time …”) into the README timing table.
+
+📸 **Screenshot:**
+![EXPLAIN ANALYZE – B2 update performance](Stage_4/screenshots44/EA-v2s2.jpeg)
+
 
 ## ⏱️ Performance Timing
 
 | Query | Purpose                      | Execution Time |
 | ----- | ---------------------------- | -------------- |
-| A1    | High-value VIP payments      | `XX ms`        |
-| A2    | Normalize Failed → Cancelled | `XX ms`        |
-| B1    | Find underperforming events  | `XX ms`        |
-| B2    | Apply 10 % discount via FDW  | `XX ms`        |
+| A1    | High-value VIP payments      | `80.27 ms`     |
+| A2    | Normalize Failed → Cancelled | `84.73 ms`     |
+| B1    | Find underperforming events  | `75.34 ms`     |
+| B2    | Apply 10 % discount via FDW  | `188.65 ms`    |
+
 
 ---
 
@@ -2100,17 +2239,5 @@ Stage 4 proved our ability to combine and operate on multiple PostgreSQL databas
 We created two cross-database views, executed complex queries and DML, tested error cases, and benchmarked performance.
 This stage simulates a real enterprise environment where multiple systems collaborate securely and efficiently.
 
-🖼️ **Final Screenshots Checklist**
-
-* FDW connection test
-* Foreign tables imported
-* Both views created
-* Query outputs + EXPLAIN timings
-* Update + rollback logs
-* Invalid operation error
-
 ---
-
-✅ **Ready for submission and presentation.**
-Each query now has its business goal, SQL, and clear explanation for your oral defense.
 
