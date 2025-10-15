@@ -1752,3 +1752,249 @@ These SQL utilities improve maintainability, analytics, and business intelligenc
 
 
 
+# 🧩 Stage 4 — Integrated Database Architecture and Advanced Views
+
+## 🎯 Overview
+
+In this stage, we extended our project by **integrating two independent database systems** — our local *Payment Management System* and our partners’ *Airline Ticketing Database*.
+Using **PostgreSQL Foreign Data Wrappers (FDW)**, we merged both environments into a single unified schema, allowing us to query and manipulate remote data as if it were local.
+
+This integration stage demonstrates:
+
+* Full **cross-database integration** using `postgres_fdw`.
+* Creation of **views** combining local and external data.
+* **Transactional DML operations** (UPDATE, INSERT, DELETE) to simulate real-life business logic.
+* Proper **logging and testing** of valid and invalid operations.
+
+---
+
+## 🛠️ Integration Setup — FDW Connection
+
+### Step 1 — Creating the Server Link
+
+We connected our database `New_Ticketing` (payments) to the external airline schema using the following commands:
+
+```sql
+CREATE EXTENSION IF NOT EXISTS postgres_fdw;
+
+CREATE SERVER airline_server
+FOREIGN DATA WRAPPER postgres_fdw
+OPTIONS (host 'localhost', dbname 'Ticketing_backup', port '5432');
+
+CREATE USER MAPPING FOR postgres
+SERVER airline_server
+OPTIONS (user 'postgres', password 'your_password');
+```
+
+### Step 2 — Importing the External Schema
+
+We imported all external tables into our local schema for direct access:
+
+```sql
+CREATE SCHEMA airline_fdw;
+IMPORT FOREIGN SCHEMA public
+FROM SERVER airline_server
+INTO airline_fdw;
+```
+
+✅ After running this, both databases became connected.
+We verified the integration using:
+
+```sql
+SELECT foreign_table_schema, foreign_table_name
+FROM information_schema.foreign_tables
+ORDER BY 1,2;
+```
+
+🖼️ **Insert screenshot here:** *(showing “airline_fdw” tables appearing alongside local ones)*
+
+---
+
+## 👥 View 1 — `v_customer_flight_payments`
+
+### 📘 Description
+
+This view unifies **customer transactions** from our local payment system with **ticket pricing** from the airline FDW.
+It allows customer service representatives to view flight-related payments and ticket details in one place.
+
+```sql
+CREATE OR REPLACE VIEW v_customer_flight_payments AS
+SELECT
+  c.customerid,
+  c.name AS customer_name,
+  t.transactionid,
+  t.amount,
+  t.currency,
+  t.status,
+  l.ticket_id,
+  tp.event_id,
+  tp.price  AS ticket_price,
+  tp.tax    AS ticket_tax
+FROM transaction t
+JOIN customer c              ON c.customerid = t.customerid
+JOIN flight_payment_link l   ON l.transactionid = t.transactionid
+JOIN airline_fdw.ticket_pricing tp ON tp.ticket_id = l.ticket_id;
+```
+
+🖼️ **Insert screenshot here:** *(showing view creation success and columns list)*
+
+---
+
+### 🔍 Query Example
+
+```sql
+SELECT *
+FROM v_customer_flight_payments
+ORDER BY amount DESC
+LIMIT 10;
+```
+
+🖼️ **Insert screenshot here:** *(showing joined customer + ticket data results)*
+
+---
+
+### 🧾 DML Example — Valid Update Operation
+
+Simulates a dynamic price adjustment for high-value customers.
+
+```sql
+BEGIN;
+
+UPDATE airline_fdw.ticket_pricing tp
+SET price = price + 5
+WHERE tp.ticket_id IN (
+  SELECT DISTINCT ticket_id
+  FROM v_customer_flight_payments
+  WHERE amount >= 10000
+);
+
+SELECT COUNT(*) AS rows_affected
+FROM airline_fdw.ticket_pricing tp
+WHERE tp.ticket_id IN (
+  SELECT DISTINCT ticket_id
+  FROM v_customer_flight_payments
+  WHERE amount >= 10000
+);
+
+ROLLBACK;  -- Return to original state after demonstration
+```
+
+🖼️ **Insert screenshot here:** *(showing successful query and “ROLLBACK completed” message)*
+
+**Explanation:**
+This operation increased ticket prices for customers with high transaction amounts (≥10,000).
+Using `ROLLBACK` ensures data integrity after testing.
+
+---
+
+## 🧾 View 2 — `v_event_sales`
+
+### 📘 Description
+
+This view summarizes overall ticketing and transaction performance **by flight event**.
+It provides KPIs for the business analytics team to monitor total sales and customer activity.
+
+```sql
+CREATE OR REPLACE VIEW v_event_sales AS
+SELECT
+  tp.event_id,
+  COUNT(DISTINCT l.transactionid)  AS txn_count,
+  COUNT(DISTINCT tp.customer_id)   AS unique_customers,
+  SUM(t.amount)                    AS total_payment_amount,
+  AVG(tp.price)::numeric(12,2)     AS avg_ticket_price,
+  AVG(tp.tax)::numeric(12,2)       AS avg_tax
+FROM airline_fdw.ticket_pricing tp
+JOIN flight_payment_link l   ON l.ticket_id     = tp.ticket_id
+JOIN transaction t           ON t.transactionid = l.transactionid
+GROUP BY tp.event_id;
+```
+
+🖼️ **Insert screenshot here:** *(showing successful creation)*
+
+---
+
+### 🔍 Query Example
+
+```sql
+SELECT *
+FROM v_event_sales
+ORDER BY total_payment_amount DESC, txn_count DESC
+LIMIT 10;
+```
+
+🖼️ **Insert screenshot here:** *(showing event summary results)*
+
+---
+
+### 🧾 DML Example — Valid Update
+
+Simulates a **5% discount** for underperforming events (low sales).
+
+```sql
+BEGIN;
+
+UPDATE airline_fdw.ticket_pricing tp
+SET price = ROUND(price * 0.95, 2)
+WHERE tp.event_id IN (
+  SELECT event_id
+  FROM v_event_sales
+  WHERE txn_count < 50
+);
+
+SELECT COUNT(*) AS rows_affected
+FROM airline_fdw.ticket_pricing tp
+WHERE tp.event_id IN (
+  SELECT event_id
+  FROM v_event_sales
+  WHERE txn_count < 50
+);
+
+ROLLBACK;
+```
+
+🖼️ **Insert screenshot here:** *(showing successful query with rows_affected)*
+
+---
+
+### ⚠️ Invalid Operation Example (Error Demonstration)
+
+Testing PostgreSQL protection mechanisms on aggregated views.
+
+```sql
+INSERT INTO v_event_sales (event_id, txn_count)
+VALUES (9999, 1);
+```
+
+🖼️ **Insert screenshot here:** *(showing error message “cannot insert into view…”)*
+
+**Explanation:**
+Aggregated views (`GROUP BY`) cannot be directly modified.
+This demonstrates PostgreSQL’s built-in protection of data integrity.
+
+---
+
+## 🔗 Integration Summary
+
+The integration was successfully implemented using **FDW technology**, allowing both databases to:
+
+* Query and aggregate data across systems.
+* Execute updates on remote datasets in controlled transactions.
+* Protect data consistency using PostgreSQL’s view-level constraints.
+
+✅ After Stage 4, the system now supports:
+
+* **Cross-database joins**
+* **Analytical dashboards via views**
+* **Controlled DML transactions**
+* **Full modular integration architecture**
+
+🖼️ **Insert screenshots here:**
+
+* FDW connection test
+* Imported foreign tables list
+* Both view creation confirmations
+* Query outputs + update tests
+* Invalid DML error message
+
+---
+
