@@ -1751,28 +1751,32 @@ These SQL utilities improve maintainability, analytics, and business intelligenc
 ---
 
 
+Excellent — you’re totally right.
+Here’s your **complete Stage 4 README (final version)**, now **fully enriched with clear English explanations** for *every single query*, written at a presentation level that’s perfect for oral defense.
+
+---
 
 # 🧩 Stage 4 — Integrated Database Architecture and Advanced Views
 
 ## 🎯 Overview
 
 In this stage, we extended our project by **integrating two independent database systems** — our local *Payment Management System* and our partners’ *Airline Ticketing Database*.
-Using **PostgreSQL Foreign Data Wrappers (FDW)**, we merged both environments into a single unified schema, allowing us to query and manipulate remote data as if it were local.
+Using **PostgreSQL Foreign Data Wrappers (FDW)**, we merged both environments into one unified schema, allowing queries and updates across databases as if all data were local.
 
-This integration stage demonstrates:
+This stage demonstrates:
 
-* Full **cross-database integration** using `postgres_fdw`.
-* Creation of **views** combining local and external data.
-* **Transactional DML operations** (UPDATE, INSERT, DELETE) to simulate real-life business logic.
-* Proper **logging and testing** of valid and invalid operations.
+* Full **cross-database integration** using `postgres_fdw`
+* Creation of **business views** combining local and remote data
+* **Transactional DML** (UPDATE / INSERT / DELETE) with rollback control
+* **Logging + error handling** for safe experimentation
 
 ---
 
 ## 🛠️ Integration Setup — FDW Connection
 
-### Step 1 — Creating the Server Link
+We connected our local DB `New_Ticketing` to the airline’s schema.
 
-We connected our database `New_Ticketing` (payments) to the external airline schema using the following commands:
+### Step 1 — Create Server Link
 
 ```sql
 CREATE EXTENSION IF NOT EXISTS postgres_fdw;
@@ -1786,9 +1790,7 @@ SERVER airline_server
 OPTIONS (user 'postgres', password 'your_password');
 ```
 
-### Step 2 — Importing the External Schema
-
-We imported all external tables into our local schema for direct access:
+### Step 2 — Import Remote Schema
 
 ```sql
 CREATE SCHEMA airline_fdw;
@@ -1797,25 +1799,26 @@ FROM SERVER airline_server
 INTO airline_fdw;
 ```
 
-✅ After running this, both databases became connected.
-We verified the integration using:
+✅ After execution, both schemas became connected and visible together.
+
+Verification:
 
 ```sql
 SELECT foreign_table_schema, foreign_table_name
 FROM information_schema.foreign_tables
-ORDER BY 1,2;
+ORDER BY 1, 2;
 ```
 
-🖼️ **Insert screenshot here:** *(showing “airline_fdw” tables appearing alongside local ones)*
+🖼️ *Screenshot — airline_fdw tables appear beside local ones.*
 
 ---
 
 ## 👥 View 1 — `v_customer_flight_payments`
 
-### 📘 Description
+### 📘 Purpose
 
-This view unifies **customer transactions** from our local payment system with **ticket pricing** from the airline FDW.
-It allows customer service representatives to view flight-related payments and ticket details in one place.
+This view merges **customer transactions** from the payment system with **ticket data** from the airline system.
+It gives *Customer Service Representatives* a single interface to see both payment and ticket details for each customer.
 
 ```sql
 CREATE OR REPLACE VIEW v_customer_flight_payments AS
@@ -1828,19 +1831,19 @@ SELECT
   t.status,
   l.ticket_id,
   tp.event_id,
-  tp.price  AS ticket_price,
-  tp.tax    AS ticket_tax
+  tp.price AS ticket_price,
+  tp.tax AS ticket_tax
 FROM transaction t
-JOIN customer c              ON c.customerid = t.customerid
-JOIN flight_payment_link l   ON l.transactionid = t.transactionid
+JOIN customer c ON c.customerid = t.customerid
+JOIN flight_payment_link l ON l.transactionid = t.transactionid
 JOIN airline_fdw.ticket_pricing tp ON tp.ticket_id = l.ticket_id;
 ```
 
-🖼️ **Insert screenshot here:** *(showing view creation success and columns list)*
+🖼️ *Screenshot — view created successfully.*
 
 ---
 
-### 🔍 Query Example
+### 🔍 Query 1 — Show Top Payments
 
 ```sql
 SELECT *
@@ -1849,71 +1852,66 @@ ORDER BY amount DESC
 LIMIT 10;
 ```
 
-🖼️ **Insert screenshot here:** *(showing joined customer + ticket data results)*
+**Explanation:**
+Displays the 10 highest-value transactions across both systems, showing the customer name, payment amount, and related flight ticket.
+Used by managers for revenue review.
+
+🖼️ *Screenshot — query results grid.*
 
 ---
 
-### 🧾 DML Example — Valid Update Operation
-
-Simulates a dynamic price adjustment for high-value customers.
+### 🧾 DML Example — Price Adjustment for High-Value Customers
 
 ```sql
 BEGIN;
-
 UPDATE airline_fdw.ticket_pricing tp
 SET price = price + 5
 WHERE tp.ticket_id IN (
-  SELECT DISTINCT ticket_id
+  SELECT ticket_id
   FROM v_customer_flight_payments
   WHERE amount >= 10000
 );
-
-SELECT COUNT(*) AS rows_affected
-FROM airline_fdw.ticket_pricing tp
-WHERE tp.ticket_id IN (
-  SELECT DISTINCT ticket_id
-  FROM v_customer_flight_payments
-  WHERE amount >= 10000
+SELECT COUNT(*) AS rows_affected FROM airline_fdw.ticket_pricing tp WHERE tp.ticket_id IN (
+  SELECT ticket_id FROM v_customer_flight_payments WHERE amount >= 10000
 );
-
-ROLLBACK;  -- Return to original state after demonstration
+ROLLBACK;
 ```
 
-🖼️ **Insert screenshot here:** *(showing successful query and “ROLLBACK completed” message)*
-
 **Explanation:**
-This operation increased ticket prices for customers with high transaction amounts (≥10,000).
-Using `ROLLBACK` ensures data integrity after testing.
+Simulates a $5 increase for tickets bought by premium customers spending ≥ 10 000.
+`ROLLBACK` keeps the database unchanged after testing.
+
+🖼️ *Screenshot — update + rollback confirmation.*
 
 ---
 
 ## 🧾 View 2 — `v_event_sales`
 
-### 📘 Description
+### 📘 Purpose
 
-This view summarizes overall ticketing and transaction performance **by flight event**.
-It provides KPIs for the business analytics team to monitor total sales and customer activity.
+Aggregates airline ticketing performance **by event ID** (a flight campaign or route).
+Helps analysts monitor sales volume, revenue, and average pricing.
 
 ```sql
 CREATE OR REPLACE VIEW v_event_sales AS
 SELECT
   tp.event_id,
-  COUNT(DISTINCT l.transactionid)  AS txn_count,
-  COUNT(DISTINCT tp.customer_id)   AS unique_customers,
-  SUM(t.amount)                    AS total_payment_amount,
-  AVG(tp.price)::numeric(12,2)     AS avg_ticket_price,
-  AVG(tp.tax)::numeric(12,2)       AS avg_tax
+  COUNT(DISTINCT l.transactionid) AS txn_count,
+  COUNT(DISTINCT tp.customer_id) AS unique_customers,
+  SUM(t.amount) AS total_payment_amount,
+  AVG(tp.price)::numeric(12,2) AS avg_ticket_price,
+  AVG(tp.tax)::numeric(12,2) AS avg_tax
 FROM airline_fdw.ticket_pricing tp
-JOIN flight_payment_link l   ON l.ticket_id     = tp.ticket_id
-JOIN transaction t           ON t.transactionid = l.transactionid
+JOIN flight_payment_link l ON l.ticket_id = tp.ticket_id
+JOIN transaction t ON t.transactionid = l.transactionid
 GROUP BY tp.event_id;
 ```
 
-🖼️ **Insert screenshot here:** *(showing successful creation)*
+🖼️ *Screenshot — view created successfully.*
 
 ---
 
-### 🔍 Query Example
+### 🔍 Query 1 — Top Performing Events
 
 ```sql
 SELECT *
@@ -1922,79 +1920,197 @@ ORDER BY total_payment_amount DESC, txn_count DESC
 LIMIT 10;
 ```
 
-🖼️ **Insert screenshot here:** *(showing event summary results)*
+**Explanation:**
+Lists the 10 best-performing flight events sorted by total sales amount and transaction count.
+Used by marketing to identify profitable routes.
+
+🖼️ *Screenshot — result grid.*
 
 ---
 
-### 🧾 DML Example — Valid Update
-
-Simulates a **5% discount** for underperforming events (low sales).
+### 🧾 DML Example — Discount for Underperforming Events
 
 ```sql
 BEGIN;
-
 UPDATE airline_fdw.ticket_pricing tp
 SET price = ROUND(price * 0.95, 2)
 WHERE tp.event_id IN (
-  SELECT event_id
-  FROM v_event_sales
-  WHERE txn_count < 50
+  SELECT event_id FROM v_event_sales WHERE txn_count < 50
 );
-
 SELECT COUNT(*) AS rows_affected
 FROM airline_fdw.ticket_pricing tp
 WHERE tp.event_id IN (
-  SELECT event_id
-  FROM v_event_sales
-  WHERE txn_count < 50
+  SELECT event_id FROM v_event_sales WHERE txn_count < 50
 );
-
 ROLLBACK;
 ```
 
-🖼️ **Insert screenshot here:** *(showing successful query with rows_affected)*
+**Explanation:**
+Applies a 5 % discount on all tickets from low-traffic events (< 50 sales).
+This mirrors a real-life marketing campaign for improving sales.
+`ROLLBACK` used for safe simulation.
+
+🖼️ *Screenshot — rows_affected + rollback.*
 
 ---
 
-### ⚠️ Invalid Operation Example (Error Demonstration)
-
-Testing PostgreSQL protection mechanisms on aggregated views.
+### ⚠️ Invalid Operation Test
 
 ```sql
-INSERT INTO v_event_sales (event_id, txn_count)
-VALUES (9999, 1);
+INSERT INTO v_event_sales (event_id, txn_count) VALUES (9999, 1);
 ```
 
-🖼️ **Insert screenshot here:** *(showing error message “cannot insert into view…”)*
-
 **Explanation:**
-Aggregated views (`GROUP BY`) cannot be directly modified.
-This demonstrates PostgreSQL’s built-in protection of data integrity.
+Throws an error because `v_event_sales` is an aggregated view (`GROUP BY`).
+This demonstrates PostgreSQL’s built-in data-integrity protection.
+
+🖼️ *Screenshot — error message.*
 
 ---
 
 ## 🔗 Integration Summary
 
-The integration was successfully implemented using **FDW technology**, allowing both databases to:
+The FDW setup enabled true cross-database queries and updates.
+We can now:
 
-* Query and aggregate data across systems.
-* Execute updates on remote datasets in controlled transactions.
-* Protect data consistency using PostgreSQL’s view-level constraints.
+* View unified customer + airline data
+* Execute DML on remote tables securely
+* Preserve integrity with rollback testing
 
-✅ After Stage 4, the system now supports:
+✅ Result:
+**Cross-database joins · Analytics views · Safe transactions · Modular architecture**
 
-* **Cross-database joins**
-* **Analytical dashboards via views**
-* **Controlled DML transactions**
-* **Full modular integration architecture**
-
-🖼️ **Insert screenshots here:**
-
-* FDW connection test
-* Imported foreign tables list
-* Both view creation confirmations
-* Query outputs + update tests
-* Invalid DML error message
+🖼️ *Screenshots — FDW test, imported tables, view creations, query outputs, rollback demo.*
 
 ---
+
+# 📎 Stage 4 — Extended Queries & Performance Timing
+
+---
+
+## View A — `v_customer_flight_payments`
+
+### **A1 — High-Value Settled/Cleared Payments**
+
+**Purpose:** Identify VIP customers or large transactions requiring manual review.
+
+```sql
+SELECT customerid, customer_name, transactionid, amount, currency, status,
+  ticket_id, event_id, ticket_price, ticket_tax
+FROM v_customer_flight_payments
+WHERE status IN ('Settled','Cleared') AND amount >= 10000
+ORDER BY amount DESC LIMIT 25;
+```
+
+**Explanation:**
+Helps Customer Support detect high-value payments that cleared successfully.
+Useful for fraud monitoring and VIP analytics.
+🖼️ *A1 results + EXPLAIN.*
+
+---
+
+### **A2 — Normalize Failed → Cancelled**
+
+**Purpose:** Maintain data consistency by re-marking failed transactions as cancelled.
+
+```sql
+BEGIN;
+UPDATE transaction t
+SET status = 'Cancelled'
+WHERE t.transactionid IN (
+  SELECT transactionid FROM v_customer_flight_payments WHERE status = 'Failed'
+);
+SELECT COUNT(*) AS rows_affected FROM transaction
+WHERE status = 'Cancelled'
+  AND transactionid IN (
+    SELECT transactionid FROM v_customer_flight_payments WHERE status = 'Failed'
+);
+ROLLBACK;
+```
+
+**Explanation:**
+This cleans up data by standardizing failure states.
+It runs inside a transaction block, rolled back for demo.
+🖼️ *A2 rows affected + EXPLAIN.*
+
+---
+
+## View B — `v_event_sales`
+
+### **B1 — Underperforming but Expensive Events**
+
+**Purpose:** Detect events that sell poorly yet have high average ticket prices → potential overpricing.
+
+```sql
+SELECT event_id, txn_count, unique_customers, total_payment_amount,
+  avg_ticket_price, avg_tax
+FROM v_event_sales
+WHERE txn_count < 50 AND avg_ticket_price > 150
+ORDER BY avg_ticket_price DESC, txn_count ASC LIMIT 20;
+```
+
+**Explanation:**
+Supports marketing analysis — identifies routes with low sales but high prices, signaling a need to reprice.
+🖼️ *B1 results + EXPLAIN.*
+
+---
+
+### **B2 — Targeted 10 % Discount on FDW**
+
+**Purpose:** Simulate a marketing discount to stimulate sales on low-performance events.
+
+```sql
+BEGIN;
+UPDATE airline_fdw.ticket_pricing tp
+SET price = ROUND(price * 0.90, 2)
+WHERE tp.event_id IN (
+  SELECT event_id FROM v_event_sales
+  WHERE txn_count < 50 AND avg_ticket_price > 150
+);
+SELECT COUNT(*) AS rows_affected
+FROM airline_fdw.ticket_pricing tp
+WHERE tp.event_id IN (
+  SELECT event_id FROM v_event_sales
+  WHERE txn_count < 50 AND avg_ticket_price > 150
+);
+ROLLBACK;
+```
+
+**Explanation:**
+Applies a 10 % discount to selected events through the FDW (remote) table, demonstrating cross-database updates.
+`ROLLBACK` prevents permanent changes.
+🖼️ *B2 results + EXPLAIN.*
+
+---
+
+## ⏱️ Performance Timing
+
+| Query | Purpose                      | Execution Time |
+| ----- | ---------------------------- | -------------- |
+| A1    | High-value VIP payments      | `XX ms`        |
+| A2    | Normalize Failed → Cancelled | `XX ms`        |
+| B1    | Find underperforming events  | `XX ms`        |
+| B2    | Apply 10 % discount via FDW  | `XX ms`        |
+
+---
+
+## 🧠 Final Reflection
+
+Stage 4 proved our ability to combine and operate on multiple PostgreSQL databases as one system.
+We created two cross-database views, executed complex queries and DML, tested error cases, and benchmarked performance.
+This stage simulates a real enterprise environment where multiple systems collaborate securely and efficiently.
+
+🖼️ **Final Screenshots Checklist**
+
+* FDW connection test
+* Foreign tables imported
+* Both views created
+* Query outputs + EXPLAIN timings
+* Update + rollback logs
+* Invalid operation error
+
+---
+
+✅ **Ready for submission and presentation.**
+Each query now has its business goal, SQL, and clear explanation for your oral defense.
 
