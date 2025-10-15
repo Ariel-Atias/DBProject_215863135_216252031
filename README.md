@@ -656,9 +656,7 @@ ORDER BY c.customerid, t.transactiondate DESC;
 
 📸 **Screenshots:**
 
-![Query 1 Code](Stage_3/Screenshots33/QUERY_1.png)
-
-![Query 1 Result](Stage_3/Screenshots33/QUERY1_result.png)
+![Query 1 Result](Stage_3/Screenshots33/query1.png)
 
 ---
 
@@ -689,9 +687,7 @@ LIMIT 10;
 
 📸 **Screenshots:**
 
-![Query 2 Code](Stage_3/Screenshots33/QUERY_2.png)
-
-![Query 2 Result](Stage_3/Screenshots33/QUERY_2_result.png)
+![Query 2 Result](Stage_3/Screenshots33/q2.png)
 
 ---
 
@@ -727,7 +723,7 @@ ORDER BY txn_count DESC;
 
 📸 **Screenshot:**
 
-![Query 3 Result](Stage_3/Screenshots33/QUERY3RESULT.png)
+![Query 3 Result](Stage_3/Screenshots33/q3.jpeg)
 
 ---
 
@@ -777,7 +773,7 @@ WHERE t.transactiondate >= (
 ) - INTERVAL '30 days';
 ```
 
-![CREATE v\_recent\_txn\_30d](Stage_3/Screenshots/v_recent_txn_30d_create.png)
+![CREATE v\_recent\_txn\_30d](Stage_3/Screenshots33/v1.jpeg)
 
 #### 🔍 Usage
 
@@ -788,7 +784,7 @@ ORDER BY transactiondate DESC
 LIMIT 20;
 ```
 
-![USE v\_recent\_txn\_30d](Stage_3/Screenshots/v_recent_txn_30d_select.png)
+![USE v\_recent\_txn\_30d](Stage_3/Screenshots33/sv1.jpeg)
 
 #### 🛠️ Update using the View
 
@@ -801,7 +797,7 @@ WHERE v.transactionid = t.transactionid
   AND v.transactiondate <= CURRENT_DATE - INTERVAL '7 days';
 ```
 
-![UPDATE v\_recent\_txn\_30d](Stage_3/Screenshots/v_recent_txn_30d_update.png)
+![UPDATE v\_recent\_txn\_30d](Stage_3/Screenshots33/uv1.jpeg)
 
 ---
 
@@ -824,7 +820,7 @@ LEFT JOIN transaction t ON t.merchantid = m.merchantid
 GROUP BY m.merchantid, m.merchantname;
 ```
 
-![CREATE v\_merchant\_summary](Stage_3/Screenshots/v_merchant_summary_create.png)
+![CREATE v\_merchant\_summary](Stage_3/Screenshots33/v2.jpeg)
 
 #### 🔍 Usage
 
@@ -835,21 +831,19 @@ ORDER BY total_amount DESC
 LIMIT 10;
 ```
 
-![USE v\_merchant\_summary](Stage_3/Screenshots/v_merchant_summary_top10.png)
+![USE v\_merchant\_summary](Stage_3/Screenshots33/sv2.jpeg)
 
 #### 🛠️ Update using the View
-
 ```sql
+
 UPDATE merchant m
-SET minimaldetails = COALESCE(m.minimaldetails, '') || ' [HIGH_VOLUME]'
-WHERE m.merchantid IN (
-  SELECT merchantid
-  FROM v_merchant_summary
-  WHERE total_amount > 1300000
-);
+SET merchantname = m.merchantname || ' [HIGH_VOLUME]'
+FROM v_merchant_summary v
+WHERE v.merchantid = m.merchantid
+  AND v.total_amount > 1500000;
 ```
 
-![UPDATE v\_merchant\_summary](Stage_3/Screenshots/update_merchant.png)
+![UPDATE v\_merchant\_summary](Stage_3/Screenshots33/uv2n.jpeg)
 
 ---
 
@@ -871,7 +865,7 @@ LEFT JOIN transaction t ON t.paymentmethodid = pm.paymentmethodid
 GROUP BY pm.paymentmethodid, pm.type;
 ```
 
-![CREATE v\_paymentmethod\_usage](Stage_3/Screenshots/v_paymentmethod_usage_create.png)
+![CREATE v\_paymentmethod\_usage](Stage_3/Screenshots33/v3.jpeg)
 
 #### 🔍 Usage
 
@@ -881,7 +875,7 @@ FROM v_paymentmethod_usage
 ORDER BY txn_count DESC;
 ```
 
-![USE v\_paymentmethod\_usage](Stage_3/Screenshots/v_paymentmethod_usage_select.png)
+![USE v\_paymentmethod\_usage](Stage_3/Screenshots33/sv3.jpeg)
 
 #### 🛠️ Update using the View
 
@@ -895,7 +889,7 @@ WHERE pm.paymentmethodid IN (
 );
 ```
 
-![UPDATE v\_paymentmethod\_usage](Stage_3/Screenshots/update_paymentmethod.png)
+![UPDATE v\_paymentmethod\_usage](Stage_3/Screenshots33/uv3n.jpeg)
 
 ---
 
@@ -903,7 +897,6 @@ WHERE pm.paymentmethodid IN (
 
 **Purpose:** Provides visibility and control for allowed transaction statuses with built-in protection via `WITH CHECK OPTION`.
 
-> אם יש לך Enum/דומיין אחר לסטטוסים (למשל גם `Authorized`/`Completed`), עדכן את הרשימה ב־`WHERE status IN (...)`.
 
 #### ✳️ Create
 
@@ -915,7 +908,7 @@ WHERE status IN ('Pending','Cleared','Settled','Failed','Cancelled')
 WITH CHECK OPTION;
 ```
 
-![CREATE v\_txn\_status](Stage_3/Screenshots/v_txn_status_create.png)
+![CREATE v\_txn\_status](Stage_3/Screenshots33/v4.jpeg)
 
 #### 🔍 Usage
 
@@ -926,7 +919,7 @@ ORDER BY transactionid DESC
 LIMIT 20;
 ```
 
-![USE v\_txn\_status](Stage_3/Screenshots/v_txn_status_select.png)
+![USE v\_txn\_status](Stage_3/Screenshots33/sv2.jpeg)
 
 #### 🛠️ Update using the View
 
@@ -936,19 +929,8 @@ SET status = 'Cancelled'
 WHERE transactionid = 100001;
 ```
 
-![UPDATE v\_txn\_status](Stage_3/Screenshots/v_txn_status_update.png)
+![UPDATE v\_txn\_status](Stage_3/Screenshots33/uv4n.jpeg)
 
----
-
-### 🧾 Additional Example: Update Clearing House
-
-```sql
-UPDATE clearinghouse
-SET name = 'ACH Network Intl'
-WHERE clearinghouseid = 1;
-```
-
-![UPDATE clearinghouse](Stage_3/Screenshots/update_clearinghouse.png)
 
 ---
 
@@ -958,10 +940,6 @@ WHERE clearinghouseid = 1;
 * Demonstrated **real updates** that use or rely on those views.
 * Maintained **clean SQL syntax** and **readable GitHub formatting**.
 * Each view includes creation, usage, and update examples with **embedded screenshots** for visual clarity.
-
----
-
-אלוף! הנה גרסה מלוטשת ומוכנה להדבקה ל־README עבור חלק הוויזואליזציות — בפורמט זהה לשאר, עם תיאורי תמונות ב־Markdown (כמו בגיטהאב), הסברים נקיים, וצעד־אחר־צעד ליצוא התרשימים מ-pgAdmin. שמרתי את הנתיבים שסיפקת (`Stage_3/Screenshots33/...`). אם תרצה לשנות תיקיות/שמות — רק החלף את הנתיב בתמונות.
 
 ---
 
@@ -989,7 +967,7 @@ LIMIT 10;
 
 📸 **Screenshot**
 
-![Top 10 merchants by total amount – bar chart](Stage_3/Screenshots33/viz_bar_top_merchants.png)
+![Top 10 merchants by total amount – bar chart](Stage_3/Screenshots33/barchart.jpeg)
 
 **What it shows**
 
@@ -1013,7 +991,7 @@ ORDER BY txn_count DESC;
 
 📸 **Screenshot**
 
-![Transaction share by clearing house – pie chart](Stage_3/Screenshots33/viz_pie_clearing_houses.png)
+![Transaction share by clearing house – pie chart](Stage_3/Screenshots33/piechart.jpeg)
 
 **What it shows**
 
@@ -1031,9 +1009,6 @@ Each slice corresponds to a clearing network (e.g., **TARGET2**, **FedWire**, **
 * Both are backed by **views**, so they’re **auto-refreshing** as data is updated.
 * Clear, demo-friendly, and directly support merchant management and routing analysis.
 
----
-בול — הנה הגרסה המעודכנת של חלק **הפונקציות (Functions)** עם **מקומות אמיתיים לצילומי מסך** בתבנית Markdown מלאה לגיטהאב
-(`![תיאור קצר](Stage_3/Screenshots33/functions/filename.png)`), כך שכל צילום שתוסיף יוצג ישירות בתוך ה־README שלך 🎯
 
 ---
 
@@ -1060,7 +1035,7 @@ $$;
 ```
 
 📸 **Function Created**
-![fn\_count\_transactions – created](Stage_3/Screenshots33/functions/fn_count_transactions_create.png)
+![fn\_count\_transactions – created](Stage_3/Screenshots33/f1.png)
 
 ---
 
@@ -1077,7 +1052,7 @@ LIMIT 10;
 ```
 
 📸 **Result Output**
-![Top 10 merchants by transaction count](Stage_3/Screenshots33/functions/fn_count_transactions_top10.png)
+![Top 10 merchants by transaction count](Stage_3/Screenshots33/sf1.jpeg)
 
 **Explanation**
 
@@ -1112,7 +1087,7 @@ $$;
 ```
 
 📸 **Function Created**
-![fn\_total\_amount – created](Stage_3/Screenshots33/functions/fn_total_amount_create.png)
+![fn\_total\_amount – created](Stage_3/Screenshots33/f2.jpeg)
 
 ---
 
@@ -1129,8 +1104,7 @@ LIMIT 10;
 ```
 
 📸 **Result Output**
-![Top 10 merchants by total amount](Stage_3/Screenshots33/functions/fn_total_amount_top10.png)
-
+![Top 10 merchants by total amount](Stage_3/Screenshots33/sf2.jpeg)
 **Explanation**
 
 * Displays merchants ranked by **total processed value**.
@@ -1164,7 +1138,7 @@ $$;
 ```
 
 📸 **Function Created**
-![fn\_unique\_customers – created](Stage_3/Screenshots33/functions/fn_unique_customers_create.png)
+![fn\_unique\_customers – created](Stage_3/Screenshots33/f3.jpeg)
 
 ---
 
@@ -1181,7 +1155,7 @@ LIMIT 10;
 ```
 
 📸 **Result Output**
-![Top merchants by unique customers](Stage_3/Screenshots33/functions/fn_unique_customers_top10.png)
+![Top merchants by unique customers](Stage_3/Screenshots33/sf3.jpeg)
 
 **Explanation**
 
@@ -1216,7 +1190,7 @@ $$;
 ```
 
 📸 **Function Created**
-![fn\_customer\_total – created](Stage_3/Screenshots33/functions/fn_customer_total_create.png)
+![fn\_customer\_total – created](Stage_3/Screenshots33/f4.jpeg)
 
 ---
 
@@ -1233,7 +1207,7 @@ ORDER BY total_spent DESC;
 ```
 
 📸 **Result Output**
-![Top customers by total spending](Stage_3/Screenshots33/functions/fn_customer_total_results.png)
+![Top customers by total spending](Stage_3/Screenshots33/sf4.jpeg)
 
 **Explanation**
 
