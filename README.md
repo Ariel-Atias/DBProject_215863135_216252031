@@ -237,7 +237,7 @@ Here is an example of typical output after running the dump process:
 
 ---
 
-## 📊 Stage 2 - 
+## 📊 Stage 2 - Database Queries, Parametrized Queries, and Constraints
 
 # README – Part B (Queries, Parametrized Queries, Constraints)
 
@@ -280,10 +280,9 @@ The backup files are managed using Git-LFS due to their large size, as shown in 
 
 This comprehensive backup strategy ensures multiple recovery options and maintains complete audit trail of the backup process.
 
+---
 
-==================================================
-## 1. SELECT / UPDATE / DELETE Queries (Queries.sql)
-==================================================
+## 📝 1. SELECT / UPDATE / DELETE Queries (Queries.sql)
 
 ### Complex SELECT Queries
 
@@ -292,310 +291,829 @@ Complex queries simulate real business needs such as generating reports, analyzi
 
 ### SELECT Queries
 
-**1. All transactions above 500, including customer and merchant details**
+#### Query 1: Show each merchant with total number of transactions and total revenue
+
+**Business Need:** Management needs to see which merchants generate the most revenue and transaction volume for strategic partnership decisions.
+
 ```sql
-SELECT c.Name, m.MerchantName, t.Amount, t.Currency, t.TransactionDate
+SELECT 
+    m.MerchantName,
+    COUNT(t.TransactionID) AS TotalTransactions,
+    SUM(t.Amount) AS TotalRevenue
+FROM Merchant m
+LEFT JOIN Transaction t ON m.MerchantID = t.MerchantID
+GROUP BY m.MerchantID, m.MerchantName
+ORDER BY TotalRevenue DESC;
+```
+
+**Query Features:**
+- Uses `LEFT JOIN` to include merchants even without transactions
+- Uses `COUNT()` aggregate function to count transactions
+- Uses `SUM()` aggregate function to calculate total revenue
+- Uses `GROUP BY` to group results by merchant
+- Uses `ORDER BY DESC` to show highest revenue first
+
+**Screenshot - Query 1 Execution:**
+![SELECT Query 1](Stage_2/SCREENSHOTSSTAGE2/SELECT1.jpeg)
+
+---
+
+#### Query 2: Show all pending transactions with customer and merchant details
+
+**Business Need:** Operations team needs to monitor pending transactions to ensure timely processing and identify potential issues.
+
+```sql
+SELECT 
+    t.TransactionID,
+    c.Name AS CustomerName,
+    m.MerchantName,
+    t.Amount,
+    t.Currency,
+    t.TransactionDate
 FROM Transaction t
 JOIN Customer c ON t.CustomerID = c.CustomerID
 JOIN Merchant m ON t.MerchantID = m.MerchantID
-WHERE t.Amount > 500
+WHERE t.Status = 'Pending'
 ORDER BY t.TransactionDate DESC;
 ```
-**Why this query is important:**
-Identifies high-value transactions for risk management and helps detect unusual spending patterns that might require attention.
 
-![Screenshot](screenshots/SELECT1.jpeg)
+**Query Features:**
+- Uses multiple `JOIN` operations to combine three tables
+- Uses `WHERE` clause to filter by transaction status
+- Uses `ORDER BY DESC` to show most recent transactions first
+- Retrieves customer and merchant details in a single query
 
-
----
-
-**2. Average transaction amounts per currency**
-```sql
-SELECT t.Currency, AVG(t.Amount) AS avgAmount, COUNT(*) AS transactionCount
-FROM Transaction t
-GROUP BY t.Currency
-ORDER BY avgAmount DESC;
-```
-**Why this query is important:**
-Provides insights into transaction volume distribution per currency and helps in financial planning and currency exchange rate analysis.
-
-![Screenshot](screenshots/SELECT2.jpeg)
-
+**Screenshot - Query 2 Execution:**
+![SELECT Query 2](Stage_2/SCREENSHOTSSTAGE2/SELECT2.jpeg)
 
 ---
 
-**3. Customers with transactions above 1000 in the last year**
+#### Query 3: Show accounts with their clearing houses
+
+**Business Need:** Finance team needs to understand the relationship between accounts and clearing houses for reconciliation and reporting.
+
 ```sql
-SELECT c.Name, c.Email, SUM(t.Amount) AS totalAmount
-FROM Customer c
-JOIN Transaction t ON c.CustomerID = t.CustomerID
-WHERE t.TransactionDate >= CURRENT_DATE - INTERVAL '1 year'
-GROUP BY c.CustomerID
-HAVING SUM(t.Amount) > 1000;
-```
-**Why this query is important:**
-Identifies high-value customers for loyalty programs and targeted marketing campaigns, helping improve customer retention.
-
-![Screenshot](screenshots/SELECT3.jpeg)
-
-
----
-
-**4. Bank accounts with more than two payment methods**
-```sql
-SELECT a.BankName, a.AccountNumber, COUNT(pm.PaymentMethodID) AS paymentMethodCount
+SELECT 
+    ch.Name AS ClearingHouse,
+    a.BankName,
+    a.AccountNumber,
+    a.AccountType
 FROM Account a
-JOIN PaymentMethod pm ON a.AccountID = pm.AccountID
-GROUP BY a.AccountID
-HAVING COUNT(pm.PaymentMethodID) > 2;
+JOIN ClearingHouse ch ON a.ClearingHouseID = ch.ClearingHouseID
+ORDER BY ch.Name, a.BankName;
 ```
-**Why this query is important:**
-Detects accounts with multiple payment methods, which is relevant for risk management and fraud prevention.
 
-![Screenshot](screenshots/SELECT4.jpeg)
+**Query Features:**
+- Uses `JOIN` to connect accounts with clearing houses
+- Uses multiple columns in `ORDER BY` for hierarchical sorting
+- Provides clear column aliases for readability
 
+**Screenshot - Query 3 Execution:**
+![SELECT Query 3](Stage_2/SCREENSHOTSSTAGE2/SELECT3.jpeg)
 
 ---
 
-**5. Transaction count per currency**
+#### Query 4: Show payment methods with transaction statistics
+
+**Business Need:** Business intelligence team needs comprehensive statistics about payment method usage to optimize payment options.
+
 ```sql
-SELECT Currency, COUNT(*) AS cnt
-FROM Transaction
-GROUP BY Currency
-ORDER BY cnt DESC;
+SELECT 
+    pm.Type AS PaymentMethodType,
+    COUNT(t.TransactionID) AS TransactionCount,
+    AVG(t.Amount) AS AvgAmount,
+    MIN(t.Amount) AS MinAmount,
+    MAX(t.Amount) AS MaxAmount
+FROM PaymentMethod pm
+LEFT JOIN Transaction t ON pm.PaymentMethodID = t.PaymentMethodID
+WHERE t.Amount IS NOT NULL
+GROUP BY pm.PaymentMethodID, pm.Type
+ORDER BY AvgAmount DESC;
 ```
-**Why this query is important:**
-Provides a quick overview of transaction volume per currency, essential for business intelligence and market analysis.
-also showes us the data before the DELETE\UPDATE queris
 
-![Screenshot](screenshots/PREDELETE.jpeg)
+**Query Features:**
+- Uses `LEFT JOIN` to include payment methods without transactions
+- Uses multiple aggregate functions: `COUNT()`, `AVG()`, `MIN()`, `MAX()`
+- Uses `WHERE` clause to filter null amounts
+- Uses `GROUP BY` to aggregate by payment method
+- Uses `ORDER BY` to sort by average amount
 
-### Data Modification Operations
-
-#### DELETE Operations
-
-**Why is deleting old data important?**
-Deleting old and irrelevant data improves performance, saves storage space, and maintains compliance with privacy regulations like GDPR.
-
-**1. Delete cancelled transactions**
-```sql
-DELETE FROM Transaction WHERE Status = 'Cancelled';
-```
-**Why this deletion is necessary:**
-Cancelled transactions clutter the database and can skew analytics. Removing them improves query performance and data accuracy.
-
-DELETE:
-![Screenshot](screenshots/DELETE11.jpeg)
-
-RESULT:
-![Screenshot](screenshots/AFTERDELETE11.jpeg)
-
+**Screenshot - Query 4 Execution:**
+![SELECT Query 4](Stage_2/SCREENSHOTSSTAGE2/SELECT4.jpeg)
 
 ---
 
-**2. Delete failed transactions**
-```sql
-DELETE FROM Transaction WHERE Status = 'Failed';
-```
-**Why this deletion is necessary:**
-Failed transactions from system errors should be cleaned up to avoid confusion in financial reports and maintain data integrity.
+### Transaction Control: BEGIN and ROLLBACK
 
-USE:
-![Screenshot](screenshots/DELETE21.jpeg)
+**Why is ROLLBACK important?**
+`ROLLBACK` allows us to test queries safely without permanently modifying the database. This is essential for:
+- Testing UPDATE and DELETE operations before committing
+- Recovering from errors during transaction processing
+- Ensuring data integrity during development
 
-RESULT:
-![Screenshot](screenshots/AFTERDELETE21.jpeg)
-
-
-#### UPDATE Operations
-
-**Why is updating data important?**
-Data updates ensure that information in the system is always current and accurate, which is crucial for making correct business decisions.
-
-**1. Update transactions from 'Pending' to 'Completed'**
-```sql
-UPDATE Transaction SET Status = 'Completed' WHERE Status = 'Pending';
-```
-**Why this update is important:**
-Transactions that have been processed but still marked as "Pending" could cause unjustified service blocking for customers.
-
-USE:
-![Screenshot](screenshots/UPDATE11.jpeg)
-
-RESULT:
-![Screenshot](screenshots/AFTERUPDATE11.jpeg)
-
-
----
-
-**2. Update transaction currency from EUR to ILS**
-```sql
-UPDATE Transaction SET Currency = 'ILS' WHERE Currency = 'EUR';
-```
-**Why this update is important:**
-Standardizing transactions to local currency simplifies financial reporting and reduces complexity in currency conversion calculations.
-
-BEFORE:
-(we update a different table from the first screenshot...)
-![Screenshot](screenshots/PREUPDATE21.jpeg)
-
-USE:
-![Screenshot](screenshots/UPDATE21.jpeg)
-
-RESULT:
-![Screenshot](screenshots/AFTERUPDATE21.jpeg)
-
-
-### Transaction Control
-
-#### Rollback Demonstration
-**Why is Rollback important?**
-Rollback allows canceling changes in case of errors or issues, ensuring data integrity and allowing safe testing of operations.
-
-For testing purposes, queries can be wrapped with:
+**Demonstration:**
 ```sql
 BEGIN;
--- run queries
+-- Test queries here
 ROLLBACK;
 ```
 
-- During Rollback: Insert screenshot here
-- After Rollback: Insert screenshot here
+**Screenshot - BEGIN Statement:**
+![BEGIN Transaction](Stage_2/SCREENSHOTSSTAGE2/BEGIN.jpeg)
 
-==================================================
-## 2. Parametrized Queries (ParamsQueries.sql)
-==================================================
-
-We created **4 parametrized queries** that simulate real user questions requiring input parameters.
-
-**Why are parametrized queries important?**
-They provide flexibility for users to get specific information based on their needs, making the system more interactive and useful.
-
-### The 4 Parametrized Queries:
-
-**1. Show all transactions for a specific customer by name**
-- **Business Question:** "Show me all transactions for customer John Doe"
-- **Parameter:** Customer Name (e.g., 'John Smith')
-- **Uses:** JOIN, ORDER BY
-- **Purpose:** Retrieves all transaction details for a given customer, including merchant and payment method, allowing focused analysis on individual customer behavior.
-
-**2. Show transactions within a date range and minimum amount**
-- **Business Question:** "Show me all transactions between two dates with amount above threshold"
-- **Parameters:** Start Date = '2024-01-01', End Date = '2024-12-31', Minimum Amount = 100
-- **Uses:** JOIN, WHERE with date range and minimum amount, ORDER BY
-- **Purpose:** Filters transactions to a specific period and threshold, useful for reporting and detecting significant transactions over time.
-
-**3. Merchant transaction summary**
-- **Business Question:** "Give me transaction summary for merchant example 'Amazon' in 'USD'"
-- **Parameters:** Merchant Name = 'Amazon', Currency = 'USD'
-- **Uses:** JOIN, GROUP BY, SUM/AVG/MAX/MIN functions
-- **Purpose:** Aggregates all transactions for a merchant in a given currency, showing total, average, highest, and lowest transaction amounts. Useful for merchant performance analysis.
-
-**4. Payment methods usage by bank and account type**
-- **Business Question:** "Show payment method usage for bank example 'Bank Hapoalim' and 'Checking' accounts"
-- **Parameters:** Bank Name = 'Bank Hapoalim', Account Type = 'Checking'
-- **Uses:** JOIN, GROUP BY, COUNT/SUM functions
-- **Purpose:** Provides insights into payment method usage per bank and account type, supporting financial analysis and operational decisions.
-
-### Execution Results:
-
-1:
-![Screenshot](screenshots/PARAM1.jpeg)
-
-2:
-![Screenshot](screenshots/PARAM2.jpeg)
-
-3:
-![Screenshot](screenshots/PARAM3.jpeg)
-
-4:
-![Screenshot](screenshots/PARAM4.jpeg)
-
-
-### Performance Timing:
-Each query was executed with `EXPLAIN ANALYZE` to measure performance:
-Insert timing results here.
-
-==================================================
-## 3. Constraints & Indexes (Constraints.sql)
-==================================================
-
-### Database Constraints
-
-**Why are constraints important?**
-Constraints ensure that data entering the system is valid and consistent, preventing incorrect data that could damage system reliability.
-
-### Indexes Created:
-- `idx_transaction_date` on TransactionDate - improves date-range queries
-- `idx_transaction_currency` on Currency - speeds up currency-based filtering
-- `idx_customer_name` on Customer Name - accelerates customer searches
-
-FIRST & SECONED INDEX:
-![Screenshot](Stage_2/SCREENSHOTS2/CREATEINDEX12.jpeg)
-
-THIRD INDEX:
-![Screenshot](Stage_2/CREATEINDEX21.jpeg)
-
-
-### Constraint Violation Tests
-
-Testing the constraints with invalid data:
-
-**Test 1: Try to insert negative amount (should fail)**
-```sql
--- This should fail due to chk_amount_positive
-INSERT INTO Transaction (TransactionID, Amount, Currency, Status, TransactionDate, CustomerID, MerchantID, PaymentMethodID)
-VALUES ('TXN999', -100.00, 'USD', 'Pending', CURRENT_DATE, 'CUST001', 'MERCH001', 'PAY001');
-```
-![Screenshot](Stage_2/SCREENSHOTS2/ERROR11.jpeg)
-
-**Test 2: Try to insert invalid status (should fail)**
-```sql
--- This should fail due to chk_status_values
-INSERT INTO Transaction (TransactionID, Amount, Currency, Status, TransactionDate, CustomerID, MerchantID, PaymentMethodID)
-VALUES ('TXN998', 100.00, 'USD', 'Invalid Status', CURRENT_DATE, 'CUST001', 'MERCH001', 'PAY001');
-```
-![Screenshot](Stage_2/ERROR12.jpeg)
-
-**Test 3: Try to insert duplicate email (should fail)**
-```sql
--- This should fail due to uk_customer_email
-INSERT INTO Customer (CustomerID, Name, Email, MinimalDetails, DateCreated) 
-VALUES ('CUST999', 'Test User', 'existing@email.com', 'Test Details', CURRENT_DATE);
-```
-![Screenshot](Stage_2/ERROR13.jpeg)
-
-**4. Customer email addresses must be unique**
-```sql
-ALTER TABLE Customer
-ADD CONSTRAINT chk_name_long CHECK (LENGTH(Name) > 100);
-```
-**Why this constraint is essential:**
-Prevents duplicate customer accounts and ensures proper customer identification.
-
-![Screenshot](Stage_2/ERROR21.jpeg)
-
+**Screenshot - ROLLBACK Statement:**
+![ROLLBACK Transaction](Stage_2/SCREENSHOTSSTAGE2/ROLLBACK.jpeg)
 
 ---
 
-**5. Default value for customer creation date**
+### UPDATE Operations
+
+**Why are UPDATE operations important?**
+UPDATE operations ensure that data remains current and accurate, which is crucial for maintaining data integrity and making correct business decisions.
+
+#### UPDATE Query 1: Mark all pending transactions as completed when settlement date has passed
+
+**Business Need:** System needs to automatically update transaction status when settlement date has passed to maintain accurate records.
+
+**Before Update - View Current Transaction Statuses:**
+```sql
+SELECT TransactionID, Status, SettlementDate
+FROM Transaction
+ORDER BY SettlementDate DESC;
+```
+
+**Update Operation:**
+```sql
+UPDATE Transaction
+SET Status = 'Completed'
+WHERE SettlementDate < CURRENT_DATE 
+AND Status = 'Pending';
+```
+
+**Why this update is important:**
+Transactions that have passed their settlement date but remain "Pending" can cause confusion in financial reports and customer service inquiries.
+
+**Screenshot - UPDATE 1 Execution:**
+![UPDATE Query 1](Stage_2/SCREENSHOTSSTAGE2/UPDATE1.jpeg)
+
+**After Update - Verify Changes:**
+```sql
+SELECT TransactionID, Status, SettlementDate
+FROM Transaction
+ORDER BY SettlementDate DESC;
+```
+
+**Screenshot - After UPDATE 1:**
+![After UPDATE Query 1](Stage_2/SCREENSHOTSSTAGE2/UPDATE11.jpeg)
+
+---
+
+#### UPDATE Query 2: Mark customers created over a year ago as loyal
+
+**Business Need:** Marketing team needs to identify and mark loyal customers for targeted campaigns and special benefits.
+
+**Before Update - View Current Customer Details:**
+```sql
+SELECT CustomerID, Name, Email, MinimalDetails, DateCreated
+FROM Customer
+ORDER BY DateCreated;
+```
+
+**Update Operation:**
+```sql
+UPDATE Customer
+SET MinimalDetails = 'Loyal Customer'
+WHERE DateCreated < CURRENT_DATE - INTERVAL '1 year';
+```
+
+**Why this update is important:**
+Identifying loyal customers helps in creating targeted retention programs and recognizing long-term relationships.
+
+**Screenshot - UPDATE 2 Execution:**
+![UPDATE Query 2](Stage_2/SCREENSHOTSSTAGE2/UPDATE2.jpeg)
+
+**After Update - Verify Changes:**
+```sql
+SELECT CustomerID, Name, Email, MinimalDetails, DateCreated
+FROM Customer
+ORDER BY DateCreated;
+```
+
+**Screenshot - After UPDATE 2:**
+![After UPDATE Query 2](Stage_2/SCREENSHOTSSTAGE2/UPDATE22.jpeg)
+
+---
+
+### DELETE Operations
+
+**Why are DELETE operations important?**
+Deleting old and irrelevant data improves database performance, saves storage space, and maintains compliance with privacy regulations like GDPR.
+
+#### DELETE Query 1: Remove all failed transactions
+
+**Business Need:** Failed transactions clutter the database and need to be cleaned up periodically to maintain data quality and query performance.
+
+**Before Delete - View Failed Transactions:**
+```sql
+SELECT TransactionID, Status, TransactionDate
+FROM Transaction
+WHERE Status = 'Failed'
+ORDER BY TransactionDate;
+```
+
+**Screenshot - Before DELETE 1:**
+![Before DELETE Query 1](Stage_2/SCREENSHOTSSTAGE2/DELETE11.jpeg)
+
+**Delete Operation:**
+```sql
+DELETE FROM Transaction
+WHERE Status = 'Failed';
+```
+
+**Why this deletion is necessary:**
+Failed transactions from system errors should be cleaned up to avoid confusion in financial reports and maintain data integrity.
+
+**Screenshot - DELETE 1 Execution:**
+![DELETE Query 1](Stage_2/SCREENSHOTSSTAGE2/DELETE12.jpeg)
+
+**After Delete - Verify Removal:**
+```sql
+SELECT TransactionID, Status, TransactionDate
+FROM Transaction
+WHERE Status = 'Failed'
+ORDER BY TransactionDate;
+```
+
+**Screenshot - After DELETE 1:**
+![After DELETE Query 1](Stage_2/SCREENSHOTSSTAGE2/DELETE13.jpeg)
+
+---
+
+#### DELETE Query 2: Remove unused payment methods
+
+**Business Need:** Payment methods that have never been used should be removed to keep the system clean and focused on active payment options.
+
+**Before Delete - View Unused Payment Methods:**
+```sql
+SELECT PaymentMethodID, Type, Description, AccountID
+FROM PaymentMethod
+WHERE PaymentMethodID NOT IN (
+    SELECT DISTINCT PaymentMethodID
+    FROM Transaction
+    WHERE PaymentMethodID IS NOT NULL
+)
+ORDER BY PaymentMethodID;
+```
+
+**Screenshot - Before DELETE 2:**
+![Before DELETE Query 2](Stage_2/SCREENSHOTSSTAGE2/DELETE21.jpeg)
+
+**Delete Operation:**
+```sql
+DELETE FROM PaymentMethod
+WHERE PaymentMethodID NOT IN (
+    SELECT DISTINCT PaymentMethodID
+    FROM Transaction
+    WHERE PaymentMethodID IS NOT NULL
+);
+```
+
+**Why this deletion is necessary:**
+Unused payment methods create unnecessary complexity and can confuse users when selecting payment options.
+
+**Screenshot - DELETE 2 Execution:**
+![DELETE Query 2](Stage_2/SCREENSHOTSSTAGE2/DELETE22.jpeg)
+
+**After Delete - Verify Removal:**
+```sql
+SELECT PaymentMethodID, Type, Description, AccountID
+FROM PaymentMethod
+WHERE PaymentMethodID NOT IN (
+    SELECT DISTINCT PaymentMethodID
+    FROM Transaction
+    WHERE PaymentMethodID IS NOT NULL
+)
+ORDER BY PaymentMethodID;
+```
+
+**Screenshot - After DELETE 2:**
+![After DELETE Query 2](Stage_2/SCREENSHOTSSTAGE2/DELETE23.jpeg)
+
+---
+
+## 🎛️ 2. Parametrized Queries (ParamsQueries.sql)
+
+**Why are parametrized queries important?**
+Parametrized queries (prepared statements) provide:
+- **Flexibility:** Users can get specific information based on their input
+- **Security:** Protection against SQL injection attacks
+- **Performance:** Queries are pre-compiled and can be reused efficiently
+- **Reusability:** Same query structure can be executed with different parameters
+
+We created **4 parametrized queries** that simulate real user questions requiring input parameters.
+
+---
+
+### Parametrized Query 1: Customer Transactions by Date Range
+
+**Business Question:** "Show me all transactions for a specific customer within a date range"
+
+**User Need:** Customer service needs to quickly retrieve transaction history for customer inquiries.
+
+**Prepared Statement:**
+```sql
+PREPARE customer_transactions(int, date, date) AS
+SELECT 
+    t.transactionid,
+    t.transactiondate,
+    t.amount,
+    t.currency,
+    t.status,
+    t.settlementdate,
+    m.merchantname
+FROM transaction t
+JOIN merchant m ON t.merchantid = m.merchantid
+WHERE t.customerid = $1
+AND t.transactiondate BETWEEN $2 AND $3
+ORDER BY t.transactiondate DESC;
+```
+
+**Query Features:**
+- **Parameters:** CustomerID (integer), StartDate (date), EndDate (date)
+- Uses `JOIN` to include merchant information
+- Uses `BETWEEN` for date range filtering
+- Uses `ORDER BY DESC` to show most recent first
+
+**Execution Examples:**
+```sql
+EXECUTE customer_transactions(301, '2025-01-01', '2025-12-31');
+EXECUTE customer_transactions(303, '2025-01-01', '2025-12-31');
+```
+
+**Screenshot - Query 1 Execution:**
+![Parametrized Query 1](Stage_2/SCREENSHOTSSTAGE2/PARAM11.jpeg)
+
+**Cleanup:**
+```sql
+DEALLOCATE customer_transactions;
+```
+
+**Screenshot - Query 1 Deallocation:**
+![Deallocate Query 1](Stage_2/SCREENSHOTSSTAGE2/PARAM11.jpeg)
+
+---
+
+### Parametrized Query 2: Merchant High Value Transactions
+
+**Business Question:** "Show me all high-value transactions for a specific merchant above a certain amount"
+
+**User Need:** Risk management team needs to monitor large transactions for specific merchants.
+
+**Prepared Statement:**
+```sql
+PREPARE merchant_high_value (INT, NUMERIC) AS
+SELECT 
+    t.TransactionID,
+    c.Name AS CustomerName,
+    t.Amount,
+    t.Currency,
+    t.TransactionDate,
+    t.Status
+FROM Transaction t
+JOIN Customer c ON t.CustomerID = c.CustomerID
+WHERE t.MerchantID = $1
+AND t.Amount >= $2
+ORDER BY t.Amount DESC;
+```
+
+**Query Features:**
+- **Parameters:** MerchantID (integer), MinAmount (numeric)
+- Uses `JOIN` to include customer information
+- Uses comparison operator `>=` for amount filtering
+- Uses `ORDER BY DESC` to show highest amounts first
+
+**Execution Examples:**
+```sql
+EXECUTE merchant_high_value(1, 50);  -- Coffee Shop Inc
+EXECUTE merchant_high_value(3, 100); -- Retail Store Co
+```
+
+**Screenshot - Query 2 Execution:**
+![Parametrized Query 2](Stage_2/SCREENSHOTSSTAGE2/PARAM21.jpeg)
+
+**Cleanup:**
+```sql
+DEALLOCATE merchant_high_value;
+```
+
+**Screenshot - Query 2 Deallocation:**
+![Deallocate Query 2](Stage_2/SCREENSHOTSSTAGE2/PARAM22.jpeg)
+
+---
+
+### Parametrized Query 3: Customer Transaction Summary
+
+**Business Question:** "Give me a complete transaction summary for a specific customer"
+
+**User Need:** Account managers need comprehensive overview of customer activity for relationship management.
+
+**Prepared Statement:**
+```sql
+PREPARE customer_summary(INT) AS
+SELECT 
+    c.CustomerID,
+    c.Name AS CustomerName,
+    COUNT(t.TransactionID) AS TotalTransactions,
+    COALESCE(SUM(t.Amount), 0) AS TotalAmount,
+    COUNT(CASE WHEN t.Status = 'Settled' THEN 1 END) AS SettledCount,
+    COUNT(CASE WHEN t.Status = 'Cleared' THEN 1 END) AS ClearedCount,
+    COUNT(CASE WHEN t.Status = 'Failed' THEN 1 END) AS FailedCount
+FROM Customer c
+LEFT JOIN Transaction t ON c.CustomerID = t.CustomerID
+WHERE c.CustomerID = $1
+GROUP BY c.CustomerID, c.Name;
+```
+
+**Query Features:**
+- **Parameters:** CustomerID (integer)
+- Uses `LEFT JOIN` to include customers without transactions
+- Uses multiple aggregate functions: `COUNT()`, `SUM()`
+- Uses `CASE WHEN` for conditional counting
+- Uses `COALESCE()` to handle null values
+- Uses `GROUP BY` to aggregate results
+
+**Execution Examples:**
+```sql
+EXECUTE customer_summary(301);
+EXECUTE customer_summary(303);
+```
+
+**Screenshot - Query 3 Execution:**
+![Parametrized Query 3](Stage_2/SCREENSHOTSSTAGE2/PARAM31.jpeg)
+
+**Cleanup:**
+```sql
+DEALLOCATE customer_summary;
+```
+
+**Screenshot - Query 3 Deallocation:**
+![Deallocate Query 3](Stage_2/SCREENSHOTSSTAGE2/PARAM32.jpeg)
+
+---
+
+### Parametrized Query 4: Customer Payment Method Summary
+
+**Business Question:** "Show me transaction summary for a specific customer using a specific payment method type"
+
+**User Need:** Analytics team needs to understand customer payment preferences and spending patterns by payment method.
+
+**Preliminary Data Exploration:**
+Before creating the prepared statement, we explored the data to understand which payment methods customers actually use:
+
+```sql
+SELECT 
+    t.CustomerID,
+    pm.Type AS PaymentMethod,
+    pm.Description,
+    COUNT(t.TransactionID) AS UsageCount,
+    SUM(t.Amount) AS TotalSpent,
+    AVG(t.Amount) AS AvgTransactionAmount
+FROM Transaction t
+JOIN PaymentMethod pm ON t.PaymentMethodID = pm.PaymentMethodID
+WHERE t.CustomerID IN (301, 303)
+GROUP BY t.CustomerID, pm.Type, pm.Description
+ORDER BY t.CustomerID, UsageCount DESC;
+```
+
+**Screenshot - Data Exploration for Query 4:**
+![Query 4 Data Exploration](Stage_2/SCREENSHOTSSTAGE2/PARAM43.jpeg)
+
+**Insights from exploration:**
+- Customer 301 had no transactions with 'Wire Transfer'
+- Customer 303 had 438 transactions with 'Debit Card' totaling 1,613,602
+
+**Prepared Statement:**
+```sql
+PREPARE customer_payment_method_summary(INT, TEXT) AS
+SELECT 
+    pm.Type AS PaymentMethod,
+    pm.Description,
+    COUNT(t.TransactionID) AS UsageCount,
+    SUM(t.Amount) AS TotalSpent,
+    AVG(t.Amount) AS AvgTransactionAmount
+FROM Transaction t
+JOIN PaymentMethod pm ON t.PaymentMethodID = pm.PaymentMethodID
+WHERE t.CustomerID = $1
+AND pm.Type = $2
+GROUP BY pm.PaymentMethodID, pm.Type, pm.Description;
+```
+
+**Query Features:**
+- **Parameters:** CustomerID (integer), PaymentMethodType (text)
+- Uses `JOIN` to connect transactions with payment methods
+- Uses multiple aggregate functions: `COUNT()`, `SUM()`, `AVG()`
+- Uses two-parameter filtering for precise results
+- Uses `GROUP BY` to aggregate by payment method
+
+**Execution Examples:**
+```sql
+EXECUTE customer_payment_method_summary(301, 'Wire Transfer');
+-- Returns no rows (customer 301 has no Wire Transfer transactions)
+
+EXECUTE customer_payment_method_summary(303, 'Debit Card');
+-- Returns: UsageCount=438, TotalSpent=1613602, AvgTransactionAmount≈3684
+```
+
+**Screenshot - Query 4 Execution:**
+![Parametrized Query 4](Stage_2/SCREENSHOTSSTAGE2/PARAM41.jpeg)
+
+**Cleanup:**
+```sql
+DEALLOCATE customer_payment_method_summary;
+```
+
+**Screenshot - Query 4 Deallocation:**
+![Deallocate Query 4](Stage_2/SCREENSHOTSSTAGE2/PARAM42.jpeg)
+
+---
+
+## 🚀 3. Indexed Structures (Indexes)
+
+**Why are indexes important?**
+Indexes significantly improve query performance by:
+- Reducing search time for WHERE clauses
+- Speeding up JOIN operations
+- Accelerating ORDER BY operations
+- Improving aggregate function performance
+
+**Trade-offs:**
+- Indexes increase storage overhead
+- They can slow down INSERT/UPDATE/DELETE operations
+- Careful design is needed to balance read vs. write performance
+
+### Indexes Created
+
+We created three strategic indexes to optimize our most frequent queries:
+
+#### Index 1: Optimize Pending Transactions Query (Query 2)
+```sql
+CREATE INDEX idx_transaction_pending_date 
+ON Transaction(TransactionDate DESC)
+WHERE Status = 'Pending';
+```
+
+**Purpose:** Partial index that optimizes queries filtering by Status='Pending' and sorting by TransactionDate.
+
+**Benefits:**
+- Only indexes relevant rows (Pending transactions)
+- Reduces index size and maintenance overhead
+- Speeds up date-based sorting for pending transactions
+
+---
+
+#### Index 2: Optimize Merchant Transactions Aggregation (Query 1)
+```sql
+CREATE INDEX idx_transaction_merchantid 
+ON Transaction(MerchantID);
+```
+
+**Purpose:** Speeds up GROUP BY and aggregation queries that group by MerchantID.
+
+**Benefits:**
+- Accelerates merchant-based transaction lookups
+- Improves JOIN performance between Transaction and Merchant tables
+- Essential for merchant analytics and reporting
+
+---
+
+#### Index 3: Optimize Account-ClearingHouse Join (Query 3)
+```sql
+CREATE INDEX idx_account_clearinghouseid 
+ON Account(ClearingHouseID);
+```
+
+**Purpose:** Optimizes JOIN operations between Account and ClearingHouse tables.
+
+**Benefits:**
+- Speeds up foreign key lookups
+- Improves query performance for account-clearing house relationships
+- Essential for reconciliation processes
+
+**Screenshot - Creating All Indexes:**
+![Create Indexes](Stage_2/SCREENSHOTSSTAGE2/INDEX1.jpeg)
+
+---
+
+### Performance Testing: Before vs. After Indexes
+
+We tested the performance improvement by running key queries with `EXPLAIN ANALYZE` before and after creating indexes.
+
+#### Test 1: Merchant Revenue Query (Query 1) - After Indexes
+```sql
+EXPLAIN ANALYZE
+SELECT 
+    m.MerchantName,
+    COUNT(t.TransactionID) AS TotalTransactions,
+    SUM(t.Amount) AS TotalRevenue
+FROM Merchant m
+LEFT JOIN Transaction t ON m.MerchantID = t.MerchantID
+GROUP BY m.MerchantID, m.MerchantName
+ORDER BY TotalRevenue DESC;
+```
+
+**Screenshot - Query 1 with Index:**
+![Query 1 After Index](Stage_2/SCREENSHOTSSTAGE2/INDEX2.jpeg)
+
+---
+
+#### Test 2: Pending Transactions Query (Query 2) - After Indexes
+```sql
+EXPLAIN ANALYZE
+SELECT 
+    t.TransactionID,
+    c.Name AS CustomerName,
+    m.MerchantName,
+    t.Amount,
+    t.Currency,
+    t.TransactionDate
+FROM Transaction t
+JOIN Customer c ON t.CustomerID = c.CustomerID
+JOIN Merchant m ON t.MerchantID = m.MerchantID
+WHERE t.Status = 'Pending'
+ORDER BY t.TransactionDate DESC;
+```
+
+**Screenshot - Query 2 with Index:**
+![Query 2 After Index](Stage_2/SCREENSHOTSSTAGE2/INDEX3.jpeg)
+
+---
+
+#### Test 3: Account-ClearingHouse Query (Query 3) - After Indexes
+```sql
+EXPLAIN ANALYZE
+SELECT 
+    ch.Name AS ClearingHouse,
+    a.BankName,
+    a.AccountNumber,
+    a.AccountType
+FROM Account a
+JOIN ClearingHouse ch ON a.ClearingHouseID = ch.ClearingHouseID
+ORDER BY ch.Name, a.BankName;
+```
+
+**Screenshot - Query 3 with Index:**
+![Query 3 After Index](Stage_2/SCREENSHOTSSTAGE2/INDEX4.jpeg)
+
+---
+
+### Performance Comparison Table
+
+**Screenshot - Before vs. After Comparison:**
+![Performance Comparison Table](Stage_2/SCREENSHOTSSTAGE2/INDEX5.jpeg)
+
+**Key Improvements:**
+- Merchant aggregation queries show significant speedup
+- Pending transaction filtering performs much faster
+- Join operations between tables are more efficient
+
+---
+
+## 🔒 4. Constraints
+
+**Why are constraints important?**
+Constraints ensure data integrity by:
+- Preventing invalid data entry
+- Enforcing business rules at the database level
+- Maintaining data consistency across tables
+- Reducing application-level validation complexity
+
+### Constraints Created
+
+#### Constraint 1: Transaction Amount Must Be Positive
+```sql
+ALTER TABLE Transaction
+ADD CONSTRAINT chk_transaction_amount_positive CHECK (Amount > 0);
+```
+
+**Purpose:** Ensures all transaction amounts are greater than zero.
+
+**Rationale:** Negative or zero amounts are invalid in real payment systems. This constraint prevents accounting errors and data corruption.
+
+---
+
+#### Constraint 2: Customer Email Must Be Unique
 ```sql
 ALTER TABLE Customer
-ALTER COLUMN DateCreated SET DEFAULT CURRENT_DATE;
+ADD CONSTRAINT uq_customer_email UNIQUE (Email);
 ```
-**Why this default is essential:**
-Ensures every customer has a creation date for analytics and compliance tracking.
 
-![Screenshot](Stage_2/SCREENSHOTS2/שגיאה22.jpeg)
+**Purpose:** Enforces uniqueness of customer email addresses.
 
-==================================================
-## 4. Files Structure
-==================================================
+**Rationale:** Each customer needs a unique identifier for authentication and communication. Duplicate emails can cause login issues and privacy concerns.
 
-- **[Queries.sql](Queries.sql)** - All SELECT, UPDATE, DELETE queries
-- **[ParamsQueries.sql](ParamsQueries.sql)** - Parametrized queries for user input
-- **[Constraints.sql](Constraints.sql)** - Database constraints and indexes definitions
+---
 
+#### Constraint 3: Account Number Minimum Length
+```sql
+ALTER TABLE Account
+ADD CONSTRAINT chk_account_number_length CHECK (LENGTH(AccountNumber) >= 8);
+```
+
+**Purpose:** Validates minimum length for account numbers.
+
+**Rationale:** Standard bank account numbers require minimum length for security and validity. Short account numbers are likely invalid or test data.
+
+**Screenshot - Creating Constraints:**
+![Create Constraints](Stage_2/SCREENSHOTSSTAGE2/CONSTRAINS1.jpeg)
+
+---
+
+### Constraint Violation Tests
+
+We tested each constraint by attempting to violate it and documenting the error messages.
+
+#### Test 1: Violate CHECK (Amount > 0) - Negative Transaction
+```sql
+INSERT INTO Transaction (TransactionID, CustomerID, MerchantID, Amount, Status)
+VALUES (9999, 301, 1, -50, 'Settled');
+```
+
+**Expected Error:** `new row for relation "transaction" violates check constraint "chk_transaction_amount_positive"`
+
+**Explanation:** The constraint prevents invalid negative transaction amounts. This protects against:
+- Data entry errors
+- Malicious attempts to create negative transactions
+- Accounting discrepancies
+
+**Screenshot - Constraint Violation Error 1:**
+![Constraint Error 1](Stage_2/SCREENSHOTSSTAGE2/CONSTRAINS2.jpeg)
+
+---
+
+#### Test 2: Violate UNIQUE (Duplicate Email)
+```sql
+INSERT INTO Customer (CustomerID, Name, Email)
+VALUES (9999, 'Test', 'existing@email.com');
+```
+
+**Expected Error:** `duplicate key value violates unique constraint "uq_customer_email"`
+
+**Explanation:** The constraint ensures each customer has a unique email for identification. This prevents:
+- Duplicate customer accounts
+- Authentication confusion
+- Privacy issues from shared emails
+
+**Screenshot - Constraint Violation Error 2:**
+![Constraint Error 2](Stage_2/SCREENSHOTSSTAGE2/CONSTRAINS3.jpeg)
+
+---
+
+#### Test 3: Violate CHECK (Account Number Too Short)
+```sql
+UPDATE Account
+SET AccountNumber = '123'
+WHERE AccountID = 101;
+```
+
+**Expected Error:** `new row for relation "account" violates check constraint "chk_account_number_length"`
+
+**Explanation:** The constraint enforces minimum account number length for validity. This prevents:
+- Invalid account numbers
+- Test data in production
+- Integration errors with banking systems
+
+**Screenshot - Constraint Violation Error 3:**
+![Constraint Error 3](Stage_2/SCREENSHOTSSTAGE2/CONSTRAINS4.jpeg)
+
+---
+
+## 📁 Files Structure
+
+### Query Files
+- **[1760536761431_sql_queries_file.sql](1760536761431_sql_queries_file.sql)** - All SELECT, UPDATE, DELETE queries with before/after verification
+- **[1760536761432_param_queries.sql](1760536761432_param_queries.sql)** - Parametrized prepared statements with execution examples
+
+### Performance & Structure Files
+- **[1760536761431_indexes.sql](1760536761431_indexes.sql)** - Index definitions for query optimization
+- **[1760536761431_constraints_indexes.sql](1760536761431_constraints_indexes.sql)** - Database constraints and violation tests
+
+### Documentation
+- **README.md** (this file) - Complete documentation with screenshots and explanations
+
+---
+
+## 📊 Summary
+
+This stage successfully demonstrated:
+
+✅ **Complex Queries:** 4 SELECT queries with joins, aggregations, and ordering  
+✅ **Data Modifications:** 2 UPDATE and 2 DELETE queries with verification  
+✅ **Transaction Control:** BEGIN/ROLLBACK demonstration for safe testing  
+✅ **Parametrized Queries:** 4 prepared statements with multiple parameters  
+✅ **Performance Optimization:** 3 strategic indexes with before/after testing  
+✅ **Data Integrity:** 3 constraints with violation testing and error handling  
+
+All operations were logged, timed, and documented with screenshots for complete traceability.
 ==================================================
 # Payment Clearing System Database - Stage 3
 
