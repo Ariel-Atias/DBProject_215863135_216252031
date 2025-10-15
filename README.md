@@ -270,7 +270,7 @@ All backup operations were timed using methods covered in class, with timing sta
 #### Git Integration
 The backup files are managed using Git-LFS due to their large size, as shown in the upload process:
 
-![Git Backup Upload](screenshots/BACKUP2.jpeg)
+![Git Backup Upload](Stage_2/SCREENSHOTSSTAGE2/BACKUP.jpeg)
 
 **Repository Contents:**
 - Backup scripts and log files stored in git repository
