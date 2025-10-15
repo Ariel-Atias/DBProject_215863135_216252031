@@ -1090,12 +1090,12 @@ WHERE AccountID = 101;
 ## 📁 Files Structure
 
 ### Query Files
-- **[1760536761431_sql_queries_file.sql](1760536761431_sql_queries_file.sql)** - All SELECT, UPDATE, DELETE queries with before/after verification
-- **[1760536761432_param_queries.sql](1760536761432_param_queries.sql)** - Parametrized prepared statements with execution examples
+- **[1760536761431_sql_queries_file.sql](Stage_2/STAGE2FILES/sql_queries_file.sql)** - All SELECT, UPDATE, DELETE queries with before/after verification
+- **[1760536761432_param_queries.sql](Stage_2/STAGE2FILES/param_queries.sql)** - Parametrized prepared statements with execution examples
 
 ### Performance & Structure Files
-- **[1760536761431_indexes.sql](1760536761431_indexes.sql)** - Index definitions for query optimization
-- **[1760536761431_constraints_indexes.sql](1760536761431_constraints_indexes.sql)** - Database constraints and violation tests
+- **[1760536761431_indexes.sql](Stage_2/STAGE2FILES/indexes.sql)** - Index definitions for query optimization
+- **[1760536761431_constraints_indexes.sql](Stage_2/STAGE2FILES/constraints_indexes.sql)** - Database constraints and violation tests
 
 ### Documentation
 - **README.md** (this file) - Complete documentation with screenshots and explanations
