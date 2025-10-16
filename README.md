@@ -2232,6 +2232,378 @@ The example plan in the screenshot shows approximately:
 
 
 ---
+Amazing—here’s a clean, **ready-to-paste README section** that covers the two remaining parts you need: **ERD (3 plots + JSON files)** and **DSD (plot + CREATE TABLE script)**.
+I wrote it so you can drop it into your repo as `Stage_4/README_ERD_DSD.md` or append to your main README. It includes:
+
+* Clear folder structure
+* Exact **image placeholders** (GitHub style: `![Caption](path/to/file.png)`)
+* Short, sharp **explanations** for the lecturer
+* Full, consolidated **CREATE TABLE** script for the merged DSD
+* **JSON files** references for each ERD (yours, theirs, merged)
+
+You only need to place your actual files in the paths shown.
+
+---
+
+# 🧭 Stage 4 — ERD (3 Diagrams + JSON) & DSD (Plot + CREATE TABLE)
+
+This section documents the **three ERDs** (ours, the partner team’s, and the merged model), alongside the **DSD** (Data Structure Diagram) and the **CREATE TABLE** script for the merged schema.
+
+---
+
+## 📁 Repository Layout (suggested)
+
+```
+Stage_4/
+├─ ERD/
+│  ├─ Screenshots/
+│  │  ├─ our_erd.png
+│  │  ├─ partner_erd.png
+│  │  └─ merged_erd.png
+│  ├─ JSON/
+│  │  ├─ our_erd.json
+│  │  ├─ partner_erd.json
+│  │  └─ merged_erd.json
+│  └─ drawio/
+│     └─ merged_erd.drawio
+└─ DSD/
+   ├─ Screenshots/
+   │  └─ merged_dsd.png
+   ├─ SQL/
+   │  └─ merged_create_tables.sql
+   └─ JSON/
+      └─ merged_dsd.json   <!-- optional if you export a JSON from your diagramming tool -->
+```
+
+> You can keep file names exactly as above or adjust—just make sure the paths in the markdown below match your repo.
+
+---
+
+## 🧩 ERD — Three Diagrams + JSON
+
+### 1) Our Original ERD
+
+**What it represents:** the **Payment Clearing System** you built in Stage 1 (Customer, Transaction, Merchant, PaymentMethod, Account, ClearingHouse), normalized and focused on payment processing.
+
+**Plot (PNG):**
+![Our ERD (Payment Clearing System)](Stage_4/ERD/Screenshots/our_erd.png)
+
+**JSON (diagram source):**
+`Stage_4/ERD/JSON/our_erd.json`
+
+<details>
+<summary>Example JSON structure (shortened)</summary>
+
+```json
+{
+  "entities": [
+    { "name": "Customer", "fields": ["CustomerID (PK)", "Name", "Email", "MinimalDetails", "DateCreated"] },
+    { "name": "Transaction", "fields": ["TransactionID (PK)", "Amount", "Currency", "Status", "TransactionDate", "SettlementDate", "CustomerID (FK)", "MerchantID (FK)", "PaymentMethodID (FK)"] },
+    { "name": "Merchant", "fields": ["MerchantID (PK)", "MerchantName", "Address"] },
+    { "name": "PaymentMethod", "fields": ["PaymentMethodID (PK)", "Type", "Description", "AccountID (FK)"] },
+    { "name": "Account", "fields": ["AccountID (PK)", "BankName", "AccountNumber", "AccountType", "ClearingHouseID (FK)"] },
+    { "name": "ClearingHouse", "fields": ["ClearingHouseID (PK)", "Name", "NetworkType"] }
+  ],
+  "relationships": [
+    {"from": "Customer", "to": "Transaction", "type": "one-to-many", "name": "Performs"},
+    {"from": "Merchant", "to": "Transaction", "type": "one-to-many", "name": "Receives"},
+    {"from": "PaymentMethod", "to": "Transaction", "type": "one-to-many", "name": "UsedIn"},
+    {"from": "PaymentMethod", "to": "Account", "type": "many-to-one", "name": "LinkedTo"},
+    {"from": "ClearingHouse", "to": "Account", "type": "one-to-many", "name": "Clears"}
+  ]
+}
+```
+
+</details>
+
+**Notes:**
+
+* We kept the design in **3NF** with clear FK paths from transactions to customers, merchants and payment instruments.
+* This layout is optimized for **analytics on payments** and **settlement timelines**.
+
+---
+
+### 2) Partner Team’s Original ERD (Airline Ticketing)
+
+**What it represents:** the partner’s **Airline Ticketing** domain—companies, events (flights), ticket pricing, discounts, final invoice, and their customer dimension.
+
+**Plot (PNG):**
+![Partner ERD (Airline Ticketing)](Stage_4/ERD/Screenshots/partner_erd.png)
+
+**JSON (diagram source):**
+`Stage_4/ERD/JSON/partner_erd.json`
+
+> Use the **exact JSON file you received from the partner** (their ERDPlus/diagram tool export). No need to edit—just store it here.
+
+**Notes:**
+
+* Their “Ticket Pricing → Event → Company” chain models **commercial flight options**, price/tax and marketing discounts.
+* It’s more **marketing/sales** oriented than operational.
+
+---
+
+### 3) Merged ERD (Payment × Airline)
+
+**What it represents:** a **single, unified conceptual model** that explains how a **payment transaction** maps to a **ticket purchase** and its **event (flight)**.
+
+**Key integration idea:** a thin **bridge** entity/relationship, `Flight_Payment_Link`, that ties **local Transaction** to **TicketPricing** (from the airline side).
+This keeps both domains loosely coupled but **queryable together**.
+
+**Plot (PNG):**
+![Merged ERD (Unified Model)](Stage_4/ERD/Screenshots/merged_erd.png)
+
+**Diagram file (draw.io):**
+`Stage_4/ERD/drawio/merged_erd.drawio`
+
+**JSON (diagram source):**
+`Stage_4/ERD/JSON/merged_erd.json`
+
+<details>
+<summary>Example merged JSON (concise)</summary>
+
+```json
+{
+  "entities": [
+    { "name": "Customer", "fields": ["CustomerID (PK)", "Name", "Email", "MinimalDetails", "DateCreated"] },
+    { "name": "Merchant", "fields": ["MerchantID (PK)", "MerchantName", "Address"] },
+    { "name": "Transaction", "fields": ["TransactionID (PK)", "Amount", "Currency", "Status", "TransactionDate", "SettlementDate", "CustomerID (FK)", "MerchantID (FK)", "PaymentMethodID (FK)"] },
+    { "name": "PaymentMethod", "fields": ["PaymentMethodID (PK)", "Type", "Description", "AccountID (FK)"] },
+    { "name": "Account", "fields": ["AccountID (PK)", "BankName", "AccountNumber", "AccountType", "ClearingHouseID (FK)"] },
+    { "name": "ClearingHouse", "fields": ["ClearingHouseID (PK)", "Name", "NetworkType"] },
+
+    { "name": "Company", "fields": ["CompanyID (PK)", "CompanyName", "CompanyEmail", "ModeOfTransportation"] },
+    { "name": "Event", "fields": ["EventID (PK)", "EventDate", "EventTime", "Source", "Destination", "CompanyID (FK)"] },
+    { "name": "TicketPricing", "fields": ["TicketID (PK)", "EventID (FK)", "CustomerID (FK?)", "Price", "Tax"] },
+    { "name": "Discounts", "fields": ["DiscountID (PK)", "DiscountName", "DiscountDescription", "AmountDiscounted"] },
+    { "name": "FinalInvoice", "fields": ["InvoiceID (PK)", "TicketID (FK)", "TotalPrice", "PaymentType", "CompanyContactStatus", "PurchaseDate", "DiscountID (FK)"] },
+
+    { "name": "Flight_Payment_Link", "fields": ["LinkID (PK)", "TransactionID (FK)", "TicketID (FK)"] }
+  ],
+  "relationships": [
+    {"from": "Customer", "to": "Transaction", "type": "one-to-many", "name": "makes"},
+    {"from": "Merchant", "to": "Transaction", "type": "one-to-many", "name": "receives"},
+    {"from": "PaymentMethod", "to": "Transaction", "type": "one-to-many", "name": "uses"},
+    {"from": "PaymentMethod", "to": "Account", "type": "many-to-one", "name": "belongs_to"},
+    {"from": "ClearingHouse", "to": "Account", "type": "one-to-many", "name": "managed_by"},
+
+    {"from": "Company", "to": "Event", "type": "one-to-many", "name": "organizes"},
+    {"from": "Event", "to": "TicketPricing", "type": "one-to-many", "name": "includes"},
+    {"from": "Discounts", "to": "FinalInvoice", "type": "one-to-many", "name": "applies"},
+    {"from": "TicketPricing", "to": "FinalInvoice", "type": "one-to-many", "name": "appears_in"},
+
+    {"from": "Transaction", "to": "Flight_Payment_Link", "type": "one-to-many", "name": "links_to"},
+    {"from": "TicketPricing", "to": "Flight_Payment_Link", "type": "one-to-many", "name": "links_to"}
+  ]
+}
+```
+
+</details>
+
+**Why this merge works:**
+
+* It **doesn’t force** either system to change its primary keys or internal rules.
+* The lightweight `Flight_Payment_Link` lets you **join cross-domain data** safely, and supports **FDW** or local merges.
+* Each side can still evolve independently.
+
+---
+
+## 🧱 DSD — Plot + CREATE TABLE (Merged Schema)
+
+**What is DSD here?**
+A **relational (logical) view** of the merged schema—the **actual tables and keys** you would deploy.
+Below is the full **`merged_create_tables.sql`** you can run in PostgreSQL (or simply keep it as the canonical DSD SQL).
+
+**Plot (PNG):**
+![Merged DSD (Relational Tables)](Stage_4/DSD/Screenshots/merged_dsd.png)
+
+**SQL:**
+`Stage_4/DSD/SQL/merged_create_tables.sql`
+
+<details>
+<summary>Full SQL — merged_create_tables.sql</summary>
+
+```sql
+-- ================================
+-- Merged Schema (Payments × Airline)
+-- ================================
+
+-- You can change the schema name if needed
+CREATE SCHEMA IF NOT EXISTS merged;
+SET search_path TO merged;
+
+-- ---------- Payments domain ----------
+CREATE TABLE IF NOT EXISTS Customer (
+  CustomerID      INT PRIMARY KEY,
+  Name            VARCHAR(50)  NOT NULL,
+  Email           VARCHAR(100) NOT NULL UNIQUE,
+  MinimalDetails  VARCHAR(255) NOT NULL,
+  DateCreated     DATE         NOT NULL DEFAULT CURRENT_DATE
+);
+
+CREATE TABLE IF NOT EXISTS Merchant (
+  MerchantID   INT PRIMARY KEY,
+  MerchantName VARCHAR(100) NOT NULL,
+  Address      VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS ClearingHouse (
+  ClearingHouseID INT PRIMARY KEY,
+  Name            VARCHAR(100) NOT NULL,
+  NetworkType     VARCHAR(50)  NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS Account (
+  AccountID       INT PRIMARY KEY,
+  BankName        VARCHAR(100) NOT NULL,
+  AccountNumber   VARCHAR(50)  NOT NULL,
+  AccountType     VARCHAR(50)  NOT NULL,
+  ClearingHouseID INT NOT NULL REFERENCES ClearingHouse(ClearingHouseID)
+);
+
+CREATE TABLE IF NOT EXISTS PaymentMethod (
+  PaymentMethodID INT PRIMARY KEY,
+  Type            VARCHAR(255) NOT NULL,
+  Description     VARCHAR(255) NOT NULL,
+  AccountID       INT NOT NULL REFERENCES Account(AccountID)
+);
+
+CREATE TABLE IF NOT EXISTS "Transaction" (
+  TransactionID   INT PRIMARY KEY,
+  Amount          INT          NOT NULL,
+  Currency        VARCHAR(10)  NOT NULL,
+  Status          VARCHAR(50)  NOT NULL CHECK (Status IN ('Pending','Cleared','Settled','Failed','Cancelled','Completed')),
+  TransactionDate DATE         NOT NULL,
+  SettlementDate  DATE,
+  CustomerID      INT NOT NULL REFERENCES Customer(CustomerID),
+  MerchantID      INT NOT NULL REFERENCES Merchant(MerchantID),
+  PaymentMethodID INT NOT NULL REFERENCES PaymentMethod(PaymentMethodID)
+);
+
+-- ---------- Airline domain ----------
+CREATE TABLE IF NOT EXISTS Company (
+  CompanyID    INT PRIMARY KEY,
+  CompanyName  VARCHAR(100) NOT NULL,
+  CompanyEmail VARCHAR(100),
+  ModeOfTransportation VARCHAR(50)
+);
+
+CREATE TABLE IF NOT EXISTS Event (
+  EventID     INT PRIMARY KEY,
+  EventDate   DATE NOT NULL,
+  EventTime   TIME,
+  Source      VARCHAR(50),
+  Destination VARCHAR(50),
+  CompanyID   INT NOT NULL REFERENCES Company(CompanyID)
+);
+
+CREATE TABLE IF NOT EXISTS TicketPricing (
+  TicketID INT PRIMARY KEY,
+  EventID  INT NOT NULL REFERENCES Event(EventID),
+  -- If airline has its own customer table, keep it nullable or FK to airline-side Customer
+  CustomerID INT,
+  Price   NUMERIC(12,2) NOT NULL,
+  Tax     NUMERIC(12,2) NOT NULL DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS Discounts (
+  DiscountID          INT PRIMARY KEY,
+  DiscountName        VARCHAR(100),
+  DiscountDescription VARCHAR(255),
+  AmountDiscounted    NUMERIC(12,2)
+);
+
+CREATE TABLE IF NOT EXISTS FinalInvoice (
+  InvoiceID            INT PRIMARY KEY,
+  TicketID             INT NOT NULL REFERENCES TicketPricing(TicketID),
+  TotalPrice           NUMERIC(12,2) NOT NULL,
+  PaymentType          VARCHAR(50),
+  CompanyContactStatus VARCHAR(50),
+  PurchaseDate         DATE NOT NULL DEFAULT CURRENT_DATE,
+  DiscountID           INT REFERENCES Discounts(DiscountID)
+);
+
+-- ---------- Bridge between domains ----------
+CREATE TABLE IF NOT EXISTS Flight_Payment_Link (
+  LinkID        SERIAL PRIMARY KEY,
+  TransactionID INT NOT NULL REFERENCES "Transaction"(TransactionID) ON DELETE CASCADE,
+  TicketID      INT NOT NULL REFERENCES TicketPricing(TicketID)      ON DELETE CASCADE,
+  CONSTRAINT uq_transaction_ticket UNIQUE (TransactionID, TicketID)
+);
+
+-- Useful indexes
+CREATE INDEX IF NOT EXISTS idx_txn_date ON "Transaction"(TransactionDate);
+CREATE INDEX IF NOT EXISTS idx_txn_currency ON "Transaction"(Currency);
+CREATE INDEX IF NOT EXISTS idx_ticket_event ON TicketPricing(EventID);
+CREATE INDEX IF NOT EXISTS idx_event_company ON Event(CompanyID);
+CREATE INDEX IF NOT EXISTS idx_link_ticket  ON Flight_Payment_Link(TicketID);
+CREATE INDEX IF NOT EXISTS idx_link_txn     ON Flight_Payment_Link(TransactionID);
+```
+
+</details>
+
+**How to run the SQL:**
+
+1. Open **pgAdmin → Query Tool** (connected to your merge DB).
+2. Paste the SQL above (or execute the file).
+3. Run ▶️
+4. Take a screenshot of **“Query returned successfully”** and **the new tables in the browser**.
+
+**Why this DSD works:**
+
+* It mirrors both conceptual ERDs in a single **deployable** schema.
+* The **bridge table** (`Flight_Payment_Link`) is unique per (Transaction, Ticket) and cascade-deletes keep data tidy.
+* Indexes support the cross-domain queries you wrote (Stage 4).
+
+---
+
+## 📸 Screenshot Anchors (place your images)
+
+* Our ERD:
+  ![Our ERD (Payment Clearing System)](Stage_4/ERD/Screenshots/our_erd.png)
+
+* Partner ERD:
+  ![Partner ERD (Airline Ticketing)](Stage_4/ERD/Screenshots/partner_erd.png)
+
+* Merged ERD:
+  ![Merged ERD (Unified Model)](Stage_4/ERD/Screenshots/merged_erd.png)
+
+* Merged DSD (tables):
+  ![Merged DSD (Relational Tables)](Stage_4/DSD/Screenshots/merged_dsd.png)
+
+---
+
+## 🧪 Notes on hurdles & how we solved them
+
+* **Different ID spaces:** We avoided hard rekeying by adding a **bridge** (`Flight_Payment_Link`) instead of changing either side’s PKs.
+* **Domain separation:** Each domain’s integrity is preserved (FKs remain local), but analysis is now cross-domain via joins on the bridge.
+* **Scalability & safety:** Unique constraint on `(TransactionID, TicketID)` plus cascade deletes reduce dangling links and duplication.
+
+---
+
+## 🔗 How we produced the plots (so the lecturer can reproduce)
+
+* **ERD (ours, partner):** Exported from ERDPlus / draw.io as **PNG**, and kept **JSON** exports in `Stage_4/ERD/JSON/`.
+* **Merged ERD:** Built in ERDPlus / draw.io following the **Chen** convention (entities = rectangles, attributes = circles, relationships = diamonds, black-and-white).
+* **DSD plot:** Any relational diagrammer (draw.io, pgModeler, DBeaver ERD) → export **PNG** to `Stage_4/DSD/Screenshots/merged_dsd.png`.
+* **CREATE TABLE:** Stored as `Stage_4/DSD/SQL/merged_create_tables.sql` (above).
+
+---
+
+### ✅ What to submit
+
+* Three ERD images + their JSON exports
+
+  * `our_erd.png` + `our_erd.json`
+  * `partner_erd.png` + `partner_erd.json`
+  * `merged_erd.png` + `merged_erd.json` + `merged_erd.drawio` (optional but recommended)
+* One DSD image + merged CREATE TABLE SQL
+
+  * `merged_dsd.png`
+  * `merged_create_tables.sql` (+ optional `merged_dsd.json`)
+
+---
+
+If you want, I can also generate a **one-page printable PDF** of this section so you can submit just the middle of the README (as your lecturer asked).
 
 ## 🧠 Final Reflection
 
