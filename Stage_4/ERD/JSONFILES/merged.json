@@ -1,0 +1,143 @@
+{
+  "entities": [
+    {
+      "name": "Customer",
+      "fields": [
+        "CustomerID (PK)",
+        "Name",
+        "Email",
+        "MinimalDetails",
+        "DateCreated"
+      ]
+    },
+    {
+      "name": "Merchant",
+      "fields": [
+        "MerchantID (PK)",
+        "MerchantName",
+        "Address"
+      ]
+    },
+    {
+      "name": "ClearingHouse",
+      "fields": [
+        "ClearingHouseID (PK)",
+        "Name",
+        "NetworkType"
+      ]
+    },
+    {
+      "name": "Account",
+      "fields": [
+        "AccountID (PK)",
+        "BankName",
+        "AccountNumber",
+        "AccountType",
+        "ClearingHouseID (FK)"
+      ]
+    },
+    {
+      "name": "PaymentMethod",
+      "fields": [
+        "PaymentMethodID (PK)",
+        "Type",
+        "Description",
+        "AccountID (FK)"
+      ]
+    },
+    {
+      "name": "Transaction",
+      "fields": [
+        "TransactionID (PK)",
+        "Amount",
+        "Currency",
+        "Status",
+        "TransactionDate",
+        "SettlementDate",
+        "CustomerID (FK)",
+        "MerchantID (FK)",
+        "PaymentMethodID (FK)"
+      ]
+    },
+
+    /* Airline-side entities */
+    {
+      "name": "Company",
+      "fields": [
+        "CompanyID (PK)",
+        "CompanyName",
+        "CompanyEmail",
+        "ModeOfTransportation"
+      ]
+    },
+    {
+      "name": "Event",
+      "fields": [
+        "EventID (PK)",
+        "EventDate",
+        "EventTime",
+        "Source",
+        "Destination",
+        "CompanyID (FK)"
+      ]
+    },
+    {
+      "name": "TicketPricing",
+      "fields": [
+        "TicketID (PK)",
+        "EventID (FK)",
+        "Price",
+        "Tax"
+      ]
+    },
+    {
+      "name": "Discounts",
+      "fields": [
+        "DiscountID (PK)",
+        "DiscountName",
+        "DiscountDescription",
+        "AmountDiscounted"
+      ]
+    },
+    {
+      "name": "FinalInvoice",
+      "fields": [
+        "InvoiceID (PK)",
+        "TicketID (FK)",
+        "DiscountID (FK)",
+        "TotalPrice",
+        "PaymentType",
+        "CompanyContactStatus",
+        "PurchaseDate"
+      ]
+    },
+
+    /* Bridge between Payments and Airline */
+    {
+      "name": "FlightPaymentLink",
+      "fields": [
+        "TransactionID (PK, FK)",
+        "TicketID (FK)",
+        "LinkedAt"
+      ]
+    }
+  ],
+  "relationships": [
+    /* Your side */
+    {"from": "ClearingHouse", "to": "Account", "type": "one-to-many", "name": "Clears"},
+    {"from": "Account", "to": "PaymentMethod", "type": "one-to-many", "name": "Provides"},
+    {"from": "Customer", "to": "Transaction", "type": "one-to-many", "name": "Performs"},
+    {"from": "Merchant", "to": "Transaction", "type": "one-to-many", "name": "Receives"},
+    {"from": "PaymentMethod", "to": "Transaction", "type": "one-to-many", "name": "UsedIn"},
+
+    /* Airline side */
+    {"from": "Company", "to": "Event", "type": "one-to-many", "name": "Schedules"},
+    {"from": "Event", "to": "TicketPricing", "type": "one-to-many", "name": "HasTickets"},
+    {"from": "Discounts", "to": "FinalInvoice", "type": "one-to-many", "name": "AppliedTo"},
+    {"from": "TicketPricing", "to": "FinalInvoice", "type": "one-to-many", "name": "BilledOn"},
+
+    /* Bridge */
+    {"from": "Transaction", "to": "FlightPaymentLink", "type": "one-to-one", "name": "LinksToTicket"},
+    {"from": "TicketPricing", "to": "FlightPaymentLink", "type": "one-to-many", "name": "PaidBy"}
+  ]
+}
