@@ -2251,34 +2251,6 @@ This section documents the **three ERDs** (ours, the partner team’s, and the m
 
 ---
 
-## 📁 Repository Layout (suggested)
-
-```
-Stage_4/
-├─ ERD/
-│  ├─ Screenshots/
-│  │  ├─ our_erd.png
-│  │  ├─ partner_erd.png
-│  │  └─ merged_erd.png
-│  ├─ JSON/
-│  │  ├─ our_erd.json
-│  │  ├─ partner_erd.json
-│  │  └─ merged_erd.json
-│  └─ drawio/
-│     └─ merged_erd.drawio
-└─ DSD/
-   ├─ Screenshots/
-   │  └─ merged_dsd.png
-   ├─ SQL/
-   │  └─ merged_create_tables.sql
-   └─ JSON/
-      └─ merged_dsd.json   <!-- optional if you export a JSON from your diagramming tool -->
-```
-
-> You can keep file names exactly as above or adjust—just make sure the paths in the markdown below match your repo.
-
----
-
 ## 🧩 ERD — Three Diagrams + JSON
 
 ### 1) Our Original ERD
@@ -2427,7 +2399,6 @@ Below is the full **`merged_create_tables.sql`** you can run in PostgreSQL (or s
 -- Merged Schema (Payments × Airline)
 -- ================================
 
--- You can change the schema name if needed
 CREATE SCHEMA IF NOT EXISTS merged;
 SET search_path TO merged;
 
