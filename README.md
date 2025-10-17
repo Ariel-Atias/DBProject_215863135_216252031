@@ -1793,6 +1793,15 @@ IMPORT FOREIGN SCHEMA public
 FROM SERVER airline_server
 INTO airline_fdw;
 ```
+### Step 3 —  Create a link table
+```sql
+CREATE TABLE IF NOT EXISTS flight_payment_link (
+  transactionid BIGINT PRIMARY KEY
+ ,ticket_id     BIGINT NOT NULL
+ ,created_at    TIMESTAMP DEFAULT now()
+ ,CONSTRAINT fk_txn FOREIGN KEY (transactionid) REFERENCES transaction(transactionid)
+);
+```
 
 ✅ After execution, both schemas became connected and visible together.
 
@@ -1805,6 +1814,7 @@ ORDER BY 1, 2;
 ```
 
 🖼️ *Screenshot — airline_fdw tables appear beside local ones.*
+![](Stage_4/screenshots44/tabels_flight.jpeg)
 ![](Stage_4/screenshots44/tableintegration.jpeg)
 ![](Stage_4/screenshots44/int2.jpeg)
 ![](Stage_4/screenshots44/int3.jpeg)
