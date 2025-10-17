@@ -2286,7 +2286,7 @@ Stage_4/
 **What it represents:** the **Payment Clearing System** you built in Stage 1 (Customer, Transaction, Merchant, PaymentMethod, Account, ClearingHouse), normalized and focused on payment processing.
 
 **Plot (PNG):**
-![Our ERD (Payment Clearing System)](Stage_4/ERD/Screenshots/our_erd.png)
+![Our ERD (Payment Clearing System)](Stage_1/ER_Diagram.png)
 
 **JSON (diagram source):**
 `Stage_4/ERD/JSON/our_erd.json`
@@ -2328,7 +2328,7 @@ Stage_4/
 **What it represents:** the partner’s **Airline Ticketing** domain—companies, events (flights), ticket pricing, discounts, final invoice, and their customer dimension.
 
 **Plot (PNG):**
-![Partner ERD (Airline Ticketing)](Stage_4/ERD/Screenshots/partner_erd.png)
+![Partner ERD (Airline Ticketing)](Stage_4/ERDDSD/ERNOT(1).jpeg)
 
 **JSON (diagram source):**
 `Stage_4/ERD/JSON/partner_erd.json`
@@ -2350,7 +2350,7 @@ Stage_4/
 This keeps both domains loosely coupled but **queryable together**.
 
 **Plot (PNG):**
-![Merged ERD (Unified Model)](Stage_4/ERD/Screenshots/merged_erd.png)
+![Merged ERD (Unified Model)](Stage_4/ERDDSD/erdplus(1).png)
 
 **Diagram file (draw.io):**
 `Stage_4/ERD/drawio/merged_erd.drawio`
@@ -2414,7 +2414,7 @@ A **relational (logical) view** of the merged schema—the **actual tables and k
 Below is the full **`merged_create_tables.sql`** you can run in PostgreSQL (or simply keep it as the canonical DSD SQL).
 
 **Plot (PNG):**
-![Merged DSD (Relational Tables)](Stage_4/DSD/Screenshots/merged_dsd.png)
+![Merged DSD (Relational Tables)](Stage_4/ERDDSD/dsdd(1).jpeg)
 
 **SQL:**
 `Stage_4/DSD/SQL/merged_create_tables.sql`
@@ -2559,16 +2559,16 @@ CREATE INDEX IF NOT EXISTS idx_link_txn     ON Flight_Payment_Link(TransactionID
 ## 📸 Screenshot Anchors (place your images)
 
 * Our ERD:
-  ![Our ERD (Payment Clearing System)](Stage_4/ERD/Screenshots/our_erd.png)
+  ![Our ERD (Payment Clearing System)](Stage_1/ER_Diagram.png)
 
 * Partner ERD:
-  ![Partner ERD (Airline Ticketing)](Stage_4/ERD/Screenshots/partner_erd.png)
+  ![Partner ERD (Airline Ticketing)](Stage_4/ERDDSD/ERNOT(1).jpeg)
 
 * Merged ERD:
-  ![Merged ERD (Unified Model)](Stage_4/ERD/Screenshots/merged_erd.png)
+  ![Merged ERD (Unified Model)](Stage_4/ERDDSD/erdplus(1).png)
 
 * Merged DSD (tables):
-  ![Merged DSD (Relational Tables)](Stage_4/DSD/Screenshots/merged_dsd.png)
+  ![Merged DSD (Relational Tables)](Stage_4/ERDDSD/dsdd(1).jpeg)
 
 ---
 
