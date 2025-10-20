@@ -15,7 +15,7 @@ CREATE TABLE Merchant
   Address VARCHAR(255) NOT NULL,
   PRIMARY KEY (MerchantID)
 );
-
+..
 CREATE TABLE ClearingHouse
 (
   ClearingHouseID INT NOT NULL,
