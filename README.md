@@ -2569,24 +2569,141 @@ CREATE INDEX IF NOT EXISTS idx_link_txn     ON Flight_Payment_Link(TransactionID
 * **CREATE TABLE:** Stored as `Stage_4/DSD/SQL/merged_create_tables.sql` (above).
 
 ---
+## ✅ Integrated Data Integrity Validation — Post-Merge Sanity Checks
 
-### ✅ What to submit
+After completing the integration between the **Payment Clearing System** and the **Airline Ticketing System (FDW)**, we performed a full **data integrity validation** to ensure that no orphaned or invalid records exist after merging both databases.
 
-* Three ERD images + their JSON exports
-
-  * `our_erd.png` + `our_erd.json`
-  * `partner_erd.png` + `partner_erd.json`
-  * `merged_erd.png` + `merged_erd.json` + `merged_erd.drawio` (optional but recommended)
-* One DSD image + merged CREATE TABLE SQL
-
-  * `merged_dsd.png`
-  * `merged_create_tables.sql` (+ optional `merged_dsd.json`)
+This validation confirms that every entity (Transaction, Ticket, Event, Customer, Invoice, etc.) maintains **referential consistency** across both systems.
 
 ---
 
-If you want, I can also generate a **one-page printable PDF** of this section so you can submit just the middle of the README (as your lecturer asked).
+### 🔍 Validation Scope
 
-## 🧠 Final Reflection
+We verified that:
+
+| # | Validation | Description |
+|---|-------------|-------------|
+| 1 | **Transactions without Ticket** | Ensures every Transaction in the Payment System is linked to a valid Ticket through the `flight_payment_link` table. |
+| 2 | **Links to missing Ticket** | Ensures every link in `flight_payment_link` references a valid `ticket_pricing` record in the FDW schema. |
+| 3 | **Tickets without Event** | Ensures every `ticket_pricing` is tied to an existing `event`. |
+| 4 | **Tickets without Customer** | Ensures every `ticket_pricing` record belongs to an existing `customer`. |
+| 5 | **Events → missing Company** | Ensures every event references a real `company`. |
+| 6 | **Final Invoices → missing Ticket** | Ensures invoices only reference valid tickets. |
+| 7 | **Final Invoices → missing Discount** | Ensures invoices referencing a discount have a valid discount record. |
+
+---
+
+### 🧠 SQL Verification Query
+
+```sql
+WITH
+-- 1️⃣ Transactions that are not linked to any Ticket
+tx_without_ticket AS (
+  SELECT COUNT(*) AS n
+  FROM "Transaction" t
+  LEFT JOIN flight_payment_link l ON l.transactionid = t.transactionid
+  WHERE l.transactionid IS NULL
+),
+
+-- 2️⃣ Links that point to missing Tickets
+link_to_missing_ticket AS (
+  SELECT COUNT(*) AS n
+  FROM flight_payment_link l
+  LEFT JOIN public.ticket_pricing tp ON tp.ticket_id = l.ticket_id
+  WHERE tp.ticket_id IS NULL
+),
+
+-- 3️⃣ Tickets missing Event
+tp_event_miss AS (
+  SELECT COUNT(*) AS n
+  FROM public.ticket_pricing tp
+  LEFT JOIN public.events e ON e.event_id = tp.event_id
+  WHERE e.event_id IS NULL
+),
+
+-- 4️⃣ Tickets missing Customer
+tp_customer_miss AS (
+  SELECT COUNT(*) AS n
+  FROM public.ticket_pricing tp
+  LEFT JOIN public.customers c ON c.customer_id = tp.customer_id
+  WHERE c.customer_id IS NULL
+),
+
+-- 5️⃣ Events missing Company
+ev_company_miss AS (
+  SELECT COUNT(*) AS n
+  FROM public.events e
+  LEFT JOIN public.companies co ON co.company_id = e.company_id
+  WHERE co.company_id IS NULL
+),
+
+-- 6️⃣ Final Invoices without valid Ticket
+fi_ticket_miss AS (
+  SELECT COUNT(*) AS n
+  FROM public.final_invoices fi
+  LEFT JOIN public.ticket_pricing tp ON tp.ticket_id = fi.ticket_id
+  WHERE tp.ticket_id IS NULL
+),
+
+-- 7️⃣ Final Invoices referencing non-existent Discount
+fi_discount_miss AS (
+  SELECT COUNT(*) AS n
+  FROM public.final_invoices fi
+  LEFT JOIN public.discounts d ON d.discount_id = fi.discount_id
+  WHERE fi.discount_id IS NOT NULL AND d.discount_id IS NULL
+)
+
+-- ✅ Combine all results into one summary table
+SELECT 'Transactions without Ticket' AS issue_type, n AS bad_count FROM tx_without_ticket
+UNION ALL
+SELECT 'Links to missing Ticket', n FROM link_to_missing_ticket
+UNION ALL
+SELECT 'Tickets without Event', n FROM tp_event_miss
+UNION ALL
+SELECT 'Tickets without Customer', n FROM tp_customer_miss
+UNION ALL
+SELECT 'Events → missing Company', n FROM ev_company_miss
+UNION ALL
+SELECT 'Final Invoices → missing Ticket', n FROM fi_ticket_miss
+UNION ALL
+SELECT 'Final Invoices → missing Discount (when discount_id present)', n FROM fi_discount_miss;
+````
+
+---
+
+### 📊 **Results**
+
+| issue_type                                                   | bad_count |
+| ------------------------------------------------------------ | --------- |
+| Transactions without Ticket                                  | 0         |
+| Links to missing Ticket                                      | 0         |
+| Tickets without Event                                        | 0         |
+| Tickets without Customer                                     | 0         |
+| Events → missing Company                                     | 0         |
+| Final Invoices → missing Ticket                              | 0         |
+| Final Invoices → missing Discount (when discount_id present) | 0         |
+
+✅ **All results = 0**
+This confirms that:
+
+* Every **Transaction** has a valid **Ticket** link.
+* Every **Ticket** references real **Event**, **Customer**, and **Company** data.
+* Every **Invoice** and **Discount** reference remains valid.
+* The integration across local and FDW databases is **100% consistent**.
+
+---
+
+### 🖼️ *Screenshots:*
+
+* 📸 *Query execution proof (pgAdmin output):*
+  ![](Stage_4/screenshots44/integrity_query.png)
+
+
+---
+
+
+
+ 🧠 Final Reflection
 
 Stage 4 proved our ability to combine and operate on multiple PostgreSQL databases as one system.
 We created two cross-database views, executed complex queries and DML, tested error cases, and benchmarked performance.
