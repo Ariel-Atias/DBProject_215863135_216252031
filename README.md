@@ -2696,7 +2696,7 @@ This confirms that:
 ### 🖼️ *Screenshots:*
 
 * 📸 *Query execution proof (pgAdmin output):*
-  ![](Stage_4/screenshots44/integrity_query.png)
+  ![](Stage_4/screenshots44/image.png)
 
 
 ---
